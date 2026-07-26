@@ -1,0 +1,14 @@
+.page-title {
+  margin-top: 0;
+  margin-bottom: 0rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: var(--page-title-font-size);
+  max-width: calc(100vw - 2rem);
+  font-family: 'Pacifico', cursive;
+  animation: fadeIn 1.5s ease-out forwards;
+  animation-delay: 1.5s;
+  opacity: 0;
+}
+

@@ -1,0 +1,25 @@
+.application-button-style {
+  background-color: transparent;
+  border-radius: 5px;
+  border: 2px solid #000;
+  font-size: 1.3rem;
+  padding: .25rem .5rem;
+  font-weight: bold;
+  transition: transform .3s ease;
+  cursor: pointer;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.application-button-style:hover {
+  transform: scale(1.25);
+  background-color: #1f0800;
+  color: #d8ba7e;
+}
+
+@media (min-width: 1024px) {
+  .application-button-style.animated.food-details-page {
+    margin-right: 0;
+  }
+}

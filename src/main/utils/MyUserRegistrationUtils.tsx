@@ -1,0 +1,1 @@
+export const ERR_MSG_MY_USER_REQUIRED = 'A felhasználói adatok megadása kötelező!'

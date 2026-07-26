@@ -1,0 +1,1 @@
+export const ERR_MSG_CUSTOMER_REQUIRED = 'A vásárlói adatok megadása kötelező!'

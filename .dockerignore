@@ -1,0 +1,9 @@
+node_modules/
+*.log
+.git/
+.gitignore
+.dockerignore
+*.env
+*.bat
+README.md
+build/

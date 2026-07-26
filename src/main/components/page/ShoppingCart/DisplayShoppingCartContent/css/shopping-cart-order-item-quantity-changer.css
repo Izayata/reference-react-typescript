@@ -1,0 +1,6 @@
+.shopping-cart-order-item-quantity-changer {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 100%;
+}

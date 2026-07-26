@@ -1,0 +1,10 @@
+.menu-item-image {
+  width: 100%;
+  border-radius: 5px;
+  transition: transform .3s ease, opacity .3s ease;
+  transform: scale(1.01);
+}
+
+.menu-item-image:hover {
+  transform: scale(1.1);
+}

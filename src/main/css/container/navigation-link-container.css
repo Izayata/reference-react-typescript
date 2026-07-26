@@ -1,0 +1,14 @@
+.navigation-link-container {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 1280px) {
+  .navigation-link-container {
+    flex-direction: row;
+    height: 100%;
+  }
+}

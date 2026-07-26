@@ -1,0 +1,15 @@
+.header {
+  background-color: #61574b;
+  color: #fffff5;
+  padding: .25rem;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: .1rem;
+  max-height: 100%;
+  max-width: 100%;
+  font-family: 'Pacifico', cursive;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+

@@ -1,0 +1,5 @@
+
+.user-profile-data-container-data-item {
+  display: flex;
+  flex-direction: column;
+}

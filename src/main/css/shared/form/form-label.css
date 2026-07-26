@@ -1,0 +1,8 @@
+.form-label {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label.checkout {
+  width: 100%;
+}

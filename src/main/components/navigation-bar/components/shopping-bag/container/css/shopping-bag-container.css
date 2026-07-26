@@ -1,0 +1,40 @@
+.shopping-bag-container {
+  position: fixed;
+  right: 6%;
+  bottom: 7%;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 1vh;
+  opacity: 0;
+  animation: shopping-bag-fade-in .3s ease forwards;
+  animation-delay: 1.3s;
+}
+
+@keyframes shopping-bag-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.shopping-bag-container.at-cart-or-checkout-page {
+  display: none;
+}
+
+/* @media (max-width: 1279px) {
+  .shopping-bag-container.at-gallery-page {
+    right: 50%;
+    left: 50%;
+    bottom: calc(4vh - .5rem);
+  }
+} */
+
+@media (min-width: 1280px) {
+  .shopping-bag-container {
+    position: initial;
+    flex-direction: column;
+  }
+}

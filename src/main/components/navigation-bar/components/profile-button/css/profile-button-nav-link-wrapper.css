@@ -1,0 +1,22 @@
+.profile-button-nav-link-wrapper {
+  border-radius: 5px;
+  padding: 0;
+  margin: 0;
+  transition: transform 0.3s ease, margin 0.3s ease;
+  transform-origin: center;
+  color: inherit;
+}
+
+.profile-button-nav-link-wrapper.active:hover {
+  background-color: transparent;
+}
+
+.profile-button-nav-link-wrapper:hover {
+  background-color: transparent;
+  transform: scale(1.25);
+}
+
+.profile-button-nav-link-wrapper.active {
+  color: #d8ba7e !important;
+  background-color: #1f0800 !important;
+}

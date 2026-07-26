@@ -1,0 +1,14 @@
+.food-details-info {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  flex: 1;
+  align-self: stretch;
+}
+
+@media (min-width: 1024px) {
+  .food-details-info {
+    flex-direction: column-reverse;
+    max-width: 66%;
+  }
+}

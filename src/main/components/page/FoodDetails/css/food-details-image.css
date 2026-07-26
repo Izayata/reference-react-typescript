@@ -1,0 +1,20 @@
+.food-details-image {
+  height: auto;
+  width: 100%;
+  border-radius: 5px;
+  border: 2px solid #00000077;
+  transition: all 0.3s ease;
+  object-fit: cover;
+}
+
+@media (min-width: 1024px) {
+  .food-details-image {
+    width: 40%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .food-details-image {
+    width: 33%;
+  }
+}

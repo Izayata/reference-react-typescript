@@ -1,0 +1,21 @@
+.banner-movement-animation {
+    animation: banner-fade-in 1s ease-in-out forwards, banner-fade-out 1s 29000ms ease-in-out forwards;
+}
+
+@keyframes banner-fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes banner-fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}

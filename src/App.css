@@ -1,0 +1,59 @@
+html, body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  background-color: #eaddcf;
+}
+
+.svg-inline--fa.fa-arrow-right-to-bracket,
+.svg-inline--fa.fa-bars {
+  font-size: 4rem;
+  height: 1.7rem;
+  width: auto;
+  box-sizing: content-box;
+}
+
+.fa-arrow-right-to-bracket {
+  box-sizing: border-box;
+}
+
+.fa-arrow-right-to-bracket:hover {
+  background-color: #e6d1ba;
+}
+
+@media(min-width: 1280px) {
+  .fa-arrow-right-to-bracket {
+    padding: .25rem;
+  }
+}
+
+.slide-in {
+  top: 0;
+  position: sticky;
+  animation: slideFromTop 0.5s ease;
+  z-index: 800;
+}
+
+@keyframes slideFromTop {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 100vw;
+}
+
+main {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

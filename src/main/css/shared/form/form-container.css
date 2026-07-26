@@ -1,0 +1,41 @@
+.form-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #8c7851;
+  max-width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 1.3rem;
+  font-family: 'Roboto, sans-serif';
+  gap: 1rem;
+  animation: slideInFromBottom .85s ease-out forwards;
+  z-index: 799;
+}
+
+@media (min-width: 1024px) {
+  .form-container.checkout-page.customer-details {
+    margin-right: 0;
+  }
+
+  .form-container.checkout-page.order-summary {
+    margin-left: 0;
+    margin-bottom: auto;
+  } 
+}
+
+
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

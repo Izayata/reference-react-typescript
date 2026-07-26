@@ -1,0 +1,9 @@
+.visible-from-desktop-landscape {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .visible-from-desktop-landscape {
+    display: flex;
+  }
+}

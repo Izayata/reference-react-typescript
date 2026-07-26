@@ -1,0 +1,43 @@
+.shopping-cart-qty-input {
+  padding: .5rem .75rem;
+  border-radius: 5px;
+  border: 2px solid #000;
+  background-color: transparent;
+  font-size: 2rem;
+  width: 35%;
+  text-align: center;
+  font-weight: bold;
+  transition: border-color 0.3s ease;
+  color: #000;
+}
+
+.shopping-cart-qty-input:focus {
+  outline: none;
+  border-color: #d8ba7e;
+}
+
+.shopping-cart-qty-input.value-changed {
+  animation: priceFlash .5s ease-out;
+}
+
+@keyframes priceFlash {
+  0% {
+    color: #d8ba7e; /* Highlight color */
+  }
+  100% {
+    color: #000; /* Back to original color */
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}

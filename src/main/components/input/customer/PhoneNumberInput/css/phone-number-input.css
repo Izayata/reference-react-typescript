@@ -1,0 +1,87 @@
+.flag-dropdown {
+  border-color: #000 !important;
+  transition: border-color 0.3s ease;
+}
+
+.flag-dropdown.open {
+  outline: none !important;
+  border-color: #d8ba7e !important;
+}
+
+.arrow {
+  border-top-color: #1f0800 !important;
+}
+
+.arrow.up {
+  border-bottom-color: #D8BA7E !important;
+}
+
+.selected-flag {
+  background-color: #ffd0d7 !important;
+  border-color: #000 !important;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.selected-flag:hover {
+  transform: scale(1.25);
+  border: none !important;
+  border-radius: 5px;
+  background-color: #1f0800 !important;
+  .arrow {
+    border-top-color: #D8BA7E !important;
+  }
+}
+
+.selected-flag.open {
+  background-color: #1f0800 !important;
+  border-color: #d8ba7e;
+}
+
+.form-control {
+  padding: .5rem .75rem;
+  border: 1px solid #000 !important;
+  border-radius: 5px;
+  background-color: #2b2b2b !important;
+  color: #f5f5f5 !important;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #d8ba7e !important;
+}
+
+.country-list {
+  border-radius: 5px !important;
+  background-color: #8c7851 !important;
+  font-weight: 600 !important;
+
+}
+
+.dial-code {
+  color: #f5f5f5 !important;
+}
+
+.country {
+  border-bottom: 1px solid #695A3D !important;
+  border-top: 1px solid #695A3D !important;
+}
+
+.country:hover {
+  background-color: #1f0800 !important;
+  color: #d8ba7e !important;
+}
+
+.country.highlight {
+  color: #ffd0d7 !important;
+  background-color: #1f0800 !important;
+}
+
+.country.highlight:hover {
+  color: #d8ba7e !important;
+}
+
+.search {
+  background-color: #8c7851 !important;
+  box-shadow: 0rem .125rem 1rem rgba(0, 0, 0, 0.45);
+}

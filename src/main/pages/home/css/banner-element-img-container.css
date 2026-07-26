@@ -1,0 +1,25 @@
+.banner-element-img-container {
+    width: calc((100% - 2rem) / 4 * 3);
+    height: calc((100vw - 6rem) / 4 * 3);
+    overflow: hidden;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: auto auto;
+}
+
+@media (min-width: 720px) {
+    .banner-element-img-container {
+        width: calc((100% - 4rem) / 4 * 2);
+        height: calc((100vw - 8rem) / 4 * 2);
+    }
+}
+
+@media (min-width: 1280px) {
+    .banner-element-img-container {
+        width: calc((100% - 4rem) / 4 * 1);
+        height: calc((100vw - 8rem) / 4 * 1);
+    }
+}

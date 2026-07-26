@@ -1,0 +1,23 @@
+.user-profile-title {
+  margin-top: 0;
+  margin-bottom: 0rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: var(--page-title-font-size);
+  max-width: calc(100% - 2rem);
+  font-family: 'Pacifico', cursive;
+  animation: slideInFromBottom .85s ease-out forwards;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+
+  }
+}

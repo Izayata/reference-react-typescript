@@ -1,0 +1,32 @@
+.food-details-price {
+  font-family: 'Roboto, sans-serif';
+  font-size: 2rem;
+  letter-spacing: .125ch;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .food-details-price {
+    font-size: 2.3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .food-details-price {
+    font-size: 1.7rem;
+    margin-bottom: auto;
+    margin-top: auto;
+  }
+}
+
+@media (min-width: 1920px) {
+  .food-details-price {
+    font-size: 2.1rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .food-details-price {
+    font-size: 2.7rem;
+  }
+}

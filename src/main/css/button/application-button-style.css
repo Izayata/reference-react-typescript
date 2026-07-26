@@ -1,0 +1,59 @@
+.application-button-style {
+  background-color: #8c7851;
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 5px;
+  font-size: 1.6rem !important;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    font-size 0.3s ease;
+}
+
+.application-button-style.animated {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 2.5s forwards;
+}
+
+@media (min-width: 1024px) {
+  .application-button-style.food-details {
+    margin-right: 0px;
+    margin-left: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+@media (min-width: 1920px) {
+  .application-button-style.food-details {
+    font-size: 2.1rem !important;
+  }
+}
+
+@media (min-width: 2560px) {
+  .application-button-style.food-details {
+    font-size: 2.7rem !important;
+  }
+}
+
+/* .application-button-style.shopping-cart-qty-btn {
+  margin-top: auto;
+  margin-bottom: auto;
+  display: flex;
+  justify-content: center;
+  margin-right: 0px;
+  margin-left: 0px;
+} */
+
+/* .application-button-style.shopping-cart-checkout-button {
+  background-color: #8c7851;
+  text-decoration: none;
+  opacity: 0;
+  animation: shopping-cart-checkout-button-fade-in 0.5s ease-out 1.5s forwards;
+} */
+

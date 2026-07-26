@@ -1,0 +1,9 @@
+.visible-from-mobile-landscape {
+  display: none;
+}
+
+@media (min-width: 568px) {
+  .visible-from-mobile-landscape {
+    display: inline;
+  }
+}

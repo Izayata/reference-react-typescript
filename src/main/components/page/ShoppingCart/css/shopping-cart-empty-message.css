@@ -1,0 +1,21 @@
+.shopping-cart-empty-message {
+  margin: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 3.8rem;
+  max-width: calc(100% - 2rem);
+  font-family: 'Pacifico', cursive;
+  animation: slideInFromBottom .85s ease-out forwards;
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+
+  }
+}

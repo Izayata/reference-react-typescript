@@ -1,0 +1,13 @@
+.navigation-bar-separator {
+  display: none;
+  border: solid 1px #695A3D;
+  border-radius: 5px;
+  height: 0;
+  width: 100%;
+}
+
+@media (min-width: 1280px) {
+  .navigation-bar-separator {
+    display: block;
+  }
+}

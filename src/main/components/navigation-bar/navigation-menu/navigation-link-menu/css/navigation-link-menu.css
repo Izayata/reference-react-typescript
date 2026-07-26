@@ -1,0 +1,42 @@
+.navigation-link-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 100vh;
+  background-color: #8c7851;
+  z-index: 1001;
+  animation: slideIn .3s ease;
+  align-items: center;
+  padding: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.navigation-link-menu.open {
+  display: initial;
+}
+
+@media (min-width: 1280px) {
+  .navigation-link-menu {
+    position: initial;
+    height: auto;
+    justify-content: flex-start;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    padding-bottom: .5rem;
+    padding-top: .5rem;
+    display: flex;
+    animation: none;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

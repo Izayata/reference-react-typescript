@@ -1,0 +1,7 @@
+.separator-hr {
+  border-color: #000;
+  margin: 0;
+  border-style: solid;
+  border-width: 1px;
+  width: 100%;
+}

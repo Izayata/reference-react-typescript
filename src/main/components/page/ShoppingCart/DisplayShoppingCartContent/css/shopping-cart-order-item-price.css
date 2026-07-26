@@ -1,0 +1,39 @@
+.shopping-cart-order-item-price {
+  font-family: 'Roboto, sans-serif';
+  font-size: 1.8rem;
+  letter-spacing: .125ch;
+  text-align: center;
+  color: #000;
+}
+
+.shopping-cart-order-item-price.price-changed {
+  animation: priceFlash 0.5s ease-out;
+
+}
+
+@keyframes priceFlash {
+  0% {
+    color: #d8ba7e; /* Highlight color */
+  }
+  100% {
+    color: #000; /* Back to original color */
+  }
+}
+
+@media (min-width: 768px) {
+  .shopping-cart-order-item-price {
+    font-size: 2.3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .shopping-cart-order-item-price {
+    font-size: 1.7rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .shopping-cart-order-item-price {
+    font-size: 2.1rem;
+  }
+}

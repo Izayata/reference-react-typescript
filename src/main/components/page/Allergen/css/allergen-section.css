@@ -1,0 +1,25 @@
+.allergen-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: slideInFromBottom .85s ease-out forwards;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1280px) {
+  .allergen-section {
+    flex-direction: row;
+  }
+}
+
+@keyframes slideInFromBottom {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,41 @@
+.gallery-slider {
+    display: flex;
+    aspect-ratio: 4 / 5;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    border-radius: 5px;
+    gap: 1rem;
+    transition: aspect-ratio 0.3s ease;
+}
+
+.gallery-slider img {
+    flex: 1 0 100%;
+    scroll-snap-align: start;
+    object-fit: cover;
+    border: 10px solid white;
+}
+
+@media (max-width: 720px) {
+    .gallery-slider {
+        aspect-ratio: 4.5 / 6.5;
+    }
+}
+
+@media (min-width: 896px) {
+    .gallery-slider {
+        aspect-ratio: 5 / 3;
+    }
+}
+
+@media (min-width: 1024px) {
+    .gallery-slider {
+        aspect-ratio: 15 / 7;
+    }
+}
+
+@media (min-width: 1366px) {
+    .gallery-slider {
+        aspect-ratio: 16 / 8;
+    }
+}

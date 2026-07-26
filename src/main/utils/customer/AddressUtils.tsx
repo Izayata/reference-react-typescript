@@ -1,0 +1,6 @@
+export const ERR_MSG_CITY_REQUIRED = 'A város megadása kötelező!'
+export const ERR_MSG_STREET_NUMBER_REQUIRED = 'A házszám megadása kötelező!'
+export const ERR_MSG_STREET_REQUIRED = 'Az utca megadása kötelező!'
+export const ERR_MSG_ZIP_CODE_REQUIRED = 'A irányítószám megadása kötelező!'
+export const ERR_MSG_SHIPPING_ADDRESS_REQUIRED = 'A szállítási cím megadása kötelező!'
+export const ERR_MSG_BILLING_ADDRESS_REQUIRED = 'A számlázási cím megadása kötelező!'

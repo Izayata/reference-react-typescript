@@ -1,0 +1,71 @@
+import { NavLinkPersist } from '../../supports/Persistence'
+import style from './nav.module.scss'
+import { useState, useRef, useEffect } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { HamburgerMenuButton } from './components/hamburger-menu/button/HamburgerMenuButton'
+import { NavigationMenu } from './navigation-menu/NavigationMenu'
+import { ShoppingBagContainer } from './components/shopping-bag/container/ShoppingBagContainer'
+import { LoginButton } from './components/login-button/LoginButton'
+import { LogoutButton } from './components/logout-button/LogoutButton'
+import './css/menu-button-container.css'
+import './css/menu-button-separator.css'
+import './css/nav-bar-container.css'
+import './css/navigation-bar-separator.css'
+import './css/nav-bar-upper-row-container.css'
+import './css/nav-bar-lower-row-container.css'
+import './css/restaurant-name.css'
+import '../../css/shared/no-display.css'
+import '../../css/shared/visible-from-desktop-landscape.css'
+import { NavigationLinkMenu } from './navigation-menu/navigation-link-menu/NavigationLinkMenu'
+import { SeparatorLine } from './navigation-menu/navigation-link-menu/separator-line/SeparatorLine'
+import { ProfileButton } from './components/profile-button/ProfileButton'
+
+// import '../../../css/shared/slide-in.css'
+
+export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLogout: () => void}) {
+  // const location = useLocation()
+
+  const [menuOpen, setMenuOpen] = useState(false)  
+  const [shoppingBagOpen, setShoppingBagOpen] = useState(false)
+
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  return (
+    <nav className = 'nav-bar-container'>
+      <div className='nav-bar-upper-row-container'>
+        <NavLink to={'/'} className = 'restaurant-name'>
+            ImagineBar
+        </NavLink>
+        <span className='menu-button-container'>
+          {isAuthenticated && (
+            <>
+              <ProfileButton/>
+              <div className='menu-button-separator' />
+            </>
+          )}
+          <ShoppingBagContainer
+            shoppingBagOpen={shoppingBagOpen}
+            setShoppingBagOpen={setShoppingBagOpen}
+            dropdownRef={dropdownRef}
+          />
+          <div className='menu-button-separator visible-from-desktop-landscape'></div>
+          {!isAuthenticated && (
+            <LoginButton/>
+          )}
+          {isAuthenticated && (
+            <LogoutButton
+              onLogout={onLogout}
+            />
+          )}
+          {/* HamburgerMenuButton handles it's own separator */}
+          <HamburgerMenuButton
+            menuOpen={menuOpen}
+            setMenuOpen={setMenuOpen}
+          />
+        </span>
+      </div>
+      <div className='navigation-bar-separator' />
+      <NavigationMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+    </nav>
+  )
+}

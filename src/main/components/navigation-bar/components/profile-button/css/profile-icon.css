@@ -1,0 +1,10 @@
+.fa-user {
+  padding: .25rem;
+  padding-bottom: 0;
+  border-radius: 5px;
+}
+
+.fa-user:hover {
+  color: #d8ba7e !important;
+  background-color: #1f0800 !important;
+}

@@ -1,0 +1,12 @@
+.shopping-cart-order-item-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .shopping-cart-order-item-details-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

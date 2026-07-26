@@ -1,0 +1,32 @@
+.fa-bag-shopping {
+  padding: .5rem;
+  background-color: #8c7851;
+  border-radius: 50%;
+  z-index: 998;
+  transition: transform 0.3s ease, margin .3s ease;
+  transform-origin: center;
+  cursor: pointer;
+  border: 2px solid #00000077;
+}
+
+.fa-bag-shopping:hover {
+  color: #d8ba7e;
+  background-color: #1f0800;
+  transform: scale(1.25);
+}
+
+.fa-bag-shopping.active {
+  color: #d8ba7e;
+  background-color: #1f0800;
+}
+
+@media (min-width: 1280px) {
+  .fa-bag-shopping {
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: .25rem;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+  }
+}

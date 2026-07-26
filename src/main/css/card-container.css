@@ -1,0 +1,25 @@
+.card-container {
+  padding: 1rem;
+  background-color: #8c7851;
+  border-radius: 5px;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  animation: slideInFromBottom .85s ease-out forwards;
+}
+
+@media (min-width: 1024px) {
+  .card-container.user-profile {
+    min-width: calc(100vw / 2 - 2rem - 2rem);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .card-container.food-details-page {
+    flex-direction: row;
+  }
+}
+

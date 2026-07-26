@@ -1,0 +1,19 @@
+.nav-bar-container {
+  background-color: #8c7851;
+  padding-left: .5rem;
+  padding-right: .5rem;
+  font-size: 2rem;
+  font-family: 'Open Sans';
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 0rem .125rem 1rem rgba(0, 0, 0, 0.45);
+}
+
+@media (min-width: 1280px) {
+  .nav-bar-container {
+    font-size: 1.7rem;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    gap: 10px;
+  }
+}

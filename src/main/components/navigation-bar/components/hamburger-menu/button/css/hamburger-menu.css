@@ -1,0 +1,21 @@
+.fa-bars {
+  cursor: pointer;
+  transition: transform 0.3s ease, margin 0.3s ease;
+  transform-origin: center;
+  padding: .25rem;
+  border-radius: 5px;
+  display: inline-block;
+}
+
+.fa-bars:hover {
+  background-color: #1f0800;
+  color: #d8ba7e;
+  transform: scale(1.25);
+  
+}
+
+@media (min-width: 1280px) {
+  .fa-bars {
+    display: none;
+  }
+}

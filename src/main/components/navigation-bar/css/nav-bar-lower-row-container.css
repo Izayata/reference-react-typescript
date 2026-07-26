@@ -1,0 +1,10 @@
+.nav-bar-lower-row-container {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .nav-bar-lower-row-container {
+    display: flex;
+    flex-direction: row;
+  }
+}

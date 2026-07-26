@@ -1,0 +1,9 @@
+.form-orientation {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-orientation.checkout {
+  width: 100%;
+}

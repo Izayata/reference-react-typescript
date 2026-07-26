@@ -1,0 +1,5 @@
+.login-page-registration-span {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}

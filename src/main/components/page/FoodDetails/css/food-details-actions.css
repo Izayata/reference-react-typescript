@@ -1,0 +1,15 @@
+.food-details-actions {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .food-details-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 0px;
+  }
+}
