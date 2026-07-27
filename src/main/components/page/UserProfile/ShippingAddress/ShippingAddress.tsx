@@ -85,7 +85,7 @@ export function ShippingAddress({ address, onAddressUpdated }: { address: Addres
       if (onAddressUpdated) onAddressUpdated()
       await sleep(500)
       toast.success('Szállítási cím sikeresen frissítve!')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLoadingOverlay(false)
       setModalMessage(handleErrorMessages(e))
       return

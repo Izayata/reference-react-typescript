@@ -77,7 +77,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       
       await sleep(500)
       toast.success('Személyes adatok sikeresen frissítve!')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLoadingOverlay(false)
       setModalMessage(handleErrorMessages(e))
       return

@@ -130,8 +130,8 @@ export function ForgottenPassword() {
         const errorData = await response.json()
         setModalMessage(errorData.error || 'Hiba történt a jelszó módosítása során.')
       }
-    } catch (err: any) {
-      setModalMessage(err || 'Ismeretlen hiba történt, próbálja újra később!')
+    } catch (err: unknown) {
+      setModalMessage(err instanceof Error ? err.message : 'Ismeretlen hiba történt, próbálja újra később!')
     } finally {
       sleep(500)
       setLoading(false)

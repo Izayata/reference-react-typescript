@@ -96,7 +96,7 @@ export function Register() {
       registrationModelBuilder.current.setMyUser(myUserRegistration)
 
       setStep('setPersonalDetails')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
     } finally {
       setLoadingOverlay(false)
@@ -112,7 +112,7 @@ export function Register() {
       registrationModelBuilder.current.setPersonalDetails(personalDetails)
 
       setStep('setAddresses')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
     } finally {
       setLoadingOverlay(false)
@@ -124,7 +124,6 @@ export function Register() {
     setLoadingOverlay(true)
 
     try {
-      console.log(registrationFormData.billingZipCode)
       const billingAddress = convertRegistrationFormDataToBillingAddressModel(registrationFormData)
       registrationModelBuilder.current.setBillingAddress(billingAddress)
 
@@ -138,7 +137,7 @@ export function Register() {
       await register()
       await sleep(1000)
       setStep('successfulRegistration')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
     } finally {
       setLoadingOverlay(false)

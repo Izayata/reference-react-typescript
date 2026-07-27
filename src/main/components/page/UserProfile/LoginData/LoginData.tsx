@@ -85,10 +85,9 @@ export function LoginData({ user }: { user: MyUserModel }) {
       setLoadingOverlay(false)
       await sleep(500)
       toast.success('Jelszó sikeresen módosítva!')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLoadingOverlay(false)
       const errorMessage = handleErrorMessages(e)
-      console.log('Error message:', errorMessage)
       setModalMessage(errorMessage)
       return
     }

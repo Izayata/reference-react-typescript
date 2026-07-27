@@ -26,7 +26,7 @@ export const CityInput: React.FC<CityInputProps> = ({ name, value, onChange }) =
       try {
         new CityModel(value)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
           e.forEach((err: ValidationError) => {

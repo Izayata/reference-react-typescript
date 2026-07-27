@@ -24,7 +24,7 @@ export const StreetInput: React.FC<StreetInputProps> = ({ name, value, onChange 
       try {
         new StreetModel(value)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
           e.forEach((err: ValidationError) => {

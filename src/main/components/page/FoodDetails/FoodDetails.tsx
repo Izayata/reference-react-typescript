@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { FoodDetailsModel } from '../../../model/FoodDetailsModel'
-// import './FoodDetails.css'
 import { AddToCartButton } from '../../functional/AddToCartButton/AddToCartButton'
-// import { formatPrice } from '../../../utils/MenuUtils'
 import { MenuItemImage } from '../Menu/MenuItemImage/MenuItemImage'
 import { Modal } from '../../functional/Modal/Modal'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
@@ -72,14 +70,12 @@ export function FoodDetails() {
               {food.description.value}
             </div>
             <div className="food-details-allergens">
-              {/* {food.allergens.length > 0 ? 'Allergének:' : ' '} */}
               Allergének:
               <br />
               {food.allergens.length === 0 && ' Nincs megjeleníthető allergén'}
               {food.allergens.map((allergen, index) => (
                 <span key={index}>
                   {allergen.name.value} (<FontAwesomeIcon icon={iconMap[allergen.iconName]} />)
-                  {/* {index < food.allergens.length - 1 && ', '} */}
                 </span>
               ))}
             </div>

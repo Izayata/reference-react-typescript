@@ -43,7 +43,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({ value, onChange }) => {
           if (exists) setError(ERR_MSG_EMAIL_VALUE_EXISTS)
         }, 150)
         return () => clearTimeout(availabilityTimeout)
-      } catch (e: any) {
+      } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
           e.forEach((err: ValidationError) => {

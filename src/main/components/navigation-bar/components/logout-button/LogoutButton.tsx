@@ -26,8 +26,6 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
       })
   
       if (response.ok) {
-        // const data = await response.json()
-        // console.log(data.message)
         onLogout()
       } else {
         throw new Error('Kijelentkezés sikertelen!')

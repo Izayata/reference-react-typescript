@@ -18,16 +18,10 @@ import './css/checkout-order-price-container.css'
 import '../../../css/shared/form/form-container.css'
 import '../../../css/button/application-button-style.css'
 
-import { AddressInput } from '../../input/customer/address/AddressInput'
-import { convertBillingAddressFormDataToFormData, convertShippingAddressFormDataToFormData } from '../../../converter/formDataConverter'
-import { PersonalDetailsInput } from '../../input/customer/PersonalDetailsInput'
-import { NavLink } from 'react-router-dom'
 import { OrderItemModel } from '../../../model/order/OrderItemModel'
 import { OrderModel } from '../../../model/OrderModel'
-import { CustomerModel } from '../../../model/CustomerModel'
 import { CustomerModelBuilder } from '../../../builder/CustomerModelBuilder'
 import { EmailModel } from '../../../model/EmailModel'
-import { AddressModel } from '../../../model/customer/AddressModel'
 import { AddressModelBuilder } from '../../../builder/AddressModelBuilder'
 import { ZipCodeModel } from '../../../model/customer/address/ZipCodeModel'
 import { CityModel } from '../../../model/customer/address/CityModel'
@@ -38,10 +32,10 @@ import { PersonalDetailsModelBuilder } from '../../../builder/PersonalDetailsMod
 import { FirstnameModel } from '../../../model/customer/FirstnameModel'
 import { LastnameModel } from '../../../model/customer/LastnameModel'
 import { PhoneNumberModel } from '../../../model/customer/PhoneNumberModel'
-import { EmailInput } from '../../input/myUser/EmailInput/EmailInput'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
-import { send } from 'process'
 import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
+import { CheckoutCustomerDetailsSection } from './CheckoutCustomerDetailsSection'
+import { CheckoutOrderSummarySection } from './CheckoutOrderSummarySection'
 
 interface CheckoutProps {
   isAuthenticated: boolean
@@ -64,11 +58,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
   const [billingAddressSameAsShipping, setBillingAddressSameAsShipping] = useState(false)
   const { setModalMessage } = useModal()
   const navigate = useNavigate()
-  let orderItem: OrderItemModel
   const orderItems: OrderItemModel[] = []
-  let orderTotal = 0
-  let orderItemTotal = 0
-  
+
   const fetchCustomerData = async () => {
     setLoading(true)
     await sleep(1000)
@@ -271,7 +262,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       .setShippingAddress(new AddressModelBuilder()
         .setZipCode(new ZipCodeModel(
           isAuthenticated ?
-            (myUserData?.customer.shippingAddress.zipCode.value ?? '') 
+            (myUserData?.customer.shippingAddress.zipCode.value ?? '')
             : (billingAddressSameAsShipping ? (billingAddressForm.billingZipCode ?? '') : (shippingAddressForm.shippingZipCode ?? ''))
         ))
         .setCity(new CityModel(
@@ -300,15 +291,12 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
         )
         .build()
       )
-      
+
       .build()
   }
 
   const getOrderToSubmit = () => {
     try {
-      {console.log('isCashPayment: ', isCashPayment)}
-      {console.log('isCardPayment: ', isCardPayment)}
-      {console.log('paymentType: ', paymentType)}
       if (paymentType === 'unknown' || (!isCashPayment && !isCardPayment)) {
         throw new Error('Kérjük, válasszon fizetési módot!')
       }
@@ -319,7 +307,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
         paymentType,
         isAuthenticated
       )
-    } catch (e: any) {
+    } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
     }
   }
@@ -348,7 +336,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       localStorage.removeItem('shopping_cart')
       setCheckoutState('success')
       return data
-    } catch (error: any) {
+    } catch (error: unknown) {
       setModalMessage(handleErrorMessages(error))
       throw error
     }
@@ -361,14 +349,13 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       if (!order) {
         throw new Error('A rendelés adatai hiányosak vagy érvénytelenek!')
       }
-      console.log('Order submitted:', order)
       await sendOrderToServer(order)
-    } catch (e: any) {
+    } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
     } finally {
       setLoading(false)
     }
-    
+
   }
 
   const setPaymentToCash = () => {
@@ -390,290 +377,34 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       <>
         <h2 className='page-title'>Pénztár</h2>
         <div className='checkout-content-container'>
-          <section className='form-container checkout-page customer-details'>
-            {isAuthenticated && !editMode &&(
-              <>
-                <div>
-                  <h3 className='checkout-section-title'>Személyes adatok</h3>
-                  <div
-                    style={{
-                      width: '100%',
-                      border: '1px solid',
-                      borderRadius: '5px',
-                      borderColor: '#000',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}
-                  />
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Keresztnév:</strong>
-                  {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.firstname?.value : 'Name cannot be found'}
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Vezetéknév:</strong>
-                  {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.lastname?.value : 'Name cannot be found'}
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Telefonszám:</strong>
-                  <div className='personal-information-element-phone-number'>
-                    {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.phoneNumber?.value : 'Name cannot be found'}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    width: '100%',
-                    border: '1px solid',
-                    borderRadius: '5px',
-                    borderColor: '#695A3D',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                />
-                <div>
-                  <h3 className='checkout-section-title'>Szállítási cím</h3>
-                  <div
-                    style={{
-                      width: '100%',
-                      border: '1px solid',
-                      borderRadius: '5px',
-                      borderColor: '#000',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}
-                  />
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Irányítószám:</strong>
-                  {myUserData?.customer?.shippingAddress?.zipCode?.value ? myUserData?.customer?.shippingAddress?.zipCode?.value : 'Zip code cannot be found'}
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Város:</strong>
-                  {myUserData?.customer?.shippingAddress?.city?.value ? myUserData?.customer?.shippingAddress?.city?.value : 'City cannot be found'}
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Közterület:</strong>
-                  {myUserData?.customer?.shippingAddress?.street?.value ? myUserData?.customer?.shippingAddress?.street?.value : 'Street cannot be found'}
-                </div>
-                <div className='personal-information-element-container'>
-                  <strong>Házszám:</strong>
-                  {myUserData?.customer?.shippingAddress?.streetNumber?.value ? myUserData?.customer?.shippingAddress?.streetNumber?.value : 'Street number cannot be found'}
-                </div>
-                {myUserData?.customer?.shippingAddress?.floorDoor?.value && (
-                  <div className='personal-information-element-container'>
-                    <strong>Emelet/Ajtó:</strong>
-                    {myUserData?.customer?.shippingAddress?.floorDoor?.value}
-                  </div>
-                )}
-                <button
-                  className="application-button-style animated"
-                  onClick={handleEdit}
-                  type="button"
-                >
-                  Módosítás
-                </button>
-              </>
-            )}
-            {isAuthenticated && editMode && (
-              <form onSubmit={handleSave} className="form-container" style={{animation: 'none'}}>
-                <AddressInput formData={convertShippingAddressFormDataToFormData(shippingAddressForm)} onChange={handleChange} />
-                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-                  <button className="application-button-style" type="submit">Mentés</button>
-                  <button className="application-button-style" type="button" onClick={handleCancel}>Mégse</button>
-                </div>
-              </form>
-            )}
-            {!isAuthenticated && (
-              <form className='form-container' style={{animation: 'none'}}>
-                <div>
-                  <h3 className='checkout-section-title'>Személyes adatok</h3>
-                  <div
-                    style={{
-                      width: '100%',
-                      border: '1px solid',
-                      borderRadius: '5px',
-                      borderColor: '#000',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}
-                  />
-                </div>
-                <PersonalDetailsInput formData={personalDetailsForm} onChange={handlePersonalDetailsChange}/>
-                <EmailInput value={emailForm.email} onChange={handleEmailChange}/>
-                <div
-                  style={{
-                    width: '100%',
-                    border: '1px solid',
-                    borderRadius: '5px',
-                    borderColor: '#695A3D',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                />
-                <div>
-                  <h3 className='checkout-section-title'>Számlázási cím</h3>
-                  <div
-                    style={{
-                      width: '100%',
-                      border: '1px solid',
-                      borderRadius: '5px',
-                      borderColor: '#000',
-                      marginLeft: 'auto',
-                      marginRight: 'auto',
-                    }}
-                  />
-                </div>
-                <AddressInput formData={convertBillingAddressFormDataToFormData(billingAddressForm)} onChange={handleBillingChange} />
-                <div
-                  style={{textWrap: 'pretty'}}
-                  onClick={() => setBillingAddressSameAsShipping(!billingAddressSameAsShipping)}
-                >
-                  <input
-                    type='checkbox'
-                    checked={billingAddressSameAsShipping}
-                  />
-                  A számlázási cím megegyezik a szállítási címmel
-                </div>
-                {!billingAddressSameAsShipping && (
-                  <>
-                    <div
-                      style={{
-                        width: '100%',
-                        border: '1px solid',
-                        borderRadius: '5px',
-                        borderColor: '#695A3D',
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
-                      }}
-                    />
-                    <div>
-                      <h3 className='checkout-section-title'>Szállítási cím</h3>
-                      <div
-                        style={{
-                          width: '100%',
-                          border: '1px solid',
-                          borderRadius: '5px',
-                          borderColor: '#000',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                        }}
-                      />
-                    </div>
-                    <AddressInput formData={convertShippingAddressFormDataToFormData(shippingAddressForm)} onChange={handleChange} />
-                  </>
-                )}
-                
-              </form>
-            )}
-          </section>
-          <section className='form-container checkout-page order-summary'>
-            <>
-              <div>
-                <h3 className='checkout-section-title'>Tételek</h3>
-                <div
-                  style={{
-                    width: '100%',
-                    border: '1px solid',
-                    borderRadius: '5px',
-                    borderColor: '#000',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                />
-              </div>
-              <div>
-                {foods.map(food => (
-                  <>
-                    <div key={food.foodId} className='checkout-order-item-list-container'>
-                      <div>
-                        {(() => {
-                          orderItem = new OrderItemModel(food.foodId, quantities[food.foodId])
-                          orderItems.push(orderItem)
-                          return null
-                        })()}
-                        ×{orderItem.quantity} | {food.foodName.value}
-                      </div>
-                      {(() => {
-                        orderItemTotal = Number(food.price.amount) * Number(quantities[food.foodId])
-                        return null
-                      })()}
-                      <div className='checkout-order-item-price-container'>{(orderItemTotal).toFixed(0)} Ft</div>
-                      {(() => {
-                        orderTotal += orderItemTotal
-                        return null
-                      })()}
-                    </div>
-                  </>
-                ))}
-                <div
-                  style={{
-                    width: 'calc(100% - 2rem)',
-                    border: '.5px solid',
-                    borderRadius: '5px',
-                    borderColor: '#695A3D',
-                    position: 'absolute',
-                    left: '0',
-                    right: '0',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                />
-              </div>
-              <div className='checkout-order-price-container'>
-                <strong>
-                  Összesen fizetendő:
-                </strong>
-                <strong>{orderTotal} Ft</strong>
-              </div>
-              <div
-                style={{
-                  width: '100%',
-                  border: '1px solid',
-                  borderRadius: '5px',
-                  borderColor: '#695A3D',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-              />
-              <div style={{display: 'flex', flexDirection: 'column', gap: '0.5rem'}}>
-                Fizetés kiszállításkor a következő módon:
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-                  <span
-                    onClick={setPaymentToCash}
-                    style={{cursor: 'pointer'}}
-                  >
-                    <input
-                      type='checkbox'
-                      checked={isCashPayment}
-                    />
-                    Készpénz
-                  </span>
-                  <span
-                    onClick={setPaymentToCard}
-                    style={{cursor: 'pointer'}}
-                  >
-                    <input
-                      type='checkbox'
-                      checked={isCardPayment}
-                    />
-                    Bankkártya
-                  </span>
-                </div>
-              </div>
-            </>
-            <section style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%'}}>
-              <NavLink
-                className='application-button-style animated'
-                to='/cart'
-                style={{textDecoration: 'none'}}
-              >
-                Kosár
-              </NavLink>
-              <div className='application-button-style animated' onClick={submitOrder}>
-                Megrendel
-              </div>
-            </section>
-          </section>
+          <CheckoutCustomerDetailsSection
+            isAuthenticated={isAuthenticated}
+            editMode={editMode}
+            myUserData={myUserData}
+            shippingAddressForm={shippingAddressForm}
+            billingAddressForm={billingAddressForm}
+            personalDetailsForm={personalDetailsForm}
+            emailForm={emailForm}
+            billingAddressSameAsShipping={billingAddressSameAsShipping}
+            onEdit={handleEdit}
+            onSave={handleSave}
+            onCancel={handleCancel}
+            onShippingAddressChange={handleChange}
+            onBillingAddressChange={handleBillingChange}
+            onPersonalDetailsChange={handlePersonalDetailsChange}
+            onEmailChange={handleEmailChange}
+            onToggleBillingAddressSameAsShipping={() => setBillingAddressSameAsShipping(!billingAddressSameAsShipping)}
+          />
+          <CheckoutOrderSummarySection
+            foods={foods}
+            quantities={quantities}
+            orderItems={orderItems}
+            isCashPayment={isCashPayment}
+            isCardPayment={isCardPayment}
+            onSetPaymentToCash={setPaymentToCash}
+            onSetPaymentToCard={setPaymentToCard}
+            onSubmitOrder={submitOrder}
+          />
         </div>
       </>
     )
@@ -683,4 +414,3 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       )
   )
 }
-
