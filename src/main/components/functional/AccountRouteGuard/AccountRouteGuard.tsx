@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export function AccountRouteGuard({ isAuthenticated, children }: { isAuthenticated: boolean, children: React.ReactNode }) {
-  const [authenticated, setAuthenticated] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -10,6 +9,10 @@ export function AccountRouteGuard({ isAuthenticated, children }: { isAuthenticat
       navigate('/login')
     }
   }, [isAuthenticated, navigate])
+
+  if (!isAuthenticated) {
+    return null
+  }
 
   return (
     <>
