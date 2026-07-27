@@ -128,9 +128,11 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 
 `Login.tsx:30`, `ForgottenPassword.tsx:45`, and `ForgottenPassword.tsx:114` each call `fetchCsrfToken()` and attach the result before hitting `/login`, `/v1/password-reset/request-password-reset-link`, and `/v1/password-reset/set-new-password` — all three of which `API_ENDPOINTS.md` documents as **CSRF-exempt**. Harmless against a backend that simply ignores the extra token, but it's a wasted round-trip (an extra `GET /csrf-token` before every login attempt) and suggests the CSRF-exemption list wasn't consulted when these calls were written.
 
-#### 8.4 `/logout`'s CSRF token is sent as a body field, not a header — **Medium (unverified)**
+#### 8.4 `/logout`'s CSRF token is sent as a body field, not a header — **Medium — ✅ Fixed**
 
 `API_ENDPOINTS.md` describes CSRF as "send `X-CSRF-TOKEN`" for any non-exempt mutating call, and `POST /logout` is explicitly listed as CSRF-required. `LogoutButton.tsx:19-37` does fetch and send a token, but as a `_csrf` field inside a `URLSearchParams` body (same pattern as `Login.tsx`, where it's harmless because `/login` is exempt) — not as the `X-CSRF-TOKEN` header the doc describes elsewhere. Whether Spring's `CsrfFilter` accepts a body parameter alongside/instead of the header depends on the backend's `CsrfTokenRequestHandler` configuration, which isn't visible from the frontend — flagged as a likely-but-unconfirmed logout failure, worth a quick manual check against the real backend rather than assuming either way.
+
+**Fixed:** `LogoutButton.tsx` now reuses the shared `fetchCsrfToken()` utility (`src/main/supports/fetch-utilities/fetchCsrfToken.tsx`) instead of duplicating its own inline `/csrf-token` fetch, and sends the token via the `X-CSRF-TOKEN` header — matching the doc and every other mutating call in the app. The now-unnecessary `Content-Type: application/x-www-form-urlencoded` header and `_csrf` form body were removed, since the documented request body for `POST /logout` is `none`.
 
 #### 8.5 Documented endpoints with no frontend caller — **Informational**
 
@@ -162,7 +164,7 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | 5.2 | No `jsx-a11y` lint rules configured | Medium |
 | 4.2 | No coverage thresholds/reporting configured | Medium |
 | 6.3 | Hamburger menu toggle not keyboard-operable | Medium |
-| 8.4 | `/logout` CSRF token sent as body field, not header (unverified against backend) | Medium |
+| 8.4 | ~~`/logout` CSRF token sent as body field, not header (unverified against backend)~~ | ~~Medium~~ **✅ Fixed** |
 | 2.3 | `.gitignore` doesn't exclude top-level `.env` | Low |
 | 3.2 | Dead `counter` Redux feature still wired into the store | Low |
 | 3.4 | Assorted leftover `console.log`s / commented-out code | Low |

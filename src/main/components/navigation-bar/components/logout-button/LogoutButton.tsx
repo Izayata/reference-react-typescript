@@ -5,35 +5,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import './css/logout-icon.css'
 import './css/logout-button-nav-link-wrapper.css'
+import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
 
 interface LogoutButtonProps {
   onLogout: () => void
 }
 
 export function LogoutButton({ onLogout }: LogoutButtonProps) {
-  
+
   const [modalMessage, setModalMessage] = useState<string | null>(null)
 
   const handleLogout = async () => {
     try {
-      const csrfResponse = await fetch('/csrf-token', {
-        credentials: 'include', 
-      })
-
-      if (!csrfResponse.ok) {
-        throw new Error('Szerver hiba! Próbálja újra később!')
-      }
-
-      const csrfData = await csrfResponse.json()
-
       const response = await fetch('/logout', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRF-TOKEN': await fetchCsrfToken()
         },
-        body: new URLSearchParams({
-          _csrf: csrfData.csrfToken
-        }).toString(),
         credentials: 'include',
       })
   
