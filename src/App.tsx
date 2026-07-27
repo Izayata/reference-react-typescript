@@ -3,7 +3,6 @@ import './App.css'
 import { Route, Routes, useNavigate } from 'react-router'
 import { MenuPage } from './main/pages/MenuPage'
 import { AllergenPage } from './main/pages/AllergenPage'
-import { Page3 } from './main/pages/Order'
 import { AccountPage } from './main/pages/account'
 import { Home } from './main/pages/home'
 import { ForgottenPasswordPage } from './main/pages/ForgottenPasswordPage'
@@ -21,7 +20,6 @@ import { LoadingOverlay } from './main/components/functional/LoadingOverlay/Load
 import { AccountRouteGuard } from './main/components/functional/AccountRouteGuard/AccountRouteGuard'
 import { sleep } from './main/utils/sleep/SleepUtils'
 import { Modal } from './main/components/functional/Modal/Modal'
-// import './main/css/main/main-container.css'
 import { ModalProvider, useModal } from './main/context/ModalMessageContext/ModalMessageContext'
 import { GalleryPage } from './main/pages/GalleryPage'
 
@@ -29,7 +27,6 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
   const [refreshValue, setRefreshValue] = useState(false)
-  // const [modalMessage, setModalMessage] = useState<string | null>(null)
   const { modalMessage, setModalMessage } = useModal()
 
   const navigate = useNavigate()
@@ -93,7 +90,6 @@ function AppContent() {
           <Route path='/allergens' element={<AllergenPage />}/>
           <Route path='/register' element={<RegisterPage />}/>
           <Route path='/gallery' element={<GalleryPage />}/>
-          {/* <Route path='/page3' element={<Page3 />}/> */}
           <Route path="/login" element={<LoginPage onLogin={handleLogin}/>} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/forgot-password" element={<ForgottenPasswordPage />} />

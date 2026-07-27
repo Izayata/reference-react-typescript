@@ -84,7 +84,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
       if (onAddressUpdated) onAddressUpdated()
       await sleep(500)
       toast.success('Számlázási cím sikeresen frissítve!')
-    } catch (e: any) {
+    } catch (e: unknown) {
       setLoadingOverlay(false)
       setModalMessage(handleErrorMessages(e))
       return

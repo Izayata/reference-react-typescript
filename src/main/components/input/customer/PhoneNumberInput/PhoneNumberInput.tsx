@@ -27,7 +27,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChan
       try {
         new PhoneNumberModel(value)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         setError(getErrorMessages(e))
       }
     }, 500)

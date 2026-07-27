@@ -33,9 +33,9 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
         }
         setAllowed(true)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         setAllowed(false)
-        setError(e.message)
+        setError(e instanceof Error ? e.message : String(e))
       }
     }, 1000)
 

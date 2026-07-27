@@ -255,7 +255,6 @@ export const countryLocalization = {
 
 export function validatePhoneNumber(phoneNumber: string) {
   phoneNumber[0] === '+' && (phoneNumber = phoneNumber.substring(1))
-  // console.log('asdaaaaa: ' + phoneNumber)
   if (isBlank(phoneNumber)) {
     throw new Error(ERR_MSG_PHONE_NUMBER_VALUE_REQUIRED)
   }
@@ -263,7 +262,6 @@ export function validatePhoneNumber(phoneNumber: string) {
     throw new Error(ERR_MSG_PHONE_NUMBER_VALUE_REQUIRED)
   }
   if(!isValidPhoneNumber('+' + phoneNumber)) {
-    // console.log('phoneNumber  isValidPhoneNumber')
     throw new Error(ERR_MSG_PHONE_NUMBER_VALUE_INVALID)
   }
 }

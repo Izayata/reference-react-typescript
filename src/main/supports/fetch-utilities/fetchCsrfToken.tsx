@@ -13,9 +13,7 @@ export async function fetchCsrfToken(): Promise<string> {
   }
 
   const csrfData = await csrfResponse.json()
-  // console.log('csrfData:', csrfData)
   const csrfToken = csrfData.csrfToken // Extract the CSRF token from the response
-  // console.log('csrfToken:', csrfToken)
 
   return csrfToken
 }

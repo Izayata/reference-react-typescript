@@ -2,32 +2,30 @@ import { ValidationError } from 'class-validator'
 
 export const ERR_MSG_COLOR_HEXA = '#8A0017'
 
-export const handleErrorMessages = (e: any): string => {
+export const handleErrorMessages = (e: unknown): string => {
   const messages = getErrorMessages(e)
-  console.log('error messages:', messages)
   if (Array.isArray(messages)) {
     return messages.join('\n')
   }
-  
-  return e.message
+
+  return messages
 }
 
-export const getErrorMessages = (e: any): string[] | string => {
+export const getErrorMessages = (e: unknown): string[] | string => {
   const messages: string[] = []
-  console.log('e: ', e)
   if (Array.isArray(e)) {
-    console.log('inside if array')
     e.forEach((err: ValidationError) => {
-      console.log('err.constraints: ', err.constraints)
       if (err.constraints) {
         messages.push(...Object.values(err.constraints).map((i) => '• ' + i))
       }
     })
   }
 
-  console.log('messages array: ', messages)
+  if (messages.length > 0) {
+    return messages
+  }
 
-  return messages.length > 0 ? messages : e.message
+  return e instanceof Error ? e.message : String(e)
 }
 
 export function DisplayErrors({ error }: { error: string[] | string }) {

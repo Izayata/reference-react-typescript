@@ -57,7 +57,7 @@ export function UserProfile() {
       .setMyUsername(user.myUsername)
       .setCustomer(user.customer)
       .build()
-  } catch (e: any) {
+  } catch (e: unknown) {
     setModalMessage(handleErrorMessages(e))
   }
 

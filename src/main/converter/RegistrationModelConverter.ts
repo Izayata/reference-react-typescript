@@ -4,7 +4,13 @@ import { convertRegistrationFormDataToBillingAddressModel, convertRegistrationFo
 import { convertRegistrationDataToMyUserRegistrationModel } from './MyUserRegistrationModelConverter'
 import { convertRegistrationDataToPersonalDetailsModel } from './PersonalDetailsConverter'
 
-export function convertRegistrationDataToRegistrationModel(registrationData: any): RegistrationModel {
+type RegistrationData =
+  Parameters<typeof convertRegistrationDataToMyUserRegistrationModel>[0] &
+  Parameters<typeof convertRegistrationDataToPersonalDetailsModel>[0] &
+  Parameters<typeof convertRegistrationFormDataToShippingAddressModel>[0] &
+  Parameters<typeof convertRegistrationFormDataToBillingAddressModel>[0]
+
+export function convertRegistrationDataToRegistrationModel(registrationData: RegistrationData): RegistrationModel {
   return new RegistrationModelBuilder()
     .setMyUser(convertRegistrationDataToMyUserRegistrationModel(registrationData))
     .setPersonalDetails(convertRegistrationDataToPersonalDetailsModel(registrationData))

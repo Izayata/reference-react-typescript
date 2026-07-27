@@ -4,7 +4,11 @@ import { LastnameModel } from '../model/customer/LastnameModel'
 import { PhoneNumberModel } from '../model/customer/PhoneNumberModel'
 import { PersonalDetailsModel } from '../model/PersonalDetailsModel'
 
-export function convertRegistrationDataToPersonalDetailsModel(registrationData: any): PersonalDetailsModel {
+export function convertRegistrationDataToPersonalDetailsModel(registrationData: {
+  firstname: string
+  lastname: string
+  phoneNumber: string
+}): PersonalDetailsModel {
   return new PersonalDetailsModelBuilder()
     .setFirstname(new FirstnameModel(registrationData.firstname))
     .setLastname(new LastnameModel(registrationData.lastname))

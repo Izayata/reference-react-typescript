@@ -25,7 +25,7 @@ export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => 
       try {
         new ZipCodeModel(value)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
           e.forEach((err: ValidationError) => {

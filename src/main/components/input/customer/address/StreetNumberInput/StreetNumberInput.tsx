@@ -24,7 +24,7 @@ export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, valu
       try {
         new StreetNumberModel(value)
         setError('')
-      } catch (e: any) {
+      } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
           e.forEach((err: ValidationError) => {

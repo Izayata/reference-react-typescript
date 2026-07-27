@@ -99,8 +99,6 @@ export function DisplayShoppingCartContent({
       const updated = { ...prev }
       delete updated[id]
       localStorage.setItem('shopping_cart', JSON.stringify(updated))
-      console.log('Updated cart after deletion:', updated)
-      console.log(Object.keys(updated).length)
       if (Object.keys(updated).length === 0) {
         setLoading(true)
         setRefreshShoppingCart(r => !r)
