@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { FoodDetailsModel } from '../../../model/FoodDetailsModel'
 import { AddToCartButton } from '../../functional/AddToCartButton/AddToCartButton'
 import { MenuItemImage } from '../Menu/MenuItemImage/MenuItemImage'
@@ -23,6 +24,7 @@ import { iconMap } from '../Menu/Menu'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export function FoodDetails() {
+  const { t } = useTranslation()
   const { foodId } = useParams<{ foodId: string }>()
   const [food, setFood] = useState<FoodDetailsModel | null>(null)
   const [loading, setLoading] = useState(true)
@@ -30,12 +32,12 @@ export function FoodDetails() {
 
   useEffect(() => {
     if (!foodId) {
-      setModalMessage('Étel azonosító hiányában az étel adatai nem jeleníthetők meg! Próbálja újra később!')
+      setModalMessage(t('foodDetails.missingFoodId'))
       return
     }
     fetch(`/v1/foods/${foodId}`)
       .then(res => {
-        if (!res.ok) throw new Error('Nem található étel! Próbálja újra később!')
+        if (!res.ok) throw new Error(t('foodDetails.notFound'))
         return res.json()
       })
       .then(setFood)
@@ -50,7 +52,7 @@ export function FoodDetails() {
   }
 
   if (!food) {
-    return <Modal message={'Étel adatok lekérése sikertelen! Próbálja újra később!'} onClose={() => setModalMessage(null)} />
+    return <Modal message={t('foodDetails.fetchFailed')} onClose={() => setModalMessage(null)} />
   }
 
   return (
@@ -70,9 +72,9 @@ export function FoodDetails() {
               {food.description.value}
             </div>
             <div className="food-details-allergens">
-              Allergének:
+              {t('foodDetails.allergensLabel')}
               <br />
-              {food.allergens.length === 0 && ' Nincs megjeleníthető allergén'}
+              {food.allergens.length === 0 && t('foodDetails.noAllergens')}
               {food.allergens.map((allergen, index) => (
                 <span key={index}>
                   {allergen.name.value} (<FontAwesomeIcon icon={iconMap[allergen.iconName]} />)

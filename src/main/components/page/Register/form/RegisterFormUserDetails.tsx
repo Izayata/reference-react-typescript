@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { UsernameInput } from '../../../input/myUser/UsernameInput/UsernameInput'
 import { PasswordInput } from '../../../input/myUser/PasswordInput/PasswordInput'
 import { ConfirmPasswordInput } from '../../../input/myUser/ConfirmPasswordInput/ConfirmPasswordInput'
@@ -19,33 +20,36 @@ export const RegisterFormUserDetails: React.FC<RegisterFormUserDetailsProps> = (
   registrationData,
   onChange,
   onSubmit
-}) => (
-  <form onSubmit={onSubmit} className="form-orientation">
-    <UsernameInput
-      value={registrationData.username}
-      onChange={onChange}
-    />
-    <PasswordInput
-      value={registrationData.password}
-      onChange={onChange}
-      name="password"
-      label='Jelszó:'
-    />
-    <ConfirmPasswordInput
-      value={registrationData.confirmPassword}
-      originalPassword={registrationData.password}
-      onChange={onChange}
-    />
-    <EmailInput
-      value={registrationData.email}
-      onChange={onChange}
-    />
-    <button
-      type="submit"
-      className="application-button-style"
-      style={{ marginLeft: 'auto', marginRight: 'auto' }}
-    >
-      Tovább
-    </button>
-  </form>
-)
+}) => {
+  const { t } = useTranslation()
+  return (
+    <form onSubmit={onSubmit} className="form-orientation">
+      <UsernameInput
+        value={registrationData.username}
+        onChange={onChange}
+      />
+      <PasswordInput
+        value={registrationData.password}
+        onChange={onChange}
+        name="password"
+        label={t('register.passwordLabel')}
+      />
+      <ConfirmPasswordInput
+        value={registrationData.confirmPassword}
+        originalPassword={registrationData.password}
+        onChange={onChange}
+      />
+      <EmailInput
+        value={registrationData.email}
+        onChange={onChange}
+      />
+      <button
+        type="submit"
+        className="application-button-style"
+        style={{ marginLeft: 'auto', marginRight: 'auto' }}
+      >
+        {t('register.continueButton')}
+      </button>
+    </form>
+  )
+}

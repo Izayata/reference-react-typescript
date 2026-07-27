@@ -1,16 +1,17 @@
 import { containsWhitespace, isBlank } from '../CommonUtils'
+import i18n from '../../i18n/i18n'
 
 export const PASSWORD_VALUE_ALLOWED_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[^\s]+$/
 export const PASSWORD_VALUE_MIN_LENGTH = 8
 export const PASSWORD_VALUE_MAX_LENGTH = 24
 
-export const ERR_MSG_PASSWORD_REQUIRED = 'A jelszó megadása kötelező!'
-export const ERR_MSG_CONFIRM_PASSWORD_REQUIRED = 'A megerősítő jelszó megadása kötelező!'
-export const ERR_MSG_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_PASSWORD_VALUE = 'A jelszó és a megerősítő jelszó nem egyezik!'
-export const ERR_MSG_PASSWORD_VALUE_REQUIRED = 'A jelszó megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_PASSWORD_VALUE_FORMAT = 'A jelszónak tartalmaznia kell kis- és nagybetűt, számot és speciális karaktert, valamint nem tartalmazhat szóközt!'
-export const ERR_MSG_PASSWORD_VALUE_LENGTH = 'A jelszó legalább ' + PASSWORD_VALUE_MIN_LENGTH + ' karakter hosszú kell legyen, de nem lehet hosszabb, mint ' + PASSWORD_VALUE_MAX_LENGTH + ' karakter!'
-export const ERR_MSG_PASSWORD_VALUE_COMMON = 'A megadott jelszó túl gyakori, más jelszó szükséges!'
+export const ERR_MSG_PASSWORD_REQUIRED = i18n.t('errors.ERR_MSG_PASSWORD_REQUIRED')
+export const ERR_MSG_CONFIRM_PASSWORD_REQUIRED = i18n.t('errors.ERR_MSG_CONFIRM_PASSWORD_REQUIRED')
+export const ERR_MSG_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_PASSWORD_VALUE = i18n.t('errors.ERR_MSG_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_PASSWORD_VALUE')
+export const ERR_MSG_PASSWORD_VALUE_REQUIRED = i18n.t('errors.ERR_MSG_PASSWORD_VALUE_REQUIRED')
+export const ERR_MSG_PASSWORD_VALUE_FORMAT = i18n.t('errors.ERR_MSG_PASSWORD_VALUE_FORMAT')
+export const ERR_MSG_PASSWORD_VALUE_LENGTH = i18n.t('errors.ERR_MSG_PASSWORD_VALUE_LENGTH', { PASSWORD_VALUE_MIN_LENGTH, PASSWORD_VALUE_MAX_LENGTH })
+export const ERR_MSG_PASSWORD_VALUE_COMMON = i18n.t('errors.ERR_MSG_PASSWORD_VALUE_COMMON')
 
 export async function checkPasswordIsCommon(password: string): Promise<boolean> {
   const res = await fetch('/v1/registration/common-password',

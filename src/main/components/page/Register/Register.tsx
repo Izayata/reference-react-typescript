@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import './css/error-message.css'
 import './css/input-form-mark.css'
 import './css/registration-form-input-wrapper.css'
@@ -22,6 +23,7 @@ import { RegisterFormAddresses } from './form/RegisterFormAddresses'
 import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
 
 export function Register() {
+  const { t } = useTranslation()
   const [step, setStep] = useState<'setUserDetails' | 'setPersonalDetails' | 'setAddresses' | 'successfulRegistration'>('setUserDetails')
   const { setModalMessage } = useModal()
   const [loadingOverlay, setLoadingOverlay] = useState(false)
@@ -71,7 +73,7 @@ export function Register() {
 
     if (!(registrationResponse.ok)) {
       const errorData = await registrationResponse.json()
-      throw new Error(`Hiba történt: ${errorData.message || 'Ismeretlen hiba a felhasználó regisztrálásakor!'}`)
+      throw new Error(t('register.registrationErrorPrefix', { message: errorData.message || t('register.unknownRegistrationError') }))
     }
   }
 
@@ -170,7 +172,7 @@ export function Register() {
         )}
         {step === 'successfulRegistration' && (
           <div className="register-success-message">
-            <h2>Sikeres regisztráció!</h2>
+            <h2>{t('register.successTitle')}</h2>
           </div>
         )}
       </div>

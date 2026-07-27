@@ -1,15 +1,16 @@
 import { isBlank, containsWhitespace } from '../CommonUtils'
+import i18n from '../../i18n/i18n'
 
 export const USERNAME_VALUE_ALLOWED_REGEX = new RegExp('^[a-zA-Z0-9]+$')
 export const USERNAME_VALUE_MIN_LENGTH = 3
 export const USERNAME_VALUE_MAX_LENGTH = 25
 
-export const ERR_MSG_USERNAME_REQUIRED = 'A felhasználónév megadása kötelező!'
-export const ERR_MSG_USERNAME_VALUE_REQUIRED = 'A felhasználónév megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_USERNAME_VALUE_CONTAINS_SPACE = 'A felhasználónév nem tartalmazhat szóközt!'
-export const ERR_MSG_USERNAME_VALUE_CONTAINS_FORBIDDEN_CHARACTER = 'A felhasználónév csak betűket és számokat tartalmazhat!'
-export const ERR_MSG_USERNAME_VALUE_LENGTH = 'A felhasználónév legalább ' + USERNAME_VALUE_MIN_LENGTH + ' karakter hosszú kell legyen, de nem lehet hosszabb, mint ' + USERNAME_VALUE_MAX_LENGTH + ' karakter!'
-export const ERR_MSG_USERNAME_VALUE_EXISTS = 'A megadott felhasználónév foglalt!'
+export const ERR_MSG_USERNAME_REQUIRED = i18n.t('errors.ERR_MSG_USERNAME_REQUIRED')
+export const ERR_MSG_USERNAME_VALUE_REQUIRED = i18n.t('errors.ERR_MSG_USERNAME_VALUE_REQUIRED')
+export const ERR_MSG_USERNAME_VALUE_CONTAINS_SPACE = i18n.t('errors.ERR_MSG_USERNAME_VALUE_CONTAINS_SPACE')
+export const ERR_MSG_USERNAME_VALUE_CONTAINS_FORBIDDEN_CHARACTER = i18n.t('errors.ERR_MSG_USERNAME_VALUE_CONTAINS_FORBIDDEN_CHARACTER')
+export const ERR_MSG_USERNAME_VALUE_LENGTH = i18n.t('errors.ERR_MSG_USERNAME_VALUE_LENGTH', { USERNAME_VALUE_MIN_LENGTH, USERNAME_VALUE_MAX_LENGTH })
+export const ERR_MSG_USERNAME_VALUE_EXISTS = i18n.t('errors.ERR_MSG_USERNAME_VALUE_EXISTS')
 
 export async function checkUsernameExists(username: string): Promise<boolean> {
   const res = await fetch(`/v1/registration/username/${encodeURIComponent(username)}/exists`)

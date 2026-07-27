@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { AddressInput } from '../../input/customer/address/AddressInput'
 import { convertBillingAddressFormDataToFormData, convertShippingAddressFormDataToFormData } from '../../../converter/formDataConverter'
 import { PersonalDetailsInput } from '../../input/customer/PersonalDetailsInput'
@@ -41,12 +42,13 @@ export function CheckoutCustomerDetailsSection({
   onEmailChange,
   onToggleBillingAddressSameAsShipping
 }: CheckoutCustomerDetailsSectionProps) {
+  const { t } = useTranslation()
   return (
     <section className='form-container checkout-page customer-details'>
       {isAuthenticated && !editMode && (
         <>
           <div>
-            <h3 className='checkout-section-title'>Személyes adatok</h3>
+            <h3 className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</h3>
             <div
               style={{
                 width: '100%',
@@ -59,17 +61,17 @@ export function CheckoutCustomerDetailsSection({
             />
           </div>
           <div className='personal-information-element-container'>
-            <strong>Keresztnév:</strong>
-            {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.firstname?.value : 'Name cannot be found'}
+            <strong>{t('checkout.firstnameLabel')}</strong>
+            {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.firstname?.value : t('checkout.nameNotFound')}
           </div>
           <div className='personal-information-element-container'>
-            <strong>Vezetéknév:</strong>
-            {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.lastname?.value : 'Name cannot be found'}
+            <strong>{t('checkout.lastnameLabel')}</strong>
+            {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.lastname?.value : t('checkout.nameNotFound')}
           </div>
           <div className='personal-information-element-container'>
-            <strong>Telefonszám:</strong>
+            <strong>{t('checkout.phoneNumberLabel')}</strong>
             <div className='personal-information-element-phone-number'>
-              {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.phoneNumber?.value : 'Name cannot be found'}
+              {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.phoneNumber?.value : t('checkout.nameNotFound')}
             </div>
           </div>
           <div
@@ -83,7 +85,7 @@ export function CheckoutCustomerDetailsSection({
             }}
           />
           <div>
-            <h3 className='checkout-section-title'>Szállítási cím</h3>
+            <h3 className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</h3>
             <div
               style={{
                 width: '100%',
@@ -96,24 +98,24 @@ export function CheckoutCustomerDetailsSection({
             />
           </div>
           <div className='personal-information-element-container'>
-            <strong>Irányítószám:</strong>
-            {myUserData?.customer?.shippingAddress?.zipCode?.value ? myUserData?.customer?.shippingAddress?.zipCode?.value : 'Zip code cannot be found'}
+            <strong>{t('checkout.zipCodeLabel')}</strong>
+            {myUserData?.customer?.shippingAddress?.zipCode?.value ? myUserData?.customer?.shippingAddress?.zipCode?.value : t('checkout.zipCodeNotFound')}
           </div>
           <div className='personal-information-element-container'>
-            <strong>Város:</strong>
-            {myUserData?.customer?.shippingAddress?.city?.value ? myUserData?.customer?.shippingAddress?.city?.value : 'City cannot be found'}
+            <strong>{t('checkout.cityLabel')}</strong>
+            {myUserData?.customer?.shippingAddress?.city?.value ? myUserData?.customer?.shippingAddress?.city?.value : t('checkout.cityNotFound')}
           </div>
           <div className='personal-information-element-container'>
-            <strong>Közterület:</strong>
-            {myUserData?.customer?.shippingAddress?.street?.value ? myUserData?.customer?.shippingAddress?.street?.value : 'Street cannot be found'}
+            <strong>{t('checkout.streetLabel')}</strong>
+            {myUserData?.customer?.shippingAddress?.street?.value ? myUserData?.customer?.shippingAddress?.street?.value : t('checkout.streetNotFound')}
           </div>
           <div className='personal-information-element-container'>
-            <strong>Házszám:</strong>
-            {myUserData?.customer?.shippingAddress?.streetNumber?.value ? myUserData?.customer?.shippingAddress?.streetNumber?.value : 'Street number cannot be found'}
+            <strong>{t('checkout.streetNumberLabel')}</strong>
+            {myUserData?.customer?.shippingAddress?.streetNumber?.value ? myUserData?.customer?.shippingAddress?.streetNumber?.value : t('checkout.streetNumberNotFound')}
           </div>
           {myUserData?.customer?.shippingAddress?.floorDoor?.value && (
             <div className='personal-information-element-container'>
-              <strong>Emelet/Ajtó:</strong>
+              <strong>{t('checkout.floorDoorLabel')}</strong>
               {myUserData?.customer?.shippingAddress?.floorDoor?.value}
             </div>
           )}
@@ -122,7 +124,7 @@ export function CheckoutCustomerDetailsSection({
             onClick={onEdit}
             type="button"
           >
-            Módosítás
+            {t('checkout.editButton')}
           </button>
         </>
       )}
@@ -130,15 +132,15 @@ export function CheckoutCustomerDetailsSection({
         <form onSubmit={onSave} className="form-container" style={{ animation: 'none' }}>
           <AddressInput formData={convertShippingAddressFormDataToFormData(shippingAddressForm)} onChange={onShippingAddressChange} />
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-            <button className="application-button-style" type="submit">Mentés</button>
-            <button className="application-button-style" type="button" onClick={onCancel}>Mégse</button>
+            <button className="application-button-style" type="submit">{t('checkout.saveButton')}</button>
+            <button className="application-button-style" type="button" onClick={onCancel}>{t('checkout.cancelButton')}</button>
           </div>
         </form>
       )}
       {!isAuthenticated && (
         <form className='form-container' style={{ animation: 'none' }}>
           <div>
-            <h3 className='checkout-section-title'>Személyes adatok</h3>
+            <h3 className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</h3>
             <div
               style={{
                 width: '100%',
@@ -163,7 +165,7 @@ export function CheckoutCustomerDetailsSection({
             }}
           />
           <div>
-            <h3 className='checkout-section-title'>Számlázási cím</h3>
+            <h3 className='checkout-section-title'>{t('checkout.billingAddressTitle')}</h3>
             <div
               style={{
                 width: '100%',
@@ -182,7 +184,7 @@ export function CheckoutCustomerDetailsSection({
               checked={billingAddressSameAsShipping}
               onChange={onToggleBillingAddressSameAsShipping}
             />
-            A számlázási cím megegyezik a szállítási címmel
+            {t('checkout.billingSameAsShipping')}
           </label>
           {!billingAddressSameAsShipping && (
             <>
@@ -197,7 +199,7 @@ export function CheckoutCustomerDetailsSection({
                 }}
               />
               <div>
-                <h3 className='checkout-section-title'>Szállítási cím</h3>
+                <h3 className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</h3>
                 <div
                   style={{
                     width: '100%',

@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next'
 import './css/gallery-container.css'
 import './css/gallery-slider.css'
 import './css/gallery-slider-nav.css'
 import './css/gallery-slider-wrapper.css'
 
 export function GalleryPage() {
+  const { t } = useTranslation()
   const imagesUrls: [string, string][] = [
     ['https://i.imgur.com/cTThDqf.jpeg', 'AI generated image of my concept of ImagineBar restaurant project'],
     ['https://i.imgur.com/X3enEL7.jpeg', 'AI generated image of my concept of ImagineBar restaurant project'],
@@ -32,7 +34,7 @@ export function GalleryPage() {
         </div>
         <div className='gallery-slider-nav'>
           {imagesUrls.map((_, index) => (
-            <a key={index} href={`#slide-${index}`} aria-label={`Ugrás a ${index + 1}. képre`}></a>
+            <a key={index} href={`#slide-${index}`} aria-label={t('gallery.goToImageAriaLabel', { index: index + 1 })}></a>
           ))}
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../model/ShoppingCartItemModel'
 import { OrderItemModel } from '../../../model/order/OrderItemModel'
 
@@ -23,6 +24,7 @@ export function CheckoutOrderSummarySection({
   onSetPaymentToCard,
   onSubmitOrder
 }: CheckoutOrderSummarySectionProps) {
+  const { t } = useTranslation()
   let orderItem: OrderItemModel
   let orderTotal = 0
   let orderItemTotal = 0
@@ -31,7 +33,7 @@ export function CheckoutOrderSummarySection({
     <section className='form-container checkout-page order-summary'>
       <>
         <div>
-          <h3 className='checkout-section-title'>Tételek</h3>
+          <h3 className='checkout-section-title'>{t('checkout.itemsTitle')}</h3>
           <div
             style={{
               width: '100%',
@@ -59,7 +61,7 @@ export function CheckoutOrderSummarySection({
                   orderItemTotal = Number(food.price.amount) * Number(quantities[food.foodId])
                   return null
                 })()}
-                <div className='checkout-order-item-price-container'>{(orderItemTotal).toFixed(0)} Ft</div>
+                <div className='checkout-order-item-price-container'>{(orderItemTotal).toFixed(0)} {t('menu.currencySuffix')}</div>
                 {(() => {
                   orderTotal += orderItemTotal
                   return null
@@ -83,9 +85,9 @@ export function CheckoutOrderSummarySection({
         </div>
         <div className='checkout-order-price-container'>
           <strong>
-            Összesen fizetendő:
+            {t('checkout.totalDue')}
           </strong>
-          <strong>{orderTotal} Ft</strong>
+          <strong>{orderTotal} {t('menu.currencySuffix')}</strong>
         </div>
         <div
           style={{
@@ -98,7 +100,7 @@ export function CheckoutOrderSummarySection({
           }}
         />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-          Fizetés kiszállításkor a következő módon:
+          {t('checkout.paymentMethodPrompt')}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label style={{ cursor: 'pointer' }}>
               <input
@@ -106,7 +108,7 @@ export function CheckoutOrderSummarySection({
                 checked={isCashPayment}
                 onChange={onSetPaymentToCash}
               />
-              Készpénz
+              {t('checkout.cashPayment')}
             </label>
             <label style={{ cursor: 'pointer' }}>
               <input
@@ -114,7 +116,7 @@ export function CheckoutOrderSummarySection({
                 checked={isCardPayment}
                 onChange={onSetPaymentToCard}
               />
-              Bankkártya
+              {t('checkout.cardPayment')}
             </label>
           </div>
         </div>
@@ -125,10 +127,10 @@ export function CheckoutOrderSummarySection({
           to='/cart'
           style={{ textDecoration: 'none' }}
         >
-          Kosár
+          {t('checkout.cartButton')}
         </NavLink>
         <button type='button' className='application-button-style animated' onClick={onSubmitOrder}>
-          Megrendel
+          {t('checkout.orderButton')}
         </button>
       </section>
     </section>

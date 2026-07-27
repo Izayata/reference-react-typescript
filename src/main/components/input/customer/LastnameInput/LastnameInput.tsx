@@ -3,6 +3,7 @@ import { LASTNAME_VALUE_ALLOWED_REGEX, LASTNAME_VALUE_MAX_LENGTH, LASTNAME_VALUE
 import { LastnameModel } from '../../../../model/customer/LastnameModel'
 import { ValidationError } from 'class-validator'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface LastnameInputProps {
   value: string
@@ -10,6 +11,7 @@ interface LastnameInputProps {
 }
 
 export const LastnameInput: React.FC<LastnameInputProps> = ({ value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const location = useLocation()
   
@@ -42,7 +44,7 @@ export const LastnameInput: React.FC<LastnameInputProps> = ({ value, onChange })
   return (
     <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`}>
       <div>
-        Vezetéknév:
+        {t('inputs.lastnameLabel')}
         <span className='form-required-indicator'>*</span>
       </div>
       <input

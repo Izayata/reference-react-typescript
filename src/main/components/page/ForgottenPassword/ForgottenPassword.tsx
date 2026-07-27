@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
 import { EmailModel } from '../../../model/EmailModel'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
@@ -15,6 +16,7 @@ import { ResetPasswordRequestModel } from '../../../model/ResetPasswordRequestMo
 import { sleep } from '../../../utils/sleep/SleepUtils'
 
 export function ForgottenPassword() {
+  const { t } = useTranslation()
   const [loading, setLoading] = useState(false)
   const { setModalMessage } = useModal()
   const [step, setStep] = useState<'email' | 'sent' | 'reset'>('email')
@@ -56,10 +58,10 @@ export function ForgottenPassword() {
         setStep('sent')
       } else {
         const errorData = await response.json()
-        setModalMessage(errorData.error || 'Hiba történt az email kiküldése során, próbálja újra később!')
+        setModalMessage(errorData.error || t('forgottenPassword.emailSendError'))
       }
     } catch (err) {
-      setModalMessage('Ismeretlen hiba történt, próbálja újra később!')
+      setModalMessage(t('forgottenPassword.unknownError'))
     } finally {
       setLoading(false)
     }
@@ -81,14 +83,14 @@ export function ForgottenPassword() {
       if (data.valid) {
         setStep('reset')
       } else if (data.expired) {
-        setModalMessage('A visszaállítási link lejárt. Kérjen új linket.')
+        setModalMessage(t('forgottenPassword.linkExpired'))
         setStep('email')
       } else {
-        setModalMessage('Érvénytelen visszaállítási link.')
+        setModalMessage(t('forgottenPassword.linkInvalid'))
         setStep('email')
       }
     } catch (err) {
-      setModalMessage('Hiba történt a link ellenőrzése során.')
+      setModalMessage(t('forgottenPassword.tokenValidationError'))
       setStep('email')
     } finally {
       setLoading(false)
@@ -104,7 +106,7 @@ export function ForgottenPassword() {
       if (!resetToken) {
         setStep('email')
         setLoading(false)
-        setModalMessage('A visszaállítási token nincs jelen!')
+        setModalMessage(t('forgottenPassword.tokenMissing'))
         return
       }
 
@@ -124,14 +126,14 @@ export function ForgottenPassword() {
       })
       
       if (response.ok) {
-        toast.success('Jelszó sikeresen megváltoztatva.')
+        toast.success(t('forgottenPassword.passwordChangedSuccess'))
         navigate('/login')
       } else {
         const errorData = await response.json()
-        setModalMessage(errorData.error || 'Hiba történt a jelszó módosítása során.')
+        setModalMessage(errorData.error || t('forgottenPassword.passwordChangeError'))
       }
     } catch (err: unknown) {
-      setModalMessage(err instanceof Error ? err.message : 'Ismeretlen hiba történt, próbálja újra később!')
+      setModalMessage(err instanceof Error ? err.message : t('forgottenPassword.unknownError'))
     } finally {
       sleep(500)
       setLoading(false)
@@ -145,7 +147,7 @@ export function ForgottenPassword() {
         {step === 'email' && (
           <form className='form-orientation' onSubmit={requestPasswordReset}>
             <label className='form-label'>
-              Felhasználónév:
+              {t('forgottenPassword.usernameLabel')}
               <input
                 type="text"
                 className='form-input'
@@ -155,7 +157,7 @@ export function ForgottenPassword() {
               />
             </label>
             <label className='form-label'>
-              e-Mail cím:
+              {t('forgottenPassword.emailLabel')}
               <input
                 type="email"
                 className='form-input'
@@ -168,15 +170,15 @@ export function ForgottenPassword() {
               className='application-button-style'
               type="submit"
             >
-              Jelszó visszaállítása
+              {t('forgottenPassword.requestResetButton')}
             </button>
           </form>
         )}
 
         {step === 'sent' && (
           <>
-            <h2>Amennyiben a megadott e-mail cím regisztrálva van, egy visszaállítási linket fog kapni!</h2>
-            <h3>(Érdemes lehet a spam mappát is ellenőrizni.)</h3>
+            <h2>{t('forgottenPassword.linkSentTitle')}</h2>
+            <h3>{t('forgottenPassword.checkSpamSubtitle')}</h3>
             <button
               className='application-button-style'
               onClick={
@@ -187,18 +189,18 @@ export function ForgottenPassword() {
                 }
               }
             >
-              Vissza
+              {t('forgottenPassword.backButton')}
             </button>
           </>
         )}
-        
+
         {step === 'reset' && (
           <form className='form-orientation' onSubmit={resetPassword}>
             <PasswordInput
               value={newPassword}
               onChange={e => setNewPassword(e.target.value)}
               name="password"
-              label='Jelszó:'
+              label={t('forgottenPassword.newPasswordLabel')}
             />
             <ConfirmPasswordInput
               value={confirmNewPassword}
@@ -209,7 +211,7 @@ export function ForgottenPassword() {
               className='application-button-style'
               type="submit"
             >
-              Jelszó beállítása
+              {t('forgottenPassword.setNewPasswordButton')}
             </button>
           </form>
         )}

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import i18n from '../../../i18n/i18n'
 
 import { MenuItemModel } from '../../../model/MenuItemModel'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
@@ -62,7 +64,7 @@ async function fetchMenuItems(url: string) {
     credentials: 'include'
   })
 
-  if (!res.ok) throw new Error('Hiba történt az étlap elemek lekérésekor.')
+  if (!res.ok) throw new Error(i18n.t('menu.fetchError'))
 
   const data = await res.json()
     
@@ -80,11 +82,11 @@ function sortIntoSectionOfFour(array: MenuItemModel[]) {
 export function formatPrice(amount: string, currency: string): string {
   const intAmount = parseInt(Number(amount).toString(), 10)
 
-  const currencyDisplay = currency === 'HUF' ? 'Ft' : currency
+  const currencyDisplay = currency === 'HUF' ? i18n.t('menu.currencySuffix') : currency
   return `${intAmount} ${currencyDisplay}`
 }
 
-export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][]) {
+export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][], allergensLabel: string) {
   let sectionTitlePrintedFlag = false
 
   return (
@@ -127,7 +129,7 @@ export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][]
                       ?
                       <>
                         <br />
-                        <span>Allergének: </span>
+                        <span>{allergensLabel}</span>
                         {item.allergens.map((allergen, index) => (
                           <span key={index}>
                             <FontAwesomeIcon
@@ -150,6 +152,7 @@ export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][]
 }
 
 export function Menu({ url }: MenuProps) {
+  const { t } = useTranslation()
   const [menuItems, setMenuItems] = useState<MenuItemModel[]>([])
   const [loading, setLoading] = useState(true)
   const { setModalMessage } = useModal()
@@ -170,10 +173,10 @@ export function Menu({ url }: MenuProps) {
 
   return (
     <div className="menu-cards-container">
-      {renderSection('Levesek', soups)}
-      {renderSection('Főételek', mainDishes)}
-      {renderSection('Üdítők', drinks)}
-      {renderSection('Desszertek', desserts)}
+      {renderSection(t('menu.soups'), soups, t('menu.allergensLabel'))}
+      {renderSection(t('menu.mainDishes'), mainDishes, t('menu.allergensLabel'))}
+      {renderSection(t('menu.drinks'), drinks, t('menu.allergensLabel'))}
+      {renderSection(t('menu.desserts'), desserts, t('menu.allergensLabel'))}
     </div>
   )
 }

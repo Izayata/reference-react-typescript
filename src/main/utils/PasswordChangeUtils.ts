@@ -1,6 +1,7 @@
-export const ERR_MSG_CURRENT_PASSWORD_REQUIRED = 'A jelenlegi jelszó megadása kötelező!'
-export const ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED = 'Az új jelszó és a megerősítő új jelszót tartalmazó mező megadása kötelező!'
-export const ERR_MSG_NEW_PASSWORD_REQUIRED = 'Az új jelszó megadása kötelező!'
-export const ERR_MSG_CONFIRM_NEW_PASSWORD_REQUIRED = 'Az új jelszó megerősítése kötelező!'
-export const ERR_MSG_NEW_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_NEW_PASSWORD_VALUE = 'Az új jelszó és a megerősítő új jelszó nem egyezik!'
-export const ERR_MSG_NEW_PASSWORD_VALUE_MATCHES_CURRENT_PASSWORD_VALUE = 'Az új jelszó nem lehet azonos a jelenlegi jelszóval!'
+import i18n from '../i18n/i18n'
+export const ERR_MSG_CURRENT_PASSWORD_REQUIRED = i18n.t('errors.ERR_MSG_CURRENT_PASSWORD_REQUIRED')
+export const ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED = i18n.t('errors.ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED')
+export const ERR_MSG_NEW_PASSWORD_REQUIRED = i18n.t('errors.ERR_MSG_NEW_PASSWORD_REQUIRED')
+export const ERR_MSG_CONFIRM_NEW_PASSWORD_REQUIRED = i18n.t('errors.ERR_MSG_CONFIRM_NEW_PASSWORD_REQUIRED')
+export const ERR_MSG_NEW_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_NEW_PASSWORD_VALUE = i18n.t('errors.ERR_MSG_NEW_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_NEW_PASSWORD_VALUE')
+export const ERR_MSG_NEW_PASSWORD_VALUE_MATCHES_CURRENT_PASSWORD_VALUE = i18n.t('errors.ERR_MSG_NEW_PASSWORD_VALUE_MATCHES_CURRENT_PASSWORD_VALUE')

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { PasswordInput } from '../../../input/myUser/PasswordInput/PasswordInput'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
 import { sleep } from '../../../../utils/sleep/SleepUtils'
@@ -12,6 +13,7 @@ import { NewPasswordDetailsModelBuilder } from '../../../../builder/NewPasswordD
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'
 
 export function LoginData({ user }: { user: MyUserModel }) {
+  const { t } = useTranslation()
   const [editMode, setEditMode] = useState(false)
   const [passwordForm, setPasswordForm] = useState(getInitialForm())
   const { setModalMessage } = useModal()
@@ -56,7 +58,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
     if (!res.ok) {
       const errorData = await res.json()
       throw new Error(
-        errorData.error || 'Váratlan hiba történt a jelszó módosítása során!')
+        errorData.error || t('userProfile.passwordUpdateGenericError'))
     }
   }
 
@@ -84,7 +86,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
       setPasswordForm(getInitialForm())
       setLoadingOverlay(false)
       await sleep(500)
-      toast.success('Jelszó sikeresen módosítva!')
+      toast.success(t('userProfile.passwordUpdateSuccess'))
     } catch (e: unknown) {
       setLoadingOverlay(false)
       const errorMessage = handleErrorMessages(e)
@@ -97,7 +99,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
     <section className="card-container user-profile">
       {loadingOverlay && <LoadingOverlay/>}
       <div>
-        <h3 className="user-profile-data-container-title">Fiók adatok</h3>
+        <h3 className="user-profile-data-container-title">{t('userProfile.accountDataTitle')}</h3>
         <div
           style={{
             width: 'calc(100% - (1rem * 2))',
@@ -116,11 +118,11 @@ export function LoginData({ user }: { user: MyUserModel }) {
         <>
           <div className="user-profile-data-container-data-item-container">
             <div className="user-profile-data-container-data-item">
-              <strong>Felhasználónév:</strong>
+              <strong>{t('userProfile.usernameLabel')}</strong>
               {user.myUsername.value}
             </div>
             <div className="user-profile-data-container-data-item">
-              <strong>E-mail:</strong>
+              <strong>{t('userProfile.emailLabel')}</strong>
               {user.email.value}
             </div>
           </div>
@@ -132,7 +134,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
           onClick={handlePasswordChange}
           type="button"
         >
-          Jelszó Módosítása
+          {t('userProfile.changePasswordButton')}
         </button>
       )}
       {editMode && (
@@ -141,26 +143,26 @@ export function LoginData({ user }: { user: MyUserModel }) {
             value={passwordForm.currentPassword}
             onChange={handleChange}
             name="currentPassword"
-            label="Jelenlegi jelszó:"
+            label={t('userProfile.currentPasswordLabel')}
           />
-          
+
           <PasswordInput
             value={passwordForm.newPassword}
             onChange={handleChange}
             name="newPassword"
-            label="Új jelszó:"
+            label={t('userProfile.newPasswordLabel')}
           />
-          
+
           <PasswordInput
             value={passwordForm.confirmNewPassword}
             onChange={handleChange}
             name="confirmNewPassword"
-            label="Új jelszó megerősítése:"
+            label={t('userProfile.confirmNewPasswordLabel')}
           />
-          
+
           <div className='user-profile-edit-mode-button-container'>
-            <button className="application-button-style" type="submit" >Mentés</button>
-            <button className="application-button-style" type="button" onClick={handleCancel}>Mégse</button>
+            <button className="application-button-style" type="submit" >{t('userProfile.saveButton')}</button>
+            <button className="application-button-style" type="button" onClick={handleCancel}>{t('userProfile.cancelButton')}</button>
           </div>
         </form>
       )}

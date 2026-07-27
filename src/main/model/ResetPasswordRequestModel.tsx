@@ -3,12 +3,13 @@ import { NotBlank } from '../myDecorators/NotBlank'
 import { NotNull } from '../myDecorators/NotNull'
 import { NotUndefined } from '../myDecorators/NotUndefined'
 import { NewPasswordDetailsModel } from './NewPasswordDetailsModel'
+import i18n from '../i18n/i18n'
 
 export class ResetPasswordRequestModel {
-  @NotBlank({ message: 'A token megadása kötelező' })
+  @NotBlank({ message: i18n.t('errors.ERR_MSG_RESET_TOKEN_REQUIRED') })
     token: string
-  @NotNull({ message: 'Új jelszót tartalmazó mező megadása kötelező' })
-  @NotUndefined({ message: 'Új jelszót tartalmazó mező megadása kötelező' })
+  @NotNull({ message: i18n.t('errors.ERR_MSG_RESET_NEW_PASSWORD_DETAILS_REQUIRED') })
+  @NotUndefined({ message: i18n.t('errors.ERR_MSG_RESET_NEW_PASSWORD_DETAILS_REQUIRED') })
     newPasswordDetails: NewPasswordDetailsModel
 
   constructor(

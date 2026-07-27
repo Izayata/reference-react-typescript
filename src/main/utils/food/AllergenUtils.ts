@@ -1,7 +1,8 @@
 import { AllergenModel } from '../../model/food/AllergenModel'
+import i18n from '../../i18n/i18n'
 
-export const ERR_MSG_ALLERGEN_ID_REQUIRED = 'Az allergén-azonosító megadása kötelező!'
-export const ERR_MSG_ALLERGEN_NAME_REQUIRED = 'Az allergénnév megadása kötelező!'
+export const ERR_MSG_ALLERGEN_ID_REQUIRED = i18n.t('errors.ERR_MSG_ALLERGEN_ID_REQUIRED')
+export const ERR_MSG_ALLERGEN_NAME_REQUIRED = i18n.t('errors.ERR_MSG_ALLERGEN_NAME_REQUIRED')
 
 export async function fetchAllergens(): Promise<AllergenModel[]> {
   const res = await fetch(
@@ -11,7 +12,7 @@ export async function fetchAllergens(): Promise<AllergenModel[]> {
     }
   ) 
 
-  if (!res.ok) throw new Error('Hiba történt az allergének lekérésekor.')
+  if (!res.ok) throw new Error(i18n.t('allergen.fetchError'))
 
   const data = await res.json()
   

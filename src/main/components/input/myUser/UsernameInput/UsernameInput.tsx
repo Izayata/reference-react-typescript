@@ -4,6 +4,7 @@ import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
 import { UsernameModel } from '../../../../model/myUser/UsernameModel'
 import { ValidationError } from 'class-validator'
+import { useTranslation } from 'react-i18next'
 
 interface UsernameInputProps {
   value: string
@@ -11,6 +12,7 @@ interface UsernameInputProps {
 }
 
 export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const [isAvailable, setAvailable] = useState<null | boolean>(null)
 
@@ -59,7 +61,7 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
   return (
     <label className="form-label">
       <div>
-        Felhasználónév:
+        {t('inputs.usernameLabel')}
         <span className='form-required-indicator'>*</span>
       </div>
       <div className='registration-form-input-wrapper'>
