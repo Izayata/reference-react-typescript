@@ -35,7 +35,7 @@ export function FoodDetails() {
       setModalMessage('Étel azonosító hiányában az étel adatai nem jeleníthetők meg! Próbálja újra később!')
       return
     }
-    fetch(`/v1/foods/getFoodDetailsBy/${foodId}`)
+    fetch(`/v1/foods/${foodId}`)
       .then(res => {
         if (!res.ok) throw new Error('Nem található étel! Próbálja újra később!')
         return res.json()

@@ -13,7 +13,7 @@ export const ERR_MSG_EMAIL_VALUE_LENGTH = 'Az email cím legfeljebb ' + EMAIL_VA
 export const ERR_MSG_EMAIL_VALUE_EXISTS = 'A megadott email cím foglalt!'
 
 export async function checkEmailExists(email: string): Promise<boolean> {
-  const res = await fetch(`/v1/req/isEmailExist/${encodeURIComponent(email)}`)
+  const res = await fetch(`/v1/registration/email/${encodeURIComponent(email)}/exists`)
   if (!res.ok) return false
   const data = await res.json()
   return data.exists

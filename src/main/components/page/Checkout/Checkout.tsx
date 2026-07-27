@@ -330,7 +330,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
     }
 
     try {
-      const response = await fetch('/v1/orders/createOrder', {
+      const response = await fetch(isAuthenticated ? '/v1/orders' : '/v1/orders/guest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

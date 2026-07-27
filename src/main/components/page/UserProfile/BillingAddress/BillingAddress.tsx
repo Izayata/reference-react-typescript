@@ -52,7 +52,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
   }
 
   async function updateBillingAddress(newAddress: AddressModel) {
-    const res = await fetch('/v1/customer/updateBillingAddress', {
+    const res = await fetch('/v1/customer/billing-address', {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',

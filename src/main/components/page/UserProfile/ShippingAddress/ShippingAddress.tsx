@@ -53,7 +53,7 @@ export function ShippingAddress({ address, onAddressUpdated }: { address: Addres
   }
 
   async function updateShippingAddress(newAddress: AddressModel) {
-    const res = await fetch('/v1/customer/updateDefaultShippingAddress', {
+    const res = await fetch('/v1/customer/shipping-address', {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',

@@ -5,7 +5,7 @@ export const ERR_MSG_ALLERGEN_NAME_REQUIRED = 'Az allergénnév megadása kötel
 
 export async function fetchAllergens(): Promise<AllergenModel[]> {
   const res = await fetch(
-    '/v1/allergen/getAllAllergens', 
+    '/v1/allergens',
     { 
       credentials: 'include' 
     }

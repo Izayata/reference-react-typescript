@@ -44,8 +44,8 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
   }
 
   async function updatePersonalData(newPersonalData: PersonalDetailsModel) {
-    const res = await fetch('/v1/customer/updatePersonalDetails', {
-      method: 'PUT',
+    const res = await fetch('/v1/customer/personal-details', {
+      method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': await fetchCsrfToken()

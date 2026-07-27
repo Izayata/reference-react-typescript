@@ -43,8 +43,8 @@ export function LoginData({ user }: { user: MyUserModel }) {
   }
 
   async function updatePassword(data: PasswordChangeModel) {
-    const res = await fetch('/v1/account/updatePassword', {
-      method: 'PUT',
+    const res = await fetch('/v1/account/password', {
+      method: 'PATCH',
       headers: { 
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': await fetchCsrfToken()
