@@ -1,6 +1,6 @@
 # Codebase Audit — reference-react-typescript
 
-**Date:** 2026-07-26
+**Date:** 2026-07-26 (last re-verified 2026-07-27, after the §1 correctness-bug fixes landed)
 **Scope:** Full repository — application source (`src/`), build/deploy config (`Dockerfile`, `nginx.conf`, `tsconfig.json`, `.eslintrc.json`), dependency manifest (`package.json` / `package-lock.json`), test suite, and (§8) every frontend `fetch()` call cross-referenced against the documented backend contract in `API_ENDPOINTS.md`.
 **Methodology:** Manual review of source and config, cross-checked with live tool output: `npm install`, `npm run lint`, `npm test -- --watchAll=false` (CI mode), and `npm audit`. All findings below with a file/line reference were verified by reading the actual file at that location; the live command output is summarized in the Appendix. §8 additionally cross-references every `fetch()` call site in `src/` against the backend contract documented in `API_ENDPOINTS.md` (added to the repo after the initial audit pass) — that section assumes `API_ENDPOINTS.md` accurately reflects the backend's current routes.
 
@@ -13,9 +13,9 @@ This audit is written to serve two audiences at once — as supporting material 
 - **The frontend and its documented backend API have drifted apart on nearly every dynamic endpoint.** Cross-referencing every `fetch()` call site against `API_ENDPOINTS.md` (§8) found that **15 of ~21 distinct integration points call a URL path — and in two cases an HTTP method — that doesn't exist in the documented backend contract.** This isn't a style nit: it means registration field-existence checks, signup, account loading, profile/address/password updates, the menu, food details, allergens, shopping-cart contents, checkout order submission, and forgot-password link validation would all **404 (or fail to bind)** against a backend that implements the documented API as written. Only `/auth-status`, `/csrf-token`, `/login`, `/logout`, and the two password-reset request/set endpoints line up.
 - ~~**A real, verified functional bug**: three places in the app catch a validation error, format it, and then discard the formatted message instead of showing it — so users get silent failures at two registration steps and one checkout path (`Register.tsx`, `Checkout.tsx`).~~ **✅ Fixed** — see §1.
 - ~~**The configured test command fails today** (`npm test -- --watchAll=false` exits with code `1`) because `src/test/App.test.tsx` has no active test in it.~~ **✅ Fixed** — `App.test.tsx` now has a real smoke test; the full suite (37 suites, 444 tests) passes and the process exits `0`.
-- **`npm run lint` currently reports 392 problems (127 errors, 265 warnings)** against the project's own `.eslintrc.json` — the codebase has drifted from its own style rules because nothing enforces them automatically.
+- **`npm run lint` currently reports 388 problems (126 errors, 262 warnings)** against the project's own `.eslintrc.json` — the codebase has drifted from its own style rules because nothing enforces them automatically.
 - **`npm audit` reports 60 known vulnerabilities (2 critical, 33 high, 13 moderate, 12 low)**, all reachable through `react-scripts`' build toolchain (webpack-dev-server, rollup, workbox). `react-scripts` itself (CRA) has been unmaintained since 2023 and will not receive fixes.
-- **The model/builder value-object layer (443 tests across 36 suites) is genuinely well tested and all currently pass** — but zero React components, pages, or user flows (login, registration, checkout, cart, route guarding) have any test coverage.
+- **The model/builder value-object layer (443 tests across 36 suites) is genuinely well tested and all currently pass**, and `App.test.tsx` now adds one root-level smoke test on top of that (§1.4) — but Login, Register, Checkout, ShoppingCart, and AccountRouteGuard themselves still have zero test coverage of their own.
 - **`nginx.conf` sets `Access-Control-Allow-Origin: *`** on the same routes the app calls with `credentials: 'include'`, including `/actuator` — a fragile config that should be an explicit origin allowlist.
 - The checkout "Place Order" action and the modal used for every error/success message in the app are **not operable by keyboard**.
 - There is **no CI/CD pipeline** of any kind, so none of the above (lint, tests, or vulnerable deps) is caught automatically before it ships.
@@ -62,14 +62,14 @@ This audit is written to serve two audiences at once — as supporting material 
 
 | # | Location | Severity | Description |
 |---|---|---|---|
-| 4.1 | `src/test/**` vs `src/main/components/**`, `src/main/pages/**`, `src/main/features/**` | **High** | Live run: 37 test suites, 443 tests, all passing except the empty `App.test.tsx` (see 1.4). Every single test targets the model/builder/value-object layer (`src/test/model/**`, `src/test/builder/**`) — genuinely thorough coverage there. **Zero tests exist for any React component**, including auth-critical flows: `Login.tsx`, `Register.tsx`, `Checkout.tsx`, `ShoppingCart.tsx`, and `AccountRouteGuard.tsx` all have no coverage at all. |
+| 4.1 | `src/test/**` vs `src/main/components/**`, `src/main/pages/**`, `src/main/features/**` | **High** | Live run: 37 test suites, 444 tests, all passing. 443 of those target the model/builder/value-object layer (`src/test/model/**`, `src/test/builder/**`) — genuinely thorough coverage there. `src/test/App.test.tsx` now adds one root-level smoke test (fixed per §1.4), but **no other React component has any test coverage**: `Login.tsx`, `Register.tsx`, `Checkout.tsx`, `ShoppingCart.tsx`, and `AccountRouteGuard.tsx` still have zero coverage of their own. |
 | 4.2 | `package.json` / repo-wide | **Medium** | No coverage thresholds or reporting are configured anywhere (no `--coverage`, no `coverageThreshold` in any Jest config). Even once tests exist for components, there's currently no mechanism to prevent coverage from silently regressing. |
 
 ### 5. Tooling & CI/CD
 
 | # | Location | Severity | Description |
 |---|---|---|---|
-| 5.1 | repo-wide | **High** | No `.github/workflows/`, `.gitlab-ci.yml`, or any other CI config exists, and no pre-commit hooks are configured. Live-verified consequence: `npm run lint` currently reports **392 problems (127 errors, 265 warnings)**, and `npm test -- --watchAll=false` currently **exits non-zero**  — neither would be caught before merging without a human remembering to run them manually. |
+| 5.1 | repo-wide | **High** | No `.github/workflows/`, `.gitlab-ci.yml`, or any other CI config exists, and no pre-commit hooks are configured. Live-verified consequence: `npm run lint` currently reports **388 problems (126 errors, 262 warnings)** with nothing enforcing it automatically. `npm test -- --watchAll=false` now exits `0` (the §1.4 fix), but that was only luck of a human running it manually — nothing would have caught it failing, or would catch the lint drift today, without CI. |
 | 5.2 | `.eslintrc.json` | **Medium** | No `jsx-a11y` plugin/rules are configured, so none of the accessibility issues in §6 would ever be flagged by lint even if CI existed. |
 | 5.3 | `tsconfig.json:2-8` | **Low** | `"target": "es5"` is inconsistent with the project's own `browserslist` in `package.json` (evergreen Chrome/Firefox/Safari for dev, `>0.2%, not dead` for prod) — no supported target needs ES5 down-leveling; this adds unnecessary transpilation and bundle size for zero real compatibility benefit. |
 
@@ -142,7 +142,7 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | 6.1 | Modal has no keyboard/ARIA support | High |
 | 6.2 | Checkout "Place Order" is an unreachable-by-keyboard `<div>` | High |
 | 4.1 | Zero test coverage for all React components/pages/flows | High |
-| 5.1 | No CI/CD — lint (392 problems) and tests (currently failing) run only manually | High |
+| 5.1 | No CI/CD — lint (388 problems) runs only manually and nothing would catch a regression | High |
 | 2.1 | `nginx.conf` wildcard CORS on credentialed API routes | High |
 | 2.4 | 60 npm audit vulnerabilities (2 critical) via unmaintained CRA toolchain | High |
 | 8.2 | Checkout never branches between authenticated/guest order endpoints | High |
@@ -180,9 +180,10 @@ $ npm install
 added 1439 packages
 60 vulnerabilities (12 low, 13 moderate, 33 high, 2 critical)
 
-$ npm run lint
-✖ 392 problems (127 errors, 265 warnings)
-  116 errors and 0 warnings potentially fixable with the `--fix` option
+$ npm run lint   # re-run 2026-07-27, after the §1 fixes (388 vs. the original 392 — App.test.tsx's
+                  # previously-unused imports in the commented-out suite accounted for the difference)
+✖ 388 problems (126 errors, 262 warnings)
+  115 errors and 0 warnings potentially fixable with the `--fix` option
 
 $ CI=true npm test -- --watchAll=false   # before the §1 fixes
 Test Suites: 1 failed, 36 passed, 37 total
