@@ -28,10 +28,19 @@ export function HamburgerMenuButton({ menuOpen, setMenuOpen }: HamburgerMenuButt
       <FontAwesomeIcon
         icon={faBars}
         onClick={() => setMenuOpen(true)}
+        onKeyDown={e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            setMenuOpen(true)
+          }
+        }}
+        role="button"
+        tabIndex={0}
         aria-expanded={menuOpen}
         aria-controls="menu"
-        focusable="true"
+        aria-label="Menü megnyitása"
         aria-hidden="false"
+        focusable="true"
       />
     </>
   )

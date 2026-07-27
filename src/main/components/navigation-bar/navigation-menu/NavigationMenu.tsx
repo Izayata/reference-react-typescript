@@ -20,7 +20,21 @@ export function NavigationMenu({ menuOpen, setMenuOpen }: OpenedHamburgerMenuCon
       )
   }, [menuOpen])
 
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [menuOpen, setMenuOpen])
+
   return (
+    // This is a full-viewport backdrop, not a control: keyboard users dismiss it via
+    // Escape (handled above), not by tabbing to it, so it's intentionally not focusable.
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className='menu-container' onClick={() => setMenuOpen(false)}>
       <NavigationLinkMenu />
     </div>

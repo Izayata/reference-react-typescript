@@ -63,7 +63,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, n
         <input
           aria-describedby="password-error"
           aria-invalid={!!error}
-          autoComplete="password"
+          autoComplete={name === 'currentPassword' ? 'current-password' : 'new-password'}
           className="form-input"
           type="password"
           inputMode="text"

@@ -32,7 +32,7 @@ export function GalleryPage() {
         </div>
         <div className='gallery-slider-nav'>
           {imagesUrls.map((_, index) => (
-            <a key={index} href={`#slide-${index}`}></a>
+            <a key={index} href={`#slide-${index}`} aria-label={`Ugrás a ${index + 1}. képre`}></a>
           ))}
         </div>
       </div>

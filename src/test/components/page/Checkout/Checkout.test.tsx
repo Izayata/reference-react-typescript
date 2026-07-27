@@ -70,11 +70,10 @@ describe('Checkout', () => {
     renderCheckout()
 
     await screen.findByText('Pénztár', {}, { timeout: 3000 })
-    const cashOption = screen.getByText('Készpénz').closest('span') as HTMLElement
-    const cashCheckbox = cashOption.querySelector('input[type="checkbox"]') as HTMLInputElement
+    const cashCheckbox = screen.getByLabelText('Készpénz') as HTMLInputElement
 
     expect(cashCheckbox.checked).toBe(false)
-    fireEvent.click(cashOption)
+    fireEvent.click(cashCheckbox)
     expect(cashCheckbox.checked).toBe(true)
   })
 

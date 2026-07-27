@@ -176,16 +176,14 @@ export function CheckoutCustomerDetailsSection({
             />
           </div>
           <AddressInput formData={convertBillingAddressFormDataToFormData(billingAddressForm)} onChange={onBillingAddressChange} />
-          <div
-            style={{ textWrap: 'pretty' }}
-            onClick={onToggleBillingAddressSameAsShipping}
-          >
+          <label style={{ textWrap: 'pretty' }}>
             <input
               type='checkbox'
               checked={billingAddressSameAsShipping}
+              onChange={onToggleBillingAddressSameAsShipping}
             />
             A számlázási cím megegyezik a szállítási címmel
-          </div>
+          </label>
           {!billingAddressSameAsShipping && (
             <>
               <div
