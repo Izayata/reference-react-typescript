@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import './Modal.css'
 
 interface ModalProps {
@@ -7,12 +8,37 @@ interface ModalProps {
 
 export function Modal({ message, onClose }: ModalProps) {
   const isSuccess = message.toLowerCase().includes('siker')
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      } else if (e.key === 'Tab') {
+        // The OK button is the only focusable element in this modal, so trapping
+        // focus here just means keeping it there on every Tab press.
+        e.preventDefault()
+        closeButtonRef.current?.focus()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [onClose])
 
   return (
     <div className="modal-overlay">
-      <div className="modal-box">
-        <p className={`modal-message${isSuccess ? ' modal-message-success' : ''}`} style={{textAlign: `${message.includes('\n') ? 'left' : 'center'}`, whiteSpace: 'pre-line' }}>{message}</p>
-        <button className="application-button-style" onClick={onClose}>
+      <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-message">
+        <p
+          id="modal-message"
+          className={`modal-message${isSuccess ? ' modal-message-success' : ''}`}
+          style={{textAlign: `${message.includes('\n') ? 'left' : 'center'}`, whiteSpace: 'pre-line' }}
+        >
+          {message}
+        </p>
+        <button ref={closeButtonRef} className="application-button-style" onClick={onClose}>
           OK
         </button>
       </div>

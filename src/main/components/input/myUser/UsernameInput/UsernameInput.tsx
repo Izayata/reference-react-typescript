@@ -68,7 +68,6 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
           aria-describedby="username-availability"
           aria-invalid={!!error}
           autoComplete="username"
-          autoFocus
           className="form-input"
           type="text"
           inputMode="text"

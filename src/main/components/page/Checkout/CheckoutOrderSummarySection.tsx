@@ -100,26 +100,22 @@ export function CheckoutOrderSummarySection({
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           Fizetés kiszállításkor a következő módon:
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span
-              onClick={onSetPaymentToCash}
-              style={{ cursor: 'pointer' }}
-            >
+            <label style={{ cursor: 'pointer' }}>
               <input
                 type='checkbox'
                 checked={isCashPayment}
+                onChange={onSetPaymentToCash}
               />
               Készpénz
-            </span>
-            <span
-              onClick={onSetPaymentToCard}
-              style={{ cursor: 'pointer' }}
-            >
+            </label>
+            <label style={{ cursor: 'pointer' }}>
               <input
                 type='checkbox'
                 checked={isCardPayment}
+                onChange={onSetPaymentToCard}
               />
               Bankkártya
-            </span>
+            </label>
           </div>
         </div>
       </>
@@ -131,9 +127,9 @@ export function CheckoutOrderSummarySection({
         >
           Kosár
         </NavLink>
-        <div className='application-button-style animated' onClick={onSubmitOrder}>
+        <button type='button' className='application-button-style animated' onClick={onSubmitOrder}>
           Megrendel
-        </div>
+        </button>
       </section>
     </section>
   )

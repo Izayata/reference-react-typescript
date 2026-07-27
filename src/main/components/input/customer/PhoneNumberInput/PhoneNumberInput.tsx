@@ -35,7 +35,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChan
   }, [value])
 
   return (
-    <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`}>
+    <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`} htmlFor="phone-number-input">
       <div>
         Telefonszám:
         <span className='form-required-indicator'>*</span>
@@ -43,6 +43,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChan
       <PhoneInput
         country={'hu'}
         inputProps={{
+          id: 'phone-number-input',
           'aria-describedby': 'phone-number-error',
           'aria-invalid': !!error,
           name: 'phoneNumber',
