@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 import { NavLink } from 'react-router-dom'
@@ -28,11 +27,10 @@ export function Login({ onLogin }: LoginProps) {
     e.preventDefault()
     setLoading(true)
     try {
-      const csrfToken = await fetchCsrfToken()
       const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ username, password, _csrf: csrfToken }).toString(),
+        body: new URLSearchParams({ username, password }).toString(),
         credentials: 'include',
       })
       if (response.ok || response.status === 302) {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
 import { EmailModel } from '../../../model/EmailModel'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { ForgottenPasswordRequestModel } from '../../../model/ForgottenPasswordRequestModel'
@@ -47,8 +46,7 @@ export function ForgottenPassword() {
       const response = await fetch('/v1/password-reset/request-password-reset-link', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': await fetchCsrfToken()
+          'Content-Type': 'application/json'
         },
         credentials: 'include',
         body: JSON.stringify(payload)
@@ -116,8 +114,7 @@ export function ForgottenPassword() {
       const response = await fetch('/v1/password-reset/set-new-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': await fetchCsrfToken()
+          'Content-Type': 'application/json'
         },
         credentials: 'include',
         body: JSON.stringify(
