@@ -11,10 +11,11 @@ export const ERR_MSG_USERNAME_VALUE_CONTAINS_SPACE = i18n.t('errors.ERR_MSG_USER
 export const ERR_MSG_USERNAME_VALUE_CONTAINS_FORBIDDEN_CHARACTER = i18n.t('errors.ERR_MSG_USERNAME_VALUE_CONTAINS_FORBIDDEN_CHARACTER')
 export const ERR_MSG_USERNAME_VALUE_LENGTH = i18n.t('errors.ERR_MSG_USERNAME_VALUE_LENGTH', { USERNAME_VALUE_MIN_LENGTH, USERNAME_VALUE_MAX_LENGTH })
 export const ERR_MSG_USERNAME_VALUE_EXISTS = i18n.t('errors.ERR_MSG_USERNAME_VALUE_EXISTS')
+export const ERR_MSG_USERNAME_AVAILABILITY_CHECK_FAILED = i18n.t('errors.ERR_MSG_USERNAME_AVAILABILITY_CHECK_FAILED')
 
 export async function checkUsernameExists(username: string): Promise<boolean> {
   const res = await fetch(`/v1/registration/username/${encodeURIComponent(username)}/exists`)
-  if (!res.ok) return false
+  if (!res.ok) throw new Error(ERR_MSG_USERNAME_AVAILABILITY_CHECK_FAILED)
   const data = await res.json()
   return data.exists
 }

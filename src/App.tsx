@@ -22,6 +22,7 @@ import { sleep } from './main/utils/sleep/SleepUtils'
 import { Modal } from './main/components/functional/Modal/Modal'
 import { ModalProvider, useModal } from './main/context/ModalMessageContext/ModalMessageContext'
 import { GalleryPage } from './main/pages/GalleryPage'
+import { NotFoundPage } from './main/pages/NotFoundPage'
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -103,6 +104,7 @@ function AppContent() {
           />
           <Route path="/food/:foodId" element={<FoodDetailsPage />} />
           <Route path="/checkout" element={<CheckoutPage isAuthenticated={isAuthenticated}/>} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

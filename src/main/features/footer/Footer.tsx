@@ -9,7 +9,7 @@ export function Footer() {
 
   return (
     <footer className="footer">
-      <section>
+      <section id='contact'>
         <h3>{t('footer.contactTitle')}</h3>
         <div>
           <p>{t('footer.email')}</p>

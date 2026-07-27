@@ -58,7 +58,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
     if (!res.ok) {
       const errorData = await res.json()
       throw new Error(
-        errorData.error || t('userProfile.passwordUpdateGenericError'))
+        errorData.message || t('userProfile.passwordUpdateGenericError'))
     }
   }
 

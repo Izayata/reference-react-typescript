@@ -36,9 +36,14 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
         new UsernameModel(value)
         setError('')
         const availabilityTimeout = setTimeout(async () => {
-          const exists = await checkUsernameExists(value)
-          setAvailable(!exists)
-          if (exists) setError(ERR_MSG_USERNAME_VALUE_EXISTS)
+          try {
+            const exists = await checkUsernameExists(value)
+            setAvailable(!exists)
+            if (exists) setError(ERR_MSG_USERNAME_VALUE_EXISTS)
+          } catch (availabilityError: unknown) {
+            setAvailable(null)
+            setError(availabilityError instanceof Error ? availabilityError.message : String(availabilityError))
+          }
         }, 150)
         return () => clearTimeout(availabilityTimeout)
       } catch (e: unknown) {

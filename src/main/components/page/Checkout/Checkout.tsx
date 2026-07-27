@@ -35,6 +35,7 @@ import { LastnameModel } from '../../../model/customer/LastnameModel'
 import { PhoneNumberModel } from '../../../model/customer/PhoneNumberModel'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
 import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
+import { convertShippingAddressFormToAddressModel } from '../../../converter/AddressModelConverter'
 import { CheckoutCustomerDetailsSection } from './CheckoutCustomerDetailsSection'
 import { CheckoutOrderSummarySection } from './CheckoutOrderSummarySection'
 
@@ -134,22 +135,34 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
     e.preventDefault()
     setModalMessage(null)
     setLoading(true)
-    await sleep(1000)
 
-    if (!myUserData) {
-      return
+    try {
+      if (!myUserData) {
+        return
+      }
+
+      const newAddress = convertShippingAddressFormToAddressModel(shippingAddressForm)
+
+      const res = await fetch('/v1/customer/shipping-address', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': await fetchCsrfToken()
+        },
+        credentials: 'include',
+        body: JSON.stringify(newAddress)
+      })
+
+      if (!res.ok) throw new Error(t('checkout.shippingAddressSaveError'))
+
+      myUserData.customer.shippingAddress = newAddress
+      await sleep(1000)
+      setEditMode(false)
+    } catch (e: unknown) {
+      setModalMessage(handleErrorMessages(e))
+    } finally {
+      setLoading(false)
     }
-
-    myUserData.customer.shippingAddress.zipCode.value = shippingAddressForm.shippingZipCode
-    myUserData.customer.shippingAddress.city.value = shippingAddressForm.shippingCity
-    myUserData.customer.shippingAddress.street.value = shippingAddressForm.shippingStreet
-    myUserData.customer.shippingAddress.streetNumber.value = shippingAddressForm.shippingStreetNumber
-    if (myUserData.customer.shippingAddress.floorDoor) {
-      myUserData.customer.shippingAddress.floorDoor.value = shippingAddressForm.shippingFloorDoor
-    }
-
-    setEditMode(false)
-    setLoading(false)
   }
 
   const shippingFieldMap: Record<string, string> = {

@@ -56,11 +56,9 @@ export function NavigationLinkMenu() {
           {t('nav.gallery')}
         </NavLink>
         <SeparatorLine />
-        <NavLink
-          className={
-            ({isActive}) => `navigation-link button-scale ${isActive ? 'active' : ''}`
-          }
-          to='/contact'
+        <a
+          className='navigation-link button-scale'
+          href='#contact'
           style={{
             paddingTop: '.25rem',
             paddingBottom: '.25rem',
@@ -69,7 +67,7 @@ export function NavigationLinkMenu() {
           }}
         >
           {t('nav.contact')}
-        </NavLink>
+        </a>
       </div>
     </div>
   )

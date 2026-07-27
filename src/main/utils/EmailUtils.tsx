@@ -12,10 +12,11 @@ export const ERR_MSG_EMAIL_VALUE_CONTAINS_SPACE = i18n.t('errors.ERR_MSG_EMAIL_V
 export const ERR_MSG_EMAIL_VALUE_FORMAT = i18n.t('errors.ERR_MSG_EMAIL_VALUE_FORMAT')
 export const ERR_MSG_EMAIL_VALUE_LENGTH = i18n.t('errors.ERR_MSG_EMAIL_VALUE_LENGTH', { EMAIL_VALUE_MAX_LENGTH })
 export const ERR_MSG_EMAIL_VALUE_EXISTS = i18n.t('errors.ERR_MSG_EMAIL_VALUE_EXISTS')
+export const ERR_MSG_EMAIL_AVAILABILITY_CHECK_FAILED = i18n.t('errors.ERR_MSG_EMAIL_AVAILABILITY_CHECK_FAILED')
 
 export async function checkEmailExists(email: string): Promise<boolean> {
   const res = await fetch(`/v1/registration/email/${encodeURIComponent(email)}/exists`)
-  if (!res.ok) return false
+  if (!res.ok) throw new Error(ERR_MSG_EMAIL_AVAILABILITY_CHECK_FAILED)
   const data = await res.json()
   return data.exists
 }
