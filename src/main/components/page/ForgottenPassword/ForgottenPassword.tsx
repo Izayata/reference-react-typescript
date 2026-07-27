@@ -71,7 +71,7 @@ export function ForgottenPassword() {
     await sleep(1000)
     
     try {
-      const response = await fetch(`/v1/password-reset/validate-${token}`, {
+      const response = await fetch(`/v1/password-reset/validate?token=${encodeURIComponent(token)}`, {
         method: 'GET',
         credentials: 'include'
       })

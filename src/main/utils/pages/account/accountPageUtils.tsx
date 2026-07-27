@@ -1,5 +1,5 @@
 export async function fetchAuthenticatedUserDetails() {
-  const res = await fetch('/v1/account/getAuthenticatedUser', {
+  const res = await fetch('/v1/account/me', {
     credentials: 'include'
   })
   console.log(res)

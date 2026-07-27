@@ -12,7 +12,7 @@ export const ERR_MSG_USERNAME_VALUE_LENGTH = 'A felhasználónév legalább ' + 
 export const ERR_MSG_USERNAME_VALUE_EXISTS = 'A megadott felhasználónév foglalt!'
 
 export async function checkUsernameExists(username: string): Promise<boolean> {
-  const res = await fetch(`/v1/req/isUsernameExist/${encodeURIComponent(username)}`)
+  const res = await fetch(`/v1/registration/username/${encodeURIComponent(username)}/exists`)
   if (!res.ok) return false
   const data = await res.json()
   return data.exists

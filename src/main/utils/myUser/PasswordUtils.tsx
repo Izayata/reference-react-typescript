@@ -13,7 +13,7 @@ export const ERR_MSG_PASSWORD_VALUE_LENGTH = 'A jelszó legalább ' + PASSWORD_V
 export const ERR_MSG_PASSWORD_VALUE_COMMON = 'A megadott jelszó túl gyakori, más jelszó szükséges!'
 
 export async function checkPasswordIsCommon(password: string): Promise<boolean> {
-  const res = await fetch('/v1/req/isCommonPassword',
+  const res = await fetch('/v1/registration/common-password',
     {
       method: 'POST',
       headers: {

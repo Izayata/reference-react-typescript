@@ -22,6 +22,7 @@ import { RegistrationModel } from '../../../model/RegistrationModel'
 import { sleep } from '../../../utils/sleep/SleepUtils'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { RegisterFormAddresses } from './form/RegisterFormAddresses'
+import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken'
 
 export function Register() {
   const [step, setStep] = useState<'setUserDetails' | 'setPersonalDetails' | 'setAddresses' | 'successfulRegistration'>('setUserDetails')
@@ -61,10 +62,11 @@ export function Register() {
   async function register() {
     const registrationModel: RegistrationModel = registrationModelBuilder.current.build()
 
-    const registrationResponse = await fetch('/v1/req/signup', {
+    const registrationResponse = await fetch('/v1/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': await fetchCsrfToken()
       },
       body: JSON.stringify(registrationModel),
       credentials: 'include',

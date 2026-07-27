@@ -11,7 +11,7 @@ import { sleep } from '../../../utils/sleep/SleepUtils'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 
 export async function fetchFoodsByIds(ids: (string | number)[]) {
-  const response = await fetch('/v1/foods/getShoppingCartItemsData', {
+  const response = await fetch('/v1/foods/cart', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids }),
