@@ -1,6 +1,6 @@
 # Codebase Audit — reference-react-typescript
 
-**Date:** 2026-07-26 (last re-verified 2026-07-27 — after the §1, §2, and §8 fixes landed, a pass to correct drifted file:line citations, a follow-up `npm audit fix` once a local npm-cache permission blocker was resolved (surfaced §2.6), the §3 code-quality/architecture fixes, which surfaced the `CI=true npm run build` finding folded into §5.1, and a final same-day pass syncing §1/§4/§6/§8's line citations and test/lint counts to the post-§3-merge state of `main`, which also surfaced that `src/main/model/**`/`src/main/builder/**` share §3.7's non-JSX-`.tsx` issue but were never in that finding's scope)
+**Date:** 2026-07-26 (last re-verified 2026-07-27 — after the §1, §2, and §8 fixes landed, a pass to correct drifted file:line citations, a follow-up `npm audit fix` once a local npm-cache permission blocker was resolved (surfaced §2.6), the §3 code-quality/architecture fixes, which surfaced the `CI=true npm run build` finding folded into §5.1, a pass syncing §1/§4/§6/§8's line citations and test/lint counts to the post-§3-merge state of `main` (which also surfaced that `src/main/model/**`/`src/main/builder/**` share §3.7's non-JSX-`.tsx` issue but were never in that finding's scope), and the §4 testing/coverage fixes, which surfaced a real double-catch bug in `Checkout.tsx`'s `submitOrder` — documented under §4.1 rather than fixed, since this was a testing-coverage pass, not a correctness-bug pass)
 **Scope:** Full repository — application source (`src/`), build/deploy config (`Dockerfile`, `nginx.conf`, `tsconfig.json`, `.eslintrc.json`), dependency manifest (`package.json` / `package-lock.json`), test suite, and (§8) every frontend `fetch()` call cross-referenced against the documented backend contract in `API_ENDPOINTS.md`.
 **Methodology:** Manual review of source and config, cross-checked with live tool output: `npm install`, `npm run lint`, `npm test -- --watchAll=false` (CI mode), and `npm audit`. All findings below with a file/line reference were verified by reading the actual file at that location; the live command output is summarized in the Appendix. §8 additionally cross-references every `fetch()` call site in `src/` against the backend contract documented in `API_ENDPOINTS.md` (added to the repo after the initial audit pass) — that section assumes `API_ENDPOINTS.md` accurately reflects the backend's current routes.
 
@@ -16,7 +16,7 @@ This audit is written to serve two audiences at once — as supporting material 
 - ~~**The codebase carries a long list of code-quality/architecture issues**~~ **✅ Fixed** — see §3. Pervasive `any`-typing at the form/error boundary, a dead Redux feature, stray debug `console.log`s, a duplicated converter, a naming-confusion gap in the docs, incorrect `.tsx` extensions on non-JSX files, and the 686-line monolithic `Checkout.tsx` were all addressed. Discovered along the way: `CI=true npm run build` (the mode any real CI pipeline would use) fails outright on pre-existing lint debt unrelated to this fix — folded into §5.1.
 - **`npm run lint` currently reports 352 problems (126 errors, 226 warnings)** against the project's own `.eslintrc.json` — down from 386 after §3.1's typing fixes eliminated 34 `no-explicit-any` warnings, but the codebase still drifts from its own style rules because nothing enforces them automatically.
 - ~~**`npm audit` reports 60 known vulnerabilities (2 critical, 33 high, 13 moderate, 12 low)**, all reachable through `react-scripts`' build toolchain~~ **Partially fixed** — see §2.4/§2.6. Once the blocking local npm-cache permission issue was resolved, `npm audit fix` cleared both **critical** vulnerabilities. Total count is now **73** (0 critical, 63 high, 6 moderate, 4 low) — higher than before, but only because npm's advisory database gained new entries since the original pass, not because the fix regressed anything (verified via a clean reinstall + full passing test/lint run). One of those new entries, `react-router` (a real runtime dependency, not build tooling), needs a breaking major-version bump to actually fix — deliberately left open pending dedicated route-by-route testing. The rest remain build-tooling-only, blocked on migrating off the unmaintained `react-scripts`/CRA toolchain.
-- **The model/builder value-object layer (439 tests across 35 suites) is genuinely well tested and all currently pass**, and `App.test.tsx` now adds one root-level smoke test on top of that (§1.4) — but Login, Register, Checkout, ShoppingCart, and AccountRouteGuard themselves still have zero test coverage of their own.
+- ~~**The model/builder value-object layer (439 tests across 35 suites) is genuinely well tested**, and `App.test.tsx` adds one root-level smoke test on top (§1.4) — but Login, Register, Checkout, ShoppingCart, and AccountRouteGuard themselves have zero test coverage of their own.~~ **✅ Fixed** — see §4. 5 new suites (17 tests) now cover those five components directly, plus a `coverageThreshold` config (§4.2) so coverage can't silently regress. All 41 suites (457 tests) pass.
 - ~~**`nginx.conf` sets `Access-Control-Allow-Origin: *`** on the same routes the app calls with `credentials: 'include'`, including `/actuator` — a fragile config that should be an explicit origin allowlist.~~ **✅ Fixed** — see §2.1.
 - The checkout "Place Order" action and the modal used for every error/success message in the app are **not operable by keyboard**.
 - There is **no CI/CD pipeline** of any kind, so none of the above (lint, tests, or vulnerable deps) is caught automatically before it ships.
@@ -64,12 +64,14 @@ This audit is written to serve two audiences at once — as supporting material 
 
 **New finding surfaced while verifying this section:** `CI=true npm run build` (the mode any real CI pipeline would use) fails outright with exit code 1, because Create React App treats ESLint warnings as build-breaking errors under `CI=true` — a materially different (and stricter) failure mode than `npm run lint` (which doesn't fail the process on warnings alone) or the plain dev server (which compiles successfully and just prints warnings to the console). Confirmed this is pre-existing lint debt, not a regression from this pass: every one of the 21 flagged files traces to warnings/errors unrelated to §3's changes (mostly `no-explicit-any`/`no-unused-vars` in `myDecorators/*` decorator-validator signatures and untouched input components). This strengthens §5.1 (no CI/CD) — even if a workflow were added today using `npm run build` as its check, it would be red from the first commit for reasons having nothing to do with §3.
 
-### 4. Testing & coverage
+### 4. Testing & coverage — ✅ Fixed
 
 | # | Location | Severity | Description |
 |---|---|---|---|
-| 4.1 | `src/test/**` vs `src/main/components/**`, `src/main/pages/**`, `src/main/features/**` | **High** | Live run: 36 test suites, 440 tests, all passing (down from 37/444 only because §3.2 deleted the dead `counter` feature's own `counterSlice.spec.ts`, which was never part of the model/builder coverage described here). 439 of those target the model/builder/value-object layer (`src/test/model/**`, `src/test/builder/**`, 35 suites) — genuinely thorough coverage there. `src/test/App.test.tsx` adds one root-level smoke test on top (fixed per §1.4), but **no other React component has any test coverage**: `Login.tsx`, `Register.tsx`, `Checkout.tsx` (including its new §3.8 sub-components `CheckoutCustomerDetailsSection.tsx`/`CheckoutOrderSummarySection.tsx`), `ShoppingCart.tsx`, and `AccountRouteGuard.tsx` still have zero coverage of their own. |
-| 4.2 | `package.json` / repo-wide | **Medium** | No coverage thresholds or reporting are configured anywhere (no `--coverage`, no `coverageThreshold` in any Jest config). Even once tests exist for components, there's currently no mechanism to prevent coverage from silently regressing. |
+| 4.1 | `src/test/**` vs `src/main/components/**`, `src/main/pages/**`, `src/main/features/**` | **High — ✅ Fixed** | Live run (before this fix): 36 test suites, 440 tests, all passing — 439 of those targeting only the model/builder/value-object layer plus one root-level `App.test.tsx` smoke test. **No other React component had any test coverage**: `Login.tsx`, `Register.tsx`, `Checkout.tsx` (including its §3.8 sub-components), `ShoppingCart.tsx`, and `AccountRouteGuard.tsx` all had zero coverage of their own. **Fixed:** added 5 new test suites under `src/test/components/**` (mirroring `src/main/components/**`, 17 new tests) covering exactly those five components: `AccountRouteGuard.test.tsx` (renders children when authenticated, redirects to `/login` and renders nothing when not), `Login.test.tsx` (successful login calls `onLogin` and redirects, rejected credentials show the error modal message and don't call `onLogin`, forgot-password/registration links), `Register.test.tsx` (step 1 renders by default, advances to step 2 on valid+available details, shows the "already taken" error for both username and email without advancing, blocks advancing when a required field is blank — deliberately scoped to the first step and network-facing validation, not a full 3-step happy path, since the model/builder layer already exhaustively covers every field validator directly), `ShoppingCart.test.tsx` (empty-cart message when nothing is stored, fetches and renders cart contents with correct totals/links when items are stored, shows an error message on fetch failure), and `Checkout.test.tsx` (redirects to `/cart` when the cart is empty, renders the guest checkout form and order summary once cart items load, the cash-payment checkbox toggles on click, submitting without a payment method shows an error). All new tests mock `fetch` directly rather than requiring a real backend, matching the existing `App.test.tsx` pattern. **Bug found via this new coverage, not fixed (out of scope for a testing task):** `Checkout.tsx`'s `submitOrder` has a double-catch bug — `getOrderToSubmit`'s own catch already sets a specific error message (e.g. "Kérjük, válasszon fizetési módot!"), but `submitOrder`'s outer catch then unconditionally overwrites it with a generic one ("A rendelés adatai hiányosak vagy érvénytelenek!") in the same click, so the specific message is never actually visible to a user. The new `Checkout.test.tsx` test documents the current (buggy) behavior with a comment explaining it, rather than silently asserting the wrong thing or fixing app behavior under a testing-coverage task. |
+| 4.2 | `package.json` / repo-wide | **Medium — ✅ Fixed** | No coverage thresholds or reporting were configured anywhere (no `--coverage`, no `coverageThreshold` in any Jest config). Even once tests existed for components, there was no mechanism to prevent coverage from silently regressing. **Fixed:** added a `jest.collectCoverageFrom`/`jest.coverageThreshold` block to `package.json` (CRA/`react-scripts` natively supports overriding these two keys) with a `global` floor of 45% statements / 30% branches / 43% functions / 46% lines — set a few points below the actual current numbers (47.08/31.29/44.32/48.13, live-verified via `npm run test:coverage`) as a small safety margin, not aspirational targets, so this is a real regression gate rather than a number picked to look good. Also added an `npm run test:coverage` script (`react-scripts test --coverage --watchAll=false`) since there was previously no dedicated non-interactive way to run coverage locally or in a future CI pipeline. |
+
+**Fixed:** both findings addressed together. Live-verified: `CI=true npm test -- --watchAll=false` passes all 41 suites (457 tests, up from 36/440); `npm run test:coverage` passes with the new thresholds (exit `0`); `npx tsc --noEmit` passes with zero errors; `npm run lint` is unchanged at 352 problems (126 errors, 226 warnings) — the new test files introduced zero net new lint debt (an initial `(global as any).fetch` pattern copied from the pre-existing `App.test.tsx` was replaced with plain `global.fetch = ...` assignments, occasionally cast via `as unknown as typeof fetch` instead of `any` where a typed mock callback needed it).
 
 ### 5. Tooling & CI/CD
 
@@ -153,7 +155,7 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | 8.1 | ~~15 of ~21 frontend API calls use a path/method that doesn't exist in the documented backend~~ | ~~Critical~~ **✅ Fixed** |
 | 6.1 | Modal has no keyboard/ARIA support | High |
 | 6.2 | Checkout "Place Order" is an unreachable-by-keyboard `<div>` | High |
-| 4.1 | Zero test coverage for all React components/pages/flows | High |
+| 4.1 | ~~Zero test coverage for all React components/pages/flows~~ | ~~High~~ **✅ Fixed** — 5 new suites (17 tests) cover Login/Register/Checkout/ShoppingCart/AccountRouteGuard |
 | 5.1 | No CI/CD — lint (352 problems) runs only manually, and `CI=true npm run build` fails outright | High |
 | 2.1 | ~~`nginx.conf` wildcard CORS on credentialed API routes~~ | ~~High~~ **✅ Fixed** |
 | 2.4 | 60→73 npm audit vulnerabilities via unmaintained CRA toolchain (0 critical now, was 2) | High (partially fixed) |
@@ -168,7 +170,7 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | 3.3 | ~~5 debug `console.log`s in the shared error-formatting utility~~ | ~~Medium~~ **✅ Fixed** |
 | 3.8 | ~~686-line monolithic `Checkout.tsx`~~ | ~~Medium~~ **✅ Fixed** |
 | 5.2 | No `jsx-a11y` lint rules configured | Medium |
-| 4.2 | No coverage thresholds/reporting configured | Medium |
+| 4.2 | ~~No coverage thresholds/reporting configured~~ | ~~Medium~~ **✅ Fixed** — `jest.coverageThreshold` in `package.json` + `npm run test:coverage` |
 | 6.3 | Hamburger menu toggle not keyboard-operable | Medium |
 | 8.4 | ~~`/logout` CSRF token sent as body field, not header (unverified against backend)~~ | ~~Medium~~ **✅ Fixed** |
 | 2.6 | `react-router` open-redirect advisory — needs a major-version bump to fix, not attempted | Medium |
@@ -260,6 +262,25 @@ $ CI=true npm run build   # new check run while verifying §3 — not run in pri
   mostly no-explicit-any/no-unused-vars in src/main/myDecorators/*.ts (the custom
   class-validator decorators' unused `_args` parameters) and a handful of
   untouched input/navigation components. See §5.1.
+
+$ npx tsc --noEmit   # after the §4 testing/coverage fixes
+(no output, exit code 0)
+
+$ CI=true npm test -- --watchAll=false   # after the §4 fixes
+Test Suites: 41 passed, 41 total
+Tests:       457 passed, 457 total
+(process exit code: 0; 36→41 suites and 440→457 tests vs. the prior run is the
+ 5 new component test suites added for §4.1: AccountRouteGuard, Login, Register,
+ ShoppingCart, Checkout — 17 new tests total)
+
+$ npm run test:coverage   # new script added for §4.2; react-scripts test --coverage --watchAll=false
+All files | 47.08% Stmts | 31.29% Branch | 44.32% Funcs | 48.13% Lines
+(process exit code: 0 — passes the new coverageThreshold floor of
+ 45/30/43/46 configured in package.json's "jest" key)
+
+$ npm run lint   # after the §4 fixes
+✖ 352 problems (126 errors, 226 warnings)   # unchanged — zero net new lint debt
+                                              # from the 5 new test files
 ```
 
 `npm audit --omit=dev` returns the same findings both before and after: `react-scripts` is listed under `"dependencies"` (not `"devDependencies"`) in `package.json`, which is how CRA projects are conventionally structured, so the `--omit=dev` filter doesn't separate build tooling from runtime code here.
