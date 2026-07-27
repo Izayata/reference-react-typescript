@@ -111,7 +111,7 @@ export function Register() {
 
       setStep('setAddresses')
     } catch (e: any) {
-      handleErrorMessages(e)
+      setModalMessage(handleErrorMessages(e))
     } finally {
       setLoadingOverlay(false)
     }
@@ -137,7 +137,7 @@ export function Register() {
       await sleep(1000)
       setStep('successfulRegistration')
     } catch (e: any) {
-      handleErrorMessages(e)
+      setModalMessage(handleErrorMessages(e))
     } finally {
       setLoadingOverlay(false)
     }

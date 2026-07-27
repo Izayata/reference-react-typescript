@@ -364,7 +364,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       console.log('Order submitted:', order)
       await sendOrderToServer(order)
     } catch (e: any) {
-      handleErrorMessages(e)
+      setModalMessage(handleErrorMessages(e))
     } finally {
       setLoading(false)
     }

@@ -11,8 +11,8 @@ This audit is written to serve two audiences at once — as supporting material 
 ## Executive summary
 
 - **The frontend and its documented backend API have drifted apart on nearly every dynamic endpoint.** Cross-referencing every `fetch()` call site against `API_ENDPOINTS.md` (§8) found that **15 of ~21 distinct integration points call a URL path — and in two cases an HTTP method — that doesn't exist in the documented backend contract.** This isn't a style nit: it means registration field-existence checks, signup, account loading, profile/address/password updates, the menu, food details, allergens, shopping-cart contents, checkout order submission, and forgot-password link validation would all **404 (or fail to bind)** against a backend that implements the documented API as written. Only `/auth-status`, `/csrf-token`, `/login`, `/logout`, and the two password-reset request/set endpoints line up.
-- **A real, verified functional bug**: three places in the app catch a validation error, format it, and then discard the formatted message instead of showing it — so users get silent failures at two registration steps and one checkout path (`Register.tsx`, `Checkout.tsx`).
-- **The configured test command fails today** (`npm test -- --watchAll=false` exits with code `1`) because `src/test/App.test.tsx` has no active test in it — anyone wiring up CI right now would hit a red build immediately, unrelated to real app logic.
+- ~~**A real, verified functional bug**: three places in the app catch a validation error, format it, and then discard the formatted message instead of showing it — so users get silent failures at two registration steps and one checkout path (`Register.tsx`, `Checkout.tsx`).~~ **✅ Fixed** — see §1.
+- ~~**The configured test command fails today** (`npm test -- --watchAll=false` exits with code `1`) because `src/test/App.test.tsx` has no active test in it.~~ **✅ Fixed** — `App.test.tsx` now has a real smoke test; the full suite (37 suites, 444 tests) passes and the process exits `0`.
 - **`npm run lint` currently reports 392 problems (127 errors, 265 warnings)** against the project's own `.eslintrc.json` — the codebase has drifted from its own style rules because nothing enforces them automatically.
 - **`npm audit` reports 60 known vulnerabilities (2 critical, 33 high, 13 moderate, 12 low)**, all reachable through `react-scripts`' build toolchain (webpack-dev-server, rollup, workbox). `react-scripts` itself (CRA) has been unmaintained since 2023 and will not receive fixes.
 - **The model/builder value-object layer (443 tests across 36 suites) is genuinely well tested and all currently pass** — but zero React components, pages, or user flows (login, registration, checkout, cart, route guarding) have any test coverage.
@@ -24,7 +24,7 @@ This audit is written to serve two audiences at once — as supporting material 
 
 ## Findings
 
-### 1. Correctness bugs
+### 1. Correctness bugs — ✅ Fixed
 
 | # | Location | Severity | Description |
 |---|---|---|---|
@@ -33,7 +33,7 @@ This audit is written to serve two audiences at once — as supporting material 
 | 1.3 | `src/main/components/page/Checkout/Checkout.tsx:366-367` (`submitOrder`, outer catch) | **Medium** | Same discarded-return pattern. In practice most real failures are already surfaced by the inner `getOrderToSubmit`/`sendOrderToServer` catches (`Checkout.tsx:322-324`, `:351-353`), but the "order data missing/invalid" case thrown at `:362` reaches only this outer catch and is never shown to the user. |
 | 1.4 | `src/test/App.test.tsx` | **Medium** | The file's only test is commented out, leaving zero active assertions. Under `react-scripts test`, an empty suite is a **hard failure** ("Your test suite must contain at least one test"), not a silent pass — confirmed live: `Test Suites: 1 failed, 36 passed, 37 total`, overall process exit code `1`. Any CI pipeline added today would be red from the first commit, for a reason unrelated to app correctness. |
 
-**Recommendation:** fix 1.1–1.3 by passing the return value of `handleErrorMessages(e)` to `setModalMessage(...)` consistently (the correct pattern already exists a few lines away in the same files). Fix 1.4 by either writing a real smoke test or removing the empty suite.
+**Fixed:** 1.1–1.3 now call `setModalMessage(handleErrorMessages(e))` consistently, matching the correct pattern already used elsewhere in the same files. 1.4 was replaced with a real smoke test (mocks `fetch`, renders `<App>` under `Provider`/`BrowserRouter`, waits for the post-auth-check app shell to appear) rather than removing the suite. Live-verified: `CI=true npm test -- --watchAll=false` now passes all 37 suites (444 tests) and exits `0` for the first time.
 
 ### 2. Security
 
@@ -139,8 +139,6 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | # | Finding | Severity |
 |---|---|---|
 | 8.1 | 15 of ~21 frontend API calls use a path/method that doesn't exist in the documented backend | **Critical** |
-| 1.1 | Silent validation-error swallowing — Register personal details step | High |
-| 1.2 | Silent validation-error swallowing — Register address step | High |
 | 6.1 | Modal has no keyboard/ARIA support | High |
 | 6.2 | Checkout "Place Order" is an unreachable-by-keyboard `<div>` | High |
 | 4.1 | Zero test coverage for all React components/pages/flows | High |
@@ -148,8 +146,10 @@ Every row below would return **404** (or fail Spring's parameter binding, for th
 | 2.1 | `nginx.conf` wildcard CORS on credentialed API routes | High |
 | 2.4 | 60 npm audit vulnerabilities (2 critical) via unmaintained CRA toolchain | High |
 | 8.2 | Checkout never branches between authenticated/guest order endpoints | High |
-| 1.3 | Silent validation-error swallowing — Checkout submit (partial) | Medium |
-| 1.4 | `App.test.tsx` empty suite fails the test run outright | Medium |
+| 1.1 | ~~Silent validation-error swallowing — Register personal details step~~ | ~~High~~ **✅ Fixed** |
+| 1.2 | ~~Silent validation-error swallowing — Register address step~~ | ~~High~~ **✅ Fixed** |
+| 1.3 | ~~Silent validation-error swallowing — Checkout submit (partial)~~ | ~~Medium~~ **✅ Fixed** |
+| 1.4 | ~~`App.test.tsx` empty suite fails the test run outright~~ | ~~Medium~~ **✅ Fixed** |
 | 2.2 | Inconsistent CSRF/credentials coverage on 3 mutating requests | Medium |
 | 2.5 | `AccountRouteGuard` dead state + no real access-control guarantee | Medium |
 | 3.1 | Pervasive `any` at the form-validation boundary despite `strict: true` | Medium |
@@ -184,11 +184,17 @@ $ npm run lint
 ✖ 392 problems (127 errors, 265 warnings)
   116 errors and 0 warnings potentially fixable with the `--fix` option
 
-$ CI=true npm test -- --watchAll=false
+$ CI=true npm test -- --watchAll=false   # before the §1 fixes
 Test Suites: 1 failed, 36 passed, 37 total
 Tests:       443 passed, 443 total
 Time:        2.272 s
 (process exit code: 1, due to src/test/App.test.tsx: "Your test suite must contain at least one test")
+
+$ CI=true npm test -- --watchAll=false   # after the §1 fixes (fix/correctness-bugs)
+Test Suites: 37 passed, 37 total
+Tests:       444 passed, 444 total
+Time:        2.829 s
+(process exit code: 0)
 
 $ npm audit
 60 vulnerabilities (12 low, 13 moderate, 33 high, 2 critical)

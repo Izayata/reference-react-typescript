@@ -1,16 +1,24 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 import { store } from '../app/store'
 import App from '../App'
 
-// test('renders learn react link', () => {
-//   const { getByText } = render(
-//     <Provider store={store}>
-//       <App />
-//     </Provider>
-//   )
+describe('App', () => {
+  beforeEach(() => {
+    (global as any).fetch = jest.fn().mockResolvedValue({ ok: false })
+  })
 
-  // expect(getByText(/learn/i)).toBeInTheDocument()
-// })
+  it('renders the app shell once the auth check resolves', async () => {
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Provider>
+    )
 
-export {}
+    const matches = await screen.findAllByText('ImagineBar', {}, { timeout: 3000 })
+    expect(matches.length).toBeGreaterThan(0)
+  })
+})
