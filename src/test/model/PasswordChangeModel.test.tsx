@@ -60,36 +60,36 @@ describe('PasswordChangeModel', () => {
   // ###### #    # #    #  ####  #    #
 
   it('should throw required error for undefined currentPassword', () => {
-      expectErrorMessages(
-        ERR_PASSWORD_CHANGE_MODEL_CURRENT_PASSWORD_UNDEFINED,
-        [ERR_MSG_CURRENT_PASSWORD_REQUIRED],
-        1
-      )
-    })
+    expectErrorMessages(
+      ERR_PASSWORD_CHANGE_MODEL_CURRENT_PASSWORD_UNDEFINED,
+      [ERR_MSG_CURRENT_PASSWORD_REQUIRED],
+      1
+    )
+  })
 
-    it('should throw required error for null currentPassword', () => {
-      expectErrorMessages(
-        ERR_PASSWORD_CHANGE_MODEL_CURRENT_PASSWORD_NULL,
-        [ERR_MSG_CURRENT_PASSWORD_REQUIRED],
-        1
-      )
-    })
+  it('should throw required error for null currentPassword', () => {
+    expectErrorMessages(
+      ERR_PASSWORD_CHANGE_MODEL_CURRENT_PASSWORD_NULL,
+      [ERR_MSG_CURRENT_PASSWORD_REQUIRED],
+      1
+    )
+  })
 
-    it('should throw required error for undefined newPasswordDetails', () => {
-      expectErrorMessages(
-        ERR_PASSWORD_CHANGE_MODEL_NEW_PASSWORD_DETAILS_UNDEFINED,
-        [ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED],
-        1
-      )
-    })
+  it('should throw required error for undefined newPasswordDetails', () => {
+    expectErrorMessages(
+      ERR_PASSWORD_CHANGE_MODEL_NEW_PASSWORD_DETAILS_UNDEFINED,
+      [ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED],
+      1
+    )
+  })
 
-    it('should throw required error for null newPasswordDetails', () => {
-      expectErrorMessages(
-        ERR_PASSWORD_CHANGE_MODEL_NEW_PASSWORD_DETAILS_NULL,
-        [ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED],
-        1
-      )
-    })
+  it('should throw required error for null newPasswordDetails', () => {
+    expectErrorMessages(
+      ERR_PASSWORD_CHANGE_MODEL_NEW_PASSWORD_DETAILS_NULL,
+      [ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED],
+      1
+    )
+  })
 
   // ###### #    #  #####  ##### ###### ###### ###### ######
   // #      #    # #      #      #      #      #      #

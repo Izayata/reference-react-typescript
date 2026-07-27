@@ -1,4 +1,4 @@
-import { registerDecorator, ValidationOptions, ValidationArguments } from 'class-validator'
+import { registerDecorator, ValidationOptions } from 'class-validator'
 
 export function NotBlank(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
@@ -9,7 +9,7 @@ export function NotBlank(validationOptions?: ValidationOptions) {
         propertyName: propertyName,
         options: validationOptions,
         validator: {
-          validate(value: any, _args: ValidationArguments) {
+          validate(value: unknown) {
             return (
               typeof value === 'string' &&
               value !== undefined &&

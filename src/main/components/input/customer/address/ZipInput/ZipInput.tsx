@@ -4,7 +4,6 @@ import { ZipCodeModel } from '../../../../../model/customer/address/ZipCodeModel
 import { ValidationError } from 'class-validator'
 
 import '../../../../../css/shared/form/form-label-strong.css'
-import { useLocation } from 'react-router-dom'
 
 interface ZipInputProps {
   name: string

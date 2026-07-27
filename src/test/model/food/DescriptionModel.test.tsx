@@ -105,15 +105,15 @@ describe('DescriptionModel', () => {
   // ######  ####   #####  ##### ###### ###### ###### ######
 
   it('should accept leading special character', () => {
-      expect(ERR_DESCRIPTION_MODEL_INVALID_LEADING_SPECIAL_CHARACTER).not.toThrow()
+    expect(ERR_DESCRIPTION_MODEL_INVALID_LEADING_SPECIAL_CHARACTER).not.toThrow()
   })
 
   it('should accept trailing special character', () => {
-      expect(ERR_DESCRIPTION_MODEL_INVALID_TRAILING_SPECIAL_CHARACTER).not.toThrow()
+    expect(ERR_DESCRIPTION_MODEL_INVALID_TRAILING_SPECIAL_CHARACTER).not.toThrow()
   })
 
   it('should accept containing special character', () => {
-      expect(ERR_DESCRIPTION_MODEL_INVALID_CONTAINS_SPECIAL_CHARACTER).not.toThrow()
+    expect(ERR_DESCRIPTION_MODEL_INVALID_CONTAINS_SPECIAL_CHARACTER).not.toThrow()
   })
 
   it('should accept valid description', () => {

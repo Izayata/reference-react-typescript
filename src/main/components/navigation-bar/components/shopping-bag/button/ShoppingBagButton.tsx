@@ -17,8 +17,8 @@ export function ShoppingBagButton({ shoppingBagOpen, setShoppingBagOpen, dropdow
   }, [shoppingBagOpen])
 
   useEffect(() => {
-    const handleClickOutside = (event: { target: any }) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShoppingBagOpen(false)
       }
     }

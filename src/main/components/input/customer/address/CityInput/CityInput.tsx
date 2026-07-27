@@ -4,7 +4,6 @@ import { CityModel } from '../../../../../model/customer/address/CityModel'
 import { ValidationError } from 'class-validator'
 
 import '../../../../../css/shared/form/form-label-strong.css'
-import { useLocation } from 'react-router-dom'
 
 interface CityInputProps {
   name: string
@@ -14,7 +13,6 @@ interface CityInputProps {
 
 export const CityInput: React.FC<CityInputProps> = ({ name, value, onChange }) => {
   const [error, setError] = useState<string[] | string>('')
-  const location = useLocation()
 
   useEffect(() => {
     if (!value) {

@@ -7,6 +7,7 @@ import { fetchAuthenticatedUserDetails } from '../../../utils/pages/account/acco
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 import { MyUserModelBuilder } from '../../../builder/MyUserModelBuilder'
+import { MyUserModel } from '../../../model/MyUserModel'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
 
 import './css/user-profile-content-container.css'
@@ -21,7 +22,7 @@ import './css/user-profile-title.css'
 import { sleep } from '../../../utils/sleep/SleepUtils'
 
 export function UserProfile() {
-  const [user, setUser] = useState<any>(null)
+  const [user, setUser] = useState<MyUserModel | null>(null)
   const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(true)
   const { setModalMessage } = useModal()

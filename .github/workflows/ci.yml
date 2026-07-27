@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Build
+        # Intentionally not using `CI=true`: react-scripts treats every ESLint
+        # warning as a build-breaking error under CI=true, which would fail
+        # this step on pre-existing warning debt that `npm run lint` above
+        # already surfaces (as warnings, not errors) without blocking. This
+        # step exists to catch genuine compile/bundle failures, not to
+        # re-litigate lint warnings a second time. See AUDIT.md §5.1.
+        run: npm run build
+        env:
+          CI: false

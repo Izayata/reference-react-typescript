@@ -6,13 +6,13 @@ export class IngredientNameModel {
   @NotBlank({ message: ERR_MSG_INGREDIENT_NAME_VALUE_REQUIRED })
   @Matches(INGREDIENT_NAME_VALUE_ALLOWED_CHARACTERS, { message: ERR_MSG_INGREDIENT_NAME_INVALID_CHARACTERS })
   @Length(INGREDIENT_NAME_VALUE_MIN_LENGTH, INGREDIENT_NAME_VALUE_MAX_LENGTH, { message: ERR_MSG_INGREDIENT_NAME_VALUE_LENGTH })
-  value: string
+    value: string
 
   constructor(value: string) {
-    this.value = value;
-    const errors = validateSync(this);
+    this.value = value
+    const errors = validateSync(this)
     if (errors.length > 0) {
-      throw errors;
+      throw errors
     }
   }
 }

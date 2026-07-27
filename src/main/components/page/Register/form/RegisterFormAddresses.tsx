@@ -4,7 +4,8 @@ import { RegisterFormShippingAddress } from './RegisterFormShippingAddress'
 
 interface RegisterFormAddressesProps {
   handleSetAddressesStep: (e: React.FormEvent) => void
-  registrationFormData: any
+  registrationFormData: Parameters<typeof convertRegistrationFormDataToBillingAddressFormData>[0]
+    & Parameters<typeof convertRegistrationFormDataToShippingAddressFormData>[0]
   handleRegistrationDataChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   isShippingAddressFormDisplayed: boolean
   toggleShippingAddressForm: () => void

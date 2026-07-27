@@ -8,7 +8,7 @@ import { expectErrorMessages } from '../../../main/utils/test/ExpectErrorMessage
 
 // Valid AllergenNameModel for use in valid/invalid AllergenModel tests
 const VALID_ALLERGEN_NAME_MODEL = new AllergenNameModel('Allergen')
-const VALID_ALLERGEN_ICON_NAME = "iconName"
+const VALID_ALLERGEN_ICON_NAME = 'iconName'
 
 // Invalid cases
 const ERR_ALLERGEN_MODEL_ID_UNDEFINED = () => new AllergenModel(
