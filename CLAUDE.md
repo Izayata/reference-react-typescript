@@ -52,10 +52,12 @@ Almost every domain concept follows the same four-layer pattern, and understandi
 
 1. **Model** (`src/main/model/**`) — a class wrapping one value or composing sub-models. Validated in the constructor via `class-validator`'s `validateSync`, throwing the validation errors array if invalid. Composite models (e.g. `AddressModel`) hold nested leaf models (e.g. `ZipCodeModel`, `CityModel`); leaf models wrap a primitive (usually `string`) with decorators like `@NotBlank`, `@Matches`, `@Length`. Every model implements a manual `equals(other)` method (no `===`/deep-equal library). Custom decorators live in `src/main/myDecorators/` (`NotBlank`, `NotNull`, `NotUndefined`, `ValidPhoneNumber`, `NoZeroNorZeroSlash`), built with `class-validator`'s `registerDecorator`.
 2. **Builder** (`src/main/builder/**`) — one builder class per composite model, with chainable `setX()` methods and a `build()` that calls the model constructor (and thus triggers validation). Used instead of large constructors/object literals to build composite models incrementally.
-3. **Converter** (`src/main/converter/**`) — free functions that turn raw form data (typically `any`, e.g. from a `FormData`/registration form) into a model instance, using the corresponding Builder.
+3. **Converter** (`src/main/converter/**`) — free functions that turn raw form data (a properly-typed inline object shape, e.g. from a `FormData`/registration form — not `any`) into a model instance, using the corresponding Builder.
 4. **Utils** (`src/main/utils/**`, mirrored per model) — colocated constants and pure helpers for a given model: error message strings (Hungarian-language user-facing text, e.g. `ERR_MSG_ZIP_CODE_REQUIRED`), regexes, and validation constants referenced by both the Model and its tests.
 
 Tests live in `src/test/**`, mirroring the `src/main/**` path of the thing under test (e.g. `src/main/model/customer/AddressModel.tsx` → `src/test/model/customer/AddressModel.test.tsx`). Test files exhaustively cover required/null/undefined cases for every validated field plus `equals()` behavior, using the shared assertion helper `expectErrorMessages` (`src/main/utils/test/ExpectErrorMessages.tsx`).
+
+`converter/`, `myDecorators/`, and `utils/` files use `.ts` (they contain no JSX); `model/` and `builder/` files are still `.tsx` even though they also contain no JSX — a known, deliberately out-of-scope gap (AUDIT.md §3.7).
 
 When adding a new domain field or model, follow this same Model → Builder → Converter → Utils (+ mirrored test) shape rather than introducing a different pattern.
 
