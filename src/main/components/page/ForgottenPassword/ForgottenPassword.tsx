@@ -56,7 +56,7 @@ export function ForgottenPassword() {
         setStep('sent')
       } else {
         const errorData = await response.json()
-        setModalMessage(errorData.error || t('forgottenPassword.emailSendError'))
+        setModalMessage(errorData.message || t('forgottenPassword.emailSendError'))
       }
     } catch (err) {
       setModalMessage(t('forgottenPassword.unknownError'))
@@ -127,7 +127,7 @@ export function ForgottenPassword() {
         navigate('/login')
       } else {
         const errorData = await response.json()
-        setModalMessage(errorData.error || t('forgottenPassword.passwordChangeError'))
+        setModalMessage(errorData.message || t('forgottenPassword.passwordChangeError'))
       }
     } catch (err: unknown) {
       setModalMessage(err instanceof Error ? err.message : t('forgottenPassword.unknownError'))

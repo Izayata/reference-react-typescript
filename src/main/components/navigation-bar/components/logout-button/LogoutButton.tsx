@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import './css/logout-icon.css'
 import './css/logout-button-nav-link-wrapper.css'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
+import { handleErrorMessages } from '../../../../utils/ErrorUtils'
 
 interface LogoutButtonProps {
   onLogout: () => void
@@ -32,8 +33,8 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
       } else {
         throw new Error(t('nav.logoutFailed'))
       }
-    } catch (err) {
-      setModalMessage(String(err))
+    } catch (err: unknown) {
+      setModalMessage(handleErrorMessages(err))
     }
   }
 
