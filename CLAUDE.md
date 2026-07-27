@@ -8,11 +8,13 @@ A Create React App (react-scripts 5) + TypeScript single-page app for a restaura
 
 The app talks to a separate backend (proxied at `localhost:8080` in dev via the `proxy` field in `package.json`; in the Docker/nginx setup, `nginx.conf` proxies `/auth-status`, `/csrf-token`, `/login`, `/v1`, `/actuator` to a service named `app:8080` — the `/actuator` path suggests a Spring Boot backend). Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching (`src/main/supports/fetch-utilities/fetchCsrfToken.tsx`).
 
-## Known issues — read before touching `fetch()` calls or error handling
+## Known issues — check `AUDIT.md` before assuming existing code is correct
 
-`AUDIT.md` is a living audit of this codebase (security, correctness bugs, test coverage, tooling/CI, accessibility, and a full frontend/backend API cross-check) — check it before assuming existing code is correct, and update the relevant finding (mark it fixed, adjust severity, etc.) when you fix or materially change something it describes.
+`AUDIT.md` is a living audit of this codebase (security, correctness bugs, test coverage, tooling/CI, accessibility, and a full frontend/backend API cross-check against `API_ENDPOINTS.md`) — check it before assuming an issue is still open or that existing code is correct, and update the relevant finding (mark it fixed, correct a stale line citation, etc.) when you fix or materially change something it describes.
 
-`API_ENDPOINTS.md` documents the backend's actual request/response contract (paths, methods, CSRF requirements, body shapes). Per `AUDIT.md` §8, most of the frontend's current `fetch()` calls use a URL path (and in two cases an HTTP method) that does **not** match what's documented there — e.g. `Register.tsx` posts to `/v1/req/signup` but the documented endpoint is `/v1/registration`. This was diagnosed but is **not yet fixed**. Don't copy an existing `fetch()` call's path as "known-good" just because it's already in the codebase — cross-check it against `API_ENDPOINTS.md` first.
+Most of the originally-found issues are now fixed: the three silent-error-swallowing bugs, the empty `App.test.tsx` suite, all 15 `fetch()` calls that used a URL path not matching `API_ENDPOINTS.md` (§8.1/§8.2 — endpoint paths now match the doc, including `Register.tsx`'s signup call), the `nginx.conf` CORS wildcard, `AccountRouteGuard`'s dead state, and `/logout`'s CSRF transport. **Still open:** 60 `npm audit` vulnerabilities in the `react-scripts`/CRA build toolchain with no safe non-breaking fix available in this environment (§2.4); no CI/CD, so lint/test regressions aren't caught automatically (§5); no test coverage on any interactive component — only the model/builder layer and one root-level `App.test.tsx` smoke test (§4); several accessibility gaps, notably the checkout submit button and the shared `Modal` (§6); assorted code-quality items (§3).
+
+One thing the endpoint-path fix did **not** cover: request/response **body shapes** were only spot-checked against two documented endpoints, not exhaustively verified for all of them. Don't assume a `fetch()` call's body shape is correct just because its URL now matches `API_ENDPOINTS.md` — cross-check the body too before relying on it.
 
 ## Commands
 
