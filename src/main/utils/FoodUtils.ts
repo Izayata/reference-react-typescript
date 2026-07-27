@@ -1,9 +1,10 @@
-export const ERR_MSG_FOOD_ID_REQUIRED = 'Az étel-azonosító megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_FOOD_NAME_REQUIRED = 'Az ételnév megadása kötelező!'
-export const ERR_MSG_PRICE_REQUIRED = 'Az ár megadása kötelező!'
-export const ERR_MSG_CATEGORY_REQUIRED = 'A kategória megadása kötelező!'
-export const ERR_MSG_DESCRIPTION_REQUIRED = 'A leírás megadása kötelező!'
-export const ERR_MSG_INGREDIENT_NAME_REQUIRED = 'A hozzávaló-neveket tartalmazó lista megadása kötelező!'
-export const ERR_MSG_ALLERGEN_IDS_LIST_REQUIRED = 'Az allergén ID-kat tartalmazó lista megadása kötelező!'
-export const ERR_MSG_ALLERGEN_NAMES_LIST_REQUIRED = 'Az allergénneveket tartalmazó lista megadása kötelező!'
-export const ERR_MSG_IMAGE_URL_REQUIRED = 'A kép URL megadása kötelező!'
+import i18n from '../i18n/i18n'
+export const ERR_MSG_FOOD_ID_REQUIRED = i18n.t('errors.ERR_MSG_FOOD_ID_REQUIRED')
+export const ERR_MSG_FOOD_NAME_REQUIRED = i18n.t('errors.ERR_MSG_FOOD_NAME_REQUIRED')
+export const ERR_MSG_PRICE_REQUIRED = i18n.t('errors.ERR_MSG_PRICE_REQUIRED')
+export const ERR_MSG_CATEGORY_REQUIRED = i18n.t('errors.ERR_MSG_CATEGORY_REQUIRED')
+export const ERR_MSG_DESCRIPTION_REQUIRED = i18n.t('errors.ERR_MSG_DESCRIPTION_REQUIRED')
+export const ERR_MSG_INGREDIENT_NAME_REQUIRED = i18n.t('errors.ERR_MSG_INGREDIENT_NAME_REQUIRED')
+export const ERR_MSG_ALLERGEN_IDS_LIST_REQUIRED = i18n.t('errors.ERR_MSG_ALLERGEN_IDS_LIST_REQUIRED')
+export const ERR_MSG_ALLERGEN_NAMES_LIST_REQUIRED = i18n.t('errors.ERR_MSG_ALLERGEN_NAMES_LIST_REQUIRED')
+export const ERR_MSG_IMAGE_URL_REQUIRED = i18n.t('errors.ERR_MSG_IMAGE_URL_REQUIRED')

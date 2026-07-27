@@ -1,6 +1,7 @@
 import React from 'react'
 import '../../../css/button/application-button-style.css'
 import { toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 interface AddToCartButtonProps {
   foodId: number
@@ -9,6 +10,8 @@ interface AddToCartButtonProps {
 }
 
 export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ foodId, style, classNameAddOns }) => {
+  const { t } = useTranslation()
+
   const handleAddToCart = () => {
     const shoppingCart = JSON.parse(localStorage.getItem('shopping_cart') || '{}')
     if (shoppingCart[foodId]) {
@@ -17,7 +20,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ foodId, style,
       shoppingCart[foodId] = 1
     }
     localStorage.setItem('shopping_cart', JSON.stringify(shoppingCart))
-    toast.success('Tétel hozzáadva a kosárhoz!')
+    toast.success(t('addToCart.toastSuccess'))
   }
 
   return (
@@ -26,7 +29,7 @@ export const AddToCartButton: React.FC<AddToCartButtonProps> = ({ foodId, style,
       style={style}
       onClick={handleAddToCart}
     >
-      Kosárba
+      {t('addToCart.button')}
     </button>
   )
 }

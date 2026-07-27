@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FLOOR_DOOR_VALUE_ALLOWED_REGEX, FLOOR_DOOR_VALUE_MAX_LENGTH, FLOOR_DOOR_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/FloorDoorUtils'
 import { FloorDoorModel } from '../../../../../model/customer/address/FloorDoorModel'
 import { ValidationError } from 'class-validator'
+import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
 
@@ -12,6 +13,7 @@ interface FloorDoorInputProps {
 }
 
 export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   
   useEffect(() => {
@@ -42,7 +44,7 @@ export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onC
 
   return (
     <label className="form-label">
-      <strong className='form-label-strong'>Emelet/Ajtó:</strong>
+      <strong className='form-label-strong'>{t('inputs.floorDoorLabel')}</strong>
       <input
         aria-describedby="floorDoor-error"
         aria-invalid={!!error}

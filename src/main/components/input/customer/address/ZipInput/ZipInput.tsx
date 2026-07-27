@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ZIP_CODE_VALUE_ALLOWED_REGEX, ZIP_CODE_VALUE_LENGTH } from '../../../../../utils/customer/address/ZipCodeUtils'
 import { ZipCodeModel } from '../../../../../model/customer/address/ZipCodeModel'
 import { ValidationError } from 'class-validator'
+import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
 
@@ -12,6 +13,7 @@ interface ZipInputProps {
 }
 
 export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   
   useEffect(() => {
@@ -43,7 +45,7 @@ export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => 
   return (
     <label className='form-label'>
       <div>
-        <strong className='form-label-strong'>Irányítószám:</strong>
+        <strong className='form-label-strong'>{t('inputs.zipLabel')}</strong>
         <span className='form-required-indicator'>*</span>
       </div>
       <input

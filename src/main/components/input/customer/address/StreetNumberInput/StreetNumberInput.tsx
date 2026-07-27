@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { STREET_NUMBER_VALUE_ALLOWED_REGEX, STREET_NUMBER_VALUE_MAX_LENGTH, STREET_NUMBER_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/StreetNumberUtils'
 import { StreetNumberModel } from '../../../../../model/customer/address/StreetNumberModel'
 import { ValidationError } from 'class-validator'
+import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
 
@@ -12,6 +13,7 @@ interface StreetNumberInputProps {
 }
 
 export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   
   useEffect(() => {
@@ -43,7 +45,7 @@ export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, valu
   return (
     <label className="form-label">
       <div>
-        <strong className='form-label-strong'>Házszám:</strong>
+        <strong className='form-label-strong'>{t('inputs.streetNumberLabel')}</strong>
         <span className='form-required-indicator'>*</span>
       </div>
       <input

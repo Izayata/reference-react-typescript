@@ -1,14 +1,15 @@
 import { hasLeadingOrTrailingWhitespace, isBlank } from '../CommonUtils'
+import i18n from '../../i18n/i18n'
 
 export const LASTNAME_VALUE_ALLOWED_REGEX = new RegExp('^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű\\-\'.]+( [A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű\\-\'.]+)*$')
 export const LASTNAME_VALUE_MIN_LENGTH = 2
 export const LASTNAME_VALUE_MAX_LENGTH = 25
 
-export const ERR_MSG_LASTNAME_REQUIRED = 'A vezetéknév megadása kötelező!'
-export const ERR_MSG_LASTNAME_VALUE_REQUIRED = 'A vezetéknév megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_LASTNAME_VALUE_LEADING_OR_TRAILING_SPACE = 'A vezetéknév nem kezdődhet vagy végződhet szóközzel!'
-export const ERR_MSG_LASTNAME_VALUE_LENGTH = 'A vezetéknév legalább ' + LASTNAME_VALUE_MIN_LENGTH + ' karakter hosszú kell legyen, de nem lehet hosszabb, mint ' + LASTNAME_VALUE_MAX_LENGTH + ' karakter!'
-export const ERR_MSG_LASTNAME_VALUE_FORMAT = 'A vezetéknév csak betűket, szóközt, kötőjelet, pontot vagy aposztrófot tartalmazhat!'
+export const ERR_MSG_LASTNAME_REQUIRED = i18n.t('errors.ERR_MSG_LASTNAME_REQUIRED')
+export const ERR_MSG_LASTNAME_VALUE_REQUIRED = i18n.t('errors.ERR_MSG_LASTNAME_VALUE_REQUIRED')
+export const ERR_MSG_LASTNAME_VALUE_LEADING_OR_TRAILING_SPACE = i18n.t('errors.ERR_MSG_LASTNAME_VALUE_LEADING_OR_TRAILING_SPACE')
+export const ERR_MSG_LASTNAME_VALUE_LENGTH = i18n.t('errors.ERR_MSG_LASTNAME_VALUE_LENGTH', { LASTNAME_VALUE_MIN_LENGTH, LASTNAME_VALUE_MAX_LENGTH })
+export const ERR_MSG_LASTNAME_VALUE_FORMAT = i18n.t('errors.ERR_MSG_LASTNAME_VALUE_FORMAT')
 
 export function validateLastname(lastname: string) {
   if (isBlank(lastname)) {

@@ -1,13 +1,14 @@
 import { hasLeadingOrTrailingWhitespace, isBlank } from '../../CommonUtils'
+import i18n from '../../../i18n/i18n'
 
 export const CITY_VALUE_MIN_LENGTH = 2
 export const CITY_VALUE_MAX_LENGTH = 25
 export const CITY_VALUE_ALLOWED_REGEX = new RegExp('^[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű0-9\\-\'\\.]+( [A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű0-9\\-\'\\.]+)*$')
 
-export const ERR_MSG_CITY_VALUE_REQUIRED = 'A városnév megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_CITY_VALUE_LEADING_OR_TRAILING_SPACE = 'A város nem kezdődhet vagy végződhet szóközzel!'
-export const ERR_MSG_CITY_VALUE_FORMAT = 'A város csak betűket, szóközt, kötőjelet, pontot vagy aposztrófot tartalmazhat!'
-export const ERR_MSG_CITY_VALUE_LENGTH = 'A város legalább ' + CITY_VALUE_MIN_LENGTH + ' karakter hosszú kell legyen, de nem lehet hosszabb, mint ' + CITY_VALUE_MAX_LENGTH + ' karakter!'
+export const ERR_MSG_CITY_VALUE_REQUIRED = i18n.t('errors.ERR_MSG_CITY_VALUE_REQUIRED')
+export const ERR_MSG_CITY_VALUE_LEADING_OR_TRAILING_SPACE = i18n.t('errors.ERR_MSG_CITY_VALUE_LEADING_OR_TRAILING_SPACE')
+export const ERR_MSG_CITY_VALUE_FORMAT = i18n.t('errors.ERR_MSG_CITY_VALUE_FORMAT')
+export const ERR_MSG_CITY_VALUE_LENGTH = i18n.t('errors.ERR_MSG_CITY_VALUE_LENGTH', { CITY_VALUE_MIN_LENGTH, CITY_VALUE_MAX_LENGTH })
 
 export function validateCity(city: string) {
   if (isBlank(city)) {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
 import { PersonalDetailsModel } from '../../../../model/PersonalDetailsModel'
 import { CustomerModel } from '../../../../model/CustomerModel'
@@ -11,6 +12,7 @@ import { PersonalDetailsInput } from '../../../input/customer/PersonalDetailsInp
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'
 
 export function PersonalData({ customer, onPersonalDataUpdated }: { customer: CustomerModel, onPersonalDataUpdated?: () => void }) {
+  const { t } = useTranslation()
   const [editMode, setEditMode] = useState(false)
   const [personalDetailsForm, setPersonalDetailsForm] = useState(getInitialForm(customer))
   const { setModalMessage } = useModal()
@@ -50,7 +52,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       body: JSON.stringify(newPersonalData)
     })
 
-    if (!res.ok) throw new Error('Hiba történt a mentés során!')
+    if (!res.ok) throw new Error(t('userProfile.saveError'))
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -62,7 +64,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       const newPersonalDetails: PersonalDetailsModel = convertPersonalDetailsFormDataToPersonalDetailsModel(personalDetailsForm)
 
       if (newPersonalDetails.equals(customer.personalDetails)) {
-        throw new Error('A módosított adatok megegyeznek a jelenlegi adatokkal!')
+        throw new Error(t('userProfile.personalDetailsUnchangedError'))
       }
 
       await updatePersonalData(newPersonalDetails)
@@ -72,7 +74,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       if (onPersonalDataUpdated) onPersonalDataUpdated()
       
       await sleep(500)
-      toast.success('Személyes adatok sikeresen frissítve!')
+      toast.success(t('userProfile.personalDetailsUpdateSuccess'))
     } catch (e: unknown) {
       setLoadingOverlay(false)
       setModalMessage(handleErrorMessages(e))
@@ -84,7 +86,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
     <section className = "card-container user-profile">
       {loadingOverlay && <LoadingOverlay/>}
       <div>
-        <h3 className="user-profile-data-container-title">Személyes adatok</h3>
+        <h3 className="user-profile-data-container-title">{t('userProfile.personalDetailsTitle')}</h3>
         <div
           style={{
             width: 'calc(100% - (1rem * 2))',
@@ -102,15 +104,15 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       {!editMode && (
         <div className="user-profile-data-container-data-item-container">
           <div className="user-profile-data-container-data-item">
-            <strong >Keresztnév:</strong>
+            <strong >{t('userProfile.firstnameLabel')}</strong>
             {customer.personalDetails.firstname.value}
           </div>
           <div className="user-profile-data-container-data-item">
-            <strong >Vezetéknév:</strong>
+            <strong >{t('userProfile.lastnameLabel')}</strong>
             {customer.personalDetails.lastname.value}
           </div>
           <div className="user-profile-data-container-data-item">
-            <strong >Telefonszám:</strong>
+            <strong >{t('userProfile.phoneNumberLabel')}</strong>
             {customer.personalDetails.phoneNumber.value}
           </div>
         </div>
@@ -121,7 +123,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
           onClick={handleEdit}
           type="button"
         >
-          Módosítás
+          {t('userProfile.editButton')}
         </button>
       )}
       {editMode && (
@@ -131,8 +133,8 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
             onChange={handleChange}
           />
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            <button className="application-button-style" type="submit">Mentés</button>
-            <button className="application-button-style" type="button" onClick={handleCancel}>Mégse</button>
+            <button className="application-button-style" type="submit">{t('userProfile.saveButton')}</button>
+            <button className="application-button-style" type="button" onClick={handleCancel}>{t('userProfile.cancelButton')}</button>
           </div>
         </form>
       )}

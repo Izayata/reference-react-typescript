@@ -1,10 +1,13 @@
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { SeparatorLine } from './separator-line/SeparatorLine'
 import './css/navigation-link-menu.css'
 import '../../../../css/shared/navigation-link.css'
 import '../../../../css/container/navigation-link-container.css'
 
 export function NavigationLinkMenu() {
+  const { t } = useTranslation()
+
   return (
     <div className='navigation-link-menu'>
       <div className='navigation-link-container'>
@@ -20,7 +23,7 @@ export function NavigationLinkMenu() {
             fontWeight: '600',
           }}
         >
-          Étlap
+          {t('nav.menu')}
         </NavLink>
         <SeparatorLine />
         <NavLink
@@ -35,7 +38,7 @@ export function NavigationLinkMenu() {
             fontWeight: '600',
           }}
         >
-          Allergének
+          {t('nav.allergens')}
         </NavLink>
         <SeparatorLine />
         <NavLink
@@ -50,7 +53,7 @@ export function NavigationLinkMenu() {
             fontWeight: '600',
           }}
         >
-          Galéria
+          {t('nav.gallery')}
         </NavLink>
         <SeparatorLine />
         <NavLink
@@ -65,7 +68,7 @@ export function NavigationLinkMenu() {
             fontWeight: '600',
           }}
         >
-          Kapcsolat
+          {t('nav.contact')}
         </NavLink>
       </div>
     </div>

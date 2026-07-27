@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
 import { AddressModel } from '../../../../model/customer/AddressModel'
 import { convertBillingAddressFormToAddressModel } from '../../../../converter/AddressModelConverter'
@@ -10,7 +11,8 @@ import { AddressInput } from '../../../input/customer/address/AddressInput'
 import { handleErrorMessages } from '../../../../utils/ErrorUtils'
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'
 
-export function BillingAddress({ address, onAddressUpdated }: { address: AddressModel, onAddressUpdated?: () => void }) {  
+export function BillingAddress({ address, onAddressUpdated }: { address: AddressModel, onAddressUpdated?: () => void }) {
+  const { t } = useTranslation()
   const [editMode, setEditMode] = useState(false)
   const [billingAddressForm, setBillingAddressForm] = useState(getInitialForm(address))
   const { setModalMessage } = useModal()
@@ -62,7 +64,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
       body: JSON.stringify(newAddress)
     })
 
-    if (!res.ok) throw new Error('Hiba történt a mentés során!')
+    if (!res.ok) throw new Error(t('userProfile.saveError'))
   }
 
   const handleSave = async (e: React.FormEvent) => {
@@ -74,7 +76,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
       const newAddress = convertBillingAddressFormToAddressModel(billingAddressForm)
 
       if (newAddress.equals(address)) {
-        throw new Error('A módosított adatok megegyeznek a jelenlegi címmel!')
+        throw new Error(t('userProfile.billingAddressUnchangedError'))
       }
 
       await updateBillingAddress(newAddress)
@@ -83,7 +85,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
       await sleep(1000)
       if (onAddressUpdated) onAddressUpdated()
       await sleep(500)
-      toast.success('Számlázási cím sikeresen frissítve!')
+      toast.success(t('userProfile.billingAddressUpdateSuccess'))
     } catch (e: unknown) {
       setLoadingOverlay(false)
       setModalMessage(handleErrorMessages(e))
@@ -95,7 +97,7 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
     <section className="card-container user-profile">
       {loadingOverlay && <LoadingOverlay/>}
       <div >
-        <h3 className="user-profile-data-container-title">Számlázási cím</h3>
+        <h3 className="user-profile-data-container-title">{t('userProfile.billingAddressTitle')}</h3>
         <div
           style={{
             width: 'calc(100% - (1rem * 2))',
@@ -114,24 +116,24 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
         <>
           <div className="user-profile-data-container-data-item-container">
             <div className="user-profile-data-container-data-item">
-              <strong>Irányítószám:</strong>
+              <strong>{t('userProfile.zipCodeLabel')}</strong>
               {address.zipCode.value}
             </div>
             <div className="user-profile-data-container-data-item">
-              <strong>Város:</strong>
+              <strong>{t('userProfile.cityLabel')}</strong>
               {address.city.value}
             </div>
             <div className="user-profile-data-container-data-item">
-              <strong>Utca:</strong>
+              <strong>{t('userProfile.streetLabel')}</strong>
               {address.street.value}
             </div>
             <div className="user-profile-data-container-data-item">
-              <strong>Házszám:</strong>
+              <strong>{t('userProfile.streetNumberLabel')}</strong>
               {address.streetNumber.value}
             </div>
             {address.floorDoor?.value && (
               <div className="user-profile-data-container-data-item">
-                <strong>Emelet/Ajtó:</strong>
+                <strong>{t('userProfile.floorDoorLabel')}</strong>
                 {address.floorDoor.value}
               </div>
             )}
@@ -144,15 +146,15 @@ export function BillingAddress({ address, onAddressUpdated }: { address: Address
           onClick={handleEdit}
           type="button"
         >
-          Módosítás
+          {t('userProfile.editButton')}
         </button>
       )}
       {editMode && (
         <form onSubmit={handleSave} className="form-orientation">
           <AddressInput formData={convertBillingAddressFormDataToFormData(billingAddressForm)} onChange={handleChange} />
           <div className='user-profile-edit-mode-button-container'>
-            <button className="application-button-style" type="submit">Mentés</button>
-            <button className="application-button-style" type="button" onClick={handleCancel}>Mégse</button>
+            <button className="application-button-style" type="submit">{t('userProfile.saveButton')}</button>
+            <button className="application-button-style" type="button" onClick={handleCancel}>{t('userProfile.cancelButton')}</button>
           </div>
         </form>
       )}

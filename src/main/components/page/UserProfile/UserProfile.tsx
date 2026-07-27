@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { BillingAddress } from './BillingAddress/BillingAddress'
 import { ShippingAddress } from './ShippingAddress/ShippingAddress'
 import { PersonalData } from './PersonalData/PersonalData'
@@ -22,6 +23,7 @@ import './css/user-profile-title.css'
 import { sleep } from '../../../utils/sleep/SleepUtils'
 
 export function UserProfile() {
+  const { t } = useTranslation()
   const [user, setUser] = useState<MyUserModel | null>(null)
   const [refresh, setRefresh] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -45,7 +47,7 @@ export function UserProfile() {
   if (loading) return <LoadingOverlay />
 
   if (!user) {
-    setModalMessage('Felhasználói adatok lekérése sikertelen!')
+    setModalMessage(t('userProfile.fetchError'))
     return <></>
   }
 
@@ -63,7 +65,7 @@ export function UserProfile() {
   }
 
   if (!myUser) {
-    setModalMessage('Felhasználói adatok lekérése sikertelen!')
+    setModalMessage(t('userProfile.fetchError'))
     return <></>
   }
   
@@ -73,7 +75,7 @@ export function UserProfile() {
 
   return (
     <div className = 'user-profile-content-container'>
-      <h2 className='page-title'>Profil</h2>
+      <h2 className='page-title'>{t('userProfile.pageTitle')}</h2>
       <div className = 'user-profile-data-card-container'>
         <div className='user-profile-data-card-container-group'>
           <LoginData user = {user} />

@@ -6,6 +6,7 @@ import { PhoneNumberModel } from '../../../../model/customer/PhoneNumberModel'
 import { DisplayErrors, getErrorMessages } from '../../../../utils/ErrorUtils'
 import './css/phone-number-input.css'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface PhoneNumberInputProps {
   value: string
@@ -13,6 +14,7 @@ interface PhoneNumberInputProps {
 }
 
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const location = useLocation()
     
@@ -37,7 +39,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChan
   return (
     <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`} htmlFor="phone-number-input">
       <div>
-        Telefonszám:
+        {t('inputs.phoneNumberLabel')}
         <span className='form-required-indicator'>*</span>
       </div>
       <PhoneInput

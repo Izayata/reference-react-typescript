@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../model/ShoppingCartItemModel'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 import { fetchFoodsByIds } from '../ShoppingCart/ShoppingCart'
@@ -42,6 +43,7 @@ interface CheckoutProps {
 }
 
 export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
+  const { t } = useTranslation()
   const [checkoutState, setCheckoutState] = useState<'data' | 'success'>('data')
   const [foods, setFoods] = useState<ShoppingCartItemModel[]>([])
   const [loading, setLoading] = useState(true)
@@ -298,7 +300,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
   const getOrderToSubmit = () => {
     try {
       if (paymentType === 'unknown' || (!isCashPayment && !isCardPayment)) {
-        throw new Error('Kérjük, válasszon fizetési módot!')
+        throw new Error(t('checkout.paymentTypeRequired'))
       }
 
       return new OrderModel(
@@ -314,7 +316,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
 
   const sendOrderToServer = async (order: OrderModel) => {
     if (!order) {
-      throw new Error('Az order objektum hiányzik vagy érvénytelen!')
+      throw new Error(t('checkout.missingOrderObject'))
     }
 
     try {
@@ -329,7 +331,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
 
       if (!response.ok) {
         const errorData = await response.json()
-        throw new Error(errorData.message || 'Hiba történt a rendelés feldolgozása során.')
+        throw new Error(errorData.message || t('checkout.orderProcessingError'))
       }
 
       const data = await response.json()
@@ -347,7 +349,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       setLoading(true)
       const order = getOrderToSubmit()
       if (!order) {
-        throw new Error('A rendelés adatai hiányosak vagy érvénytelenek!')
+        throw new Error(t('checkout.orderDataIncomplete'))
       }
       await sendOrderToServer(order)
     } catch (e: unknown) {
@@ -375,7 +377,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
   return (
     checkoutState === 'data' ? (
       <>
-        <h2 className='page-title'>Pénztár</h2>
+        <h2 className='page-title'>{t('checkout.pageTitle')}</h2>
         <div className='checkout-content-container'>
           <CheckoutCustomerDetailsSection
             isAuthenticated={isAuthenticated}
@@ -410,7 +412,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
     )
       :
       (
-        <h1 className='page-title'>Megrendelés sikeresen leadva!</h1>
+        <h1 className='page-title'>{t('checkout.orderSuccessTitle')}</h1>
       )
   )
 }

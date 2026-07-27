@@ -1,16 +1,17 @@
 import { containsWhitespace, isBlank } from './CommonUtils'
+import i18n from '../i18n/i18n'
 
 // export const EMAIL_VALUE_ALLOWED_REGEX = new RegExp('^[a-zA-Z0-9_!#$%&\'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$')
 //regex is from https://www.baeldung.com/java-email-validation-regex
 export const EMAIL_VALUE_ALLOWED_REGEX = new RegExp('^[A-Za-z0-9_\\-]+(\\.[A-Za-z0-9_\\-]+)*@[^\\-][A-Za-z0-9\\-]+(\\.[A-Za-z0-9\\-]+)*(\\.[A-Za-z]{2,})$')
 export const EMAIL_VALUE_MAX_LENGTH = 73
 
-export const ERR_MSG_EMAIL_REQUIRED = 'Az email cím megadása kötelező!'
-export const ERR_MSG_EMAIL_VALUE_REQUIRED = 'Az email cím megadása kötelező, valamint nem állhat csak szóközből!'
-export const ERR_MSG_EMAIL_VALUE_CONTAINS_SPACE = 'Az email cím nem tartalmazhat szóközt!'
-export const ERR_MSG_EMAIL_VALUE_FORMAT = 'Érvénytelen email cím formátum!'
-export const ERR_MSG_EMAIL_VALUE_LENGTH = 'Az email cím legfeljebb ' + EMAIL_VALUE_MAX_LENGTH + ' karakter hosszú lehet!'
-export const ERR_MSG_EMAIL_VALUE_EXISTS = 'A megadott email cím foglalt!'
+export const ERR_MSG_EMAIL_REQUIRED = i18n.t('errors.ERR_MSG_EMAIL_REQUIRED')
+export const ERR_MSG_EMAIL_VALUE_REQUIRED = i18n.t('errors.ERR_MSG_EMAIL_VALUE_REQUIRED')
+export const ERR_MSG_EMAIL_VALUE_CONTAINS_SPACE = i18n.t('errors.ERR_MSG_EMAIL_VALUE_CONTAINS_SPACE')
+export const ERR_MSG_EMAIL_VALUE_FORMAT = i18n.t('errors.ERR_MSG_EMAIL_VALUE_FORMAT')
+export const ERR_MSG_EMAIL_VALUE_LENGTH = i18n.t('errors.ERR_MSG_EMAIL_VALUE_LENGTH', { EMAIL_VALUE_MAX_LENGTH })
+export const ERR_MSG_EMAIL_VALUE_EXISTS = i18n.t('errors.ERR_MSG_EMAIL_VALUE_EXISTS')
 
 export async function checkEmailExists(email: string): Promise<boolean> {
   const res = await fetch(`/v1/registration/email/${encodeURIComponent(email)}/exists`)

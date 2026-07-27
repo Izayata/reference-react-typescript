@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
+import { useTranslation } from 'react-i18next'
 
 interface ConfirmPasswordInputProps {
   value: string
@@ -9,6 +10,7 @@ interface ConfirmPasswordInputProps {
 }
 
 export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ value, originalPassword, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string>('')
   const [allowed, setAllowed] = useState<boolean | null>(null)
 
@@ -29,7 +31,7 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
     const validationTimeout = setTimeout(() => {
       try {
         if (value && value !== originalPassword) {
-          throw new Error('A jelszavak nem egyeznek!')
+          throw new Error(t('inputs.passwordsDoNotMatch'))
         }
         setAllowed(true)
         setError('')
@@ -45,7 +47,7 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
   return (
     <label className="form-label">
       <div>
-        Jelszó újra:
+        {t('inputs.confirmPasswordLabel')}
         <span className='form-required-indicator'>*</span>
       </div>
       <div className="registration-form-input-wrapper">
@@ -65,7 +67,7 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
           aria-invalid={!!error}
           onInvalid={e => {
             if (e.currentTarget.validity.valueMissing) {
-              e.currentTarget.setCustomValidity('A mező kitöltése kötelező!')
+              e.currentTarget.setCustomValidity(t('inputs.fieldRequired'))
             } else {
               e.currentTarget.setCustomValidity(error)
             }

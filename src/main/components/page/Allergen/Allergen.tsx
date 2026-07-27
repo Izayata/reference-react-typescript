@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { AllergenModel } from '../../../model/food/AllergenModel'
 import { fetchAllergens } from '../../../utils/food/AllergenUtils'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
@@ -31,6 +32,7 @@ import './css/allergen-section.css'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export function Allergen() {
+  const { t } = useTranslation()
   const [allergens, setAllergens] = useState<AllergenModel[]>([])
   const [loading, setLoading] = useState(true)
   const { setModalMessage } = useModal()
@@ -105,7 +107,7 @@ export function Allergen() {
 
   return (
     <div className='allergen-cards-container'>
-      <h2 className='page-title'>Allergének</h2>
+      <h2 className='page-title'>{t('allergen.pageTitle')}</h2>
       {sortIntoSectionOfFour(allergens).map((section, index) => (
         <div key={index}>
           {renderSectionOfFour(section)}

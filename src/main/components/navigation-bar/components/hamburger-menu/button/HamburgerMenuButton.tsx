@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTranslation } from 'react-i18next'
 import './css/hamburger-menu.css'
 import './css/hamburger-menu-separator.css'
 
@@ -10,6 +11,8 @@ interface HamburgerMenuButtonProps {
 }
 
 export function HamburgerMenuButton({ menuOpen, setMenuOpen }: HamburgerMenuButtonProps) {
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = 'hidden'
@@ -38,7 +41,7 @@ export function HamburgerMenuButton({ menuOpen, setMenuOpen }: HamburgerMenuButt
         tabIndex={0}
         aria-expanded={menuOpen}
         aria-controls="menu"
-        aria-label="Menü megnyitása"
+        aria-label={t('nav.openMenuAriaLabel')}
         aria-hidden="false"
         focusable="true"
       />

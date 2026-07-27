@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Modal } from '../../../functional/Modal/Modal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { useTranslation } from 'react-i18next'
 import './css/logout-icon.css'
 import './css/logout-button-nav-link-wrapper.css'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
@@ -12,6 +13,7 @@ interface LogoutButtonProps {
 }
 
 export function LogoutButton({ onLogout }: LogoutButtonProps) {
+  const { t } = useTranslation()
 
   const [modalMessage, setModalMessage] = useState<string | null>(null)
 
@@ -24,11 +26,11 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
         },
         credentials: 'include',
       })
-  
+
       if (response.ok) {
         onLogout()
       } else {
-        throw new Error('Kijelentkezés sikertelen!')
+        throw new Error(t('nav.logoutFailed'))
       }
     } catch (err) {
       setModalMessage(String(err))

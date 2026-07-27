@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { PersonalDetailsInput } from '../../../input/customer/PersonalDetailsInput'
 
 interface RegisterFormPersonalDetailsProps {
@@ -15,18 +16,21 @@ export const RegisterFormPersonalDetails: React.FC<RegisterFormPersonalDetailsPr
   registrationData,
   onChange,
   onSubmit
-}) => (
-  <form className="form-orientation" onSubmit={onSubmit}>
-    <PersonalDetailsInput
-      formData={registrationData}
-      onChange={onChange}
-    />
-    <button
-      type="submit"
-      className="application-button-style"
-      style={{ marginLeft: 'auto', marginRight: 'auto' }}
-    >
-      Tovább
-    </button>
-  </form>
-)
+}) => {
+  const { t } = useTranslation()
+  return (
+    <form className="form-orientation" onSubmit={onSubmit}>
+      <PersonalDetailsInput
+        formData={registrationData}
+        onChange={onChange}
+      />
+      <button
+        type="submit"
+        className="application-button-style"
+        style={{ marginLeft: 'auto', marginRight: 'auto' }}
+      >
+        {t('register.continueButton')}
+      </button>
+    </form>
+  )
+}

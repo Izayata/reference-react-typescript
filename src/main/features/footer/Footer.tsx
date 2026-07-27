@@ -1,17 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useTranslation } from 'react-i18next'
 import './Footer.css'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import { faFacebook, faInstagram, faTiktok, faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 export function Footer() {
+  const { t } = useTranslation()
+
   return (
     <footer className="footer">
       <section>
-        <h3>Elérhetőségek</h3>
+        <h3>{t('footer.contactTitle')}</h3>
         <div>
-          <p>Email: imagine@bar.com</p>
-          <p>Telefon: +36/7777/9999/33/777/33/8/33/8</p>
-          <p>Cím: 4032 Debrecen, Képzelet tér 42</p>
+          <p>{t('footer.email')}</p>
+          <p>{t('footer.phone')}</p>
+          <p>{t('footer.address')}</p>
 
         </div>
       </section>
@@ -23,11 +26,11 @@ export function Footer() {
         }}
       />
       <section>
-        <h3>ImagineBar &#9679; Ahol álmaid étele vár</h3>
+        <h3>{t('footer.brandTitle')}</h3>
         <div>
-          <p>Alapítva az álmaimban (Valamikor pedig a valóságban is)</p>
-          <p>ÁSZF placeholder</p>
-          <p>Jogi nyilatkozat placeholder</p>
+          <p>{t('footer.founded')}</p>
+          <p>{t('footer.termsPlaceholder')}</p>
+          <p>{t('footer.legalPlaceholder')}</p>
         </div>
       </section>
       <div
@@ -52,7 +55,7 @@ export function Footer() {
         }}
       />
       <section>
-        <h3>Platformok</h3>
+        <h3>{t('footer.platformsTitle')}</h3>
         <div style={{display: 'flex', flexDirection: 'column'}}>
           <p>
             <a href="https://facebook.com" className='social-media-link header-button-scale'>

@@ -3,6 +3,7 @@ import { FIRSTNAME_VALUE_ALLOWED_REGEX, FIRSTNAME_VALUE_MAX_LENGTH, FIRSTNAME_VA
 import { FirstnameModel } from '../../../../model/customer/FirstnameModel'
 import { ValidationError } from 'class-validator'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface FirstnameInputProps {
   value: string
@@ -10,6 +11,7 @@ interface FirstnameInputProps {
 }
 
 export const FirstnameInput: React.FC<FirstnameInputProps> = ({ value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const location = useLocation()
   
@@ -42,7 +44,7 @@ export const FirstnameInput: React.FC<FirstnameInputProps> = ({ value, onChange 
   return (
     <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`}>
       <div>
-        Keresztnév:
+        {t('inputs.firstnameLabel')}
         <span className='form-required-indicator'>*</span>
       </div>
       <input

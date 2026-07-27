@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../../model/ShoppingCartItemModel'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMinus, faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons'
@@ -35,6 +36,7 @@ export function DisplayShoppingCartContent({
   setRefreshShoppingCart: React.Dispatch<React.SetStateAction<boolean>>,
   setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }) {
+  const { t } = useTranslation()
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
   const [refresh, setRefresh] = useState(false)
   const [priceAnimations, setPriceAnimations] = useState<{ [key: string]: boolean }>({})
@@ -143,7 +145,7 @@ export function DisplayShoppingCartContent({
                             Number(quantities[food.foodId])
                           ).toString(),
                           10
-                        )} ${food.price.currency === 'HUF' ? 'Ft' : food.price.currency}`
+                        )} ${food.price.currency === 'HUF' ? t('menu.currencySuffix') : food.price.currency}`
                         : ''}
                     </td>
                   </div>
@@ -152,7 +154,7 @@ export function DisplayShoppingCartContent({
                       className="application-button-style shopping-cart-qty-btn"
                       onClick={() => food.foodId != null && handleQuantityChange(food.foodId, -1)}
                       disabled={food.foodId == null || quantities[food.foodId] <= 1}
-                      aria-label="Csökkentés"
+                      aria-label={t('shoppingCart.decreaseQuantityAriaLabel')}
                     >
                       <FontAwesomeIcon icon={faMinus} />
                     </button>
@@ -180,7 +182,7 @@ export function DisplayShoppingCartContent({
                       className="application-button-style shopping-cart-qty-btn"
                       onClick={() => food.foodId != null && handleQuantityChange(food.foodId, 1)}
                       disabled={food.foodId == null}
-                      aria-label="Növelés"
+                      aria-label={t('shoppingCart.increaseQuantityAriaLabel')}
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
@@ -188,8 +190,8 @@ export function DisplayShoppingCartContent({
                   <button
                     className="shopping-cart-delete-btn"
                     onClick={() => food.foodId != null && handleDelete(food.foodId)}
-                    aria-label="Törlés"
-                    title="Törlés"
+                    aria-label={t('shoppingCart.deleteAriaLabel')}
+                    title={t('shoppingCart.deleteAriaLabel')}
                   >
                     <FontAwesomeIcon icon={faTrashCan}/>
                   </button>

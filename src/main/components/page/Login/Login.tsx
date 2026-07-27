@@ -3,6 +3,7 @@ import { fetchCsrfToken } from '../../../supports/fetch-utilities/fetchCsrfToken
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 import { NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import '../../../css/shared/form/form-container.css'
 import '../../../css/shared/form/form-orientation.css'
 import '../../../css/shared/form/form-label.css'
@@ -17,6 +18,7 @@ interface LoginProps {
 }
 
 export function Login({ onLogin }: LoginProps) {
+  const { t } = useTranslation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -38,10 +40,10 @@ export function Login({ onLogin }: LoginProps) {
         onLogin()
         window.location.href = data.redirectUrl
       } else {
-        setModalMessage('Hibás felhasználónév vagy jelszó.')
+        setModalMessage(t('login.invalidCredentials'))
       }
     } catch (err) {
-      setModalMessage('Hiba történt. Kérjük, próbálja újra később.')
+      setModalMessage(t('login.genericError'))
     } finally {
       setLoading(false)
     }
@@ -53,7 +55,7 @@ export function Login({ onLogin }: LoginProps) {
       <div className='form-container'>
         <form className='form-orientation' onSubmit={handleSubmit}>
           <label className='form-label'>
-            Felhasználónév:
+            {t('login.usernameLabel')}
             <input
               type="text"
               className='form-input'
@@ -63,7 +65,7 @@ export function Login({ onLogin }: LoginProps) {
             />
           </label>
           <label className='form-label'>
-            Jelszó:
+            {t('login.passwordLabel')}
             <input
               type="password"
               className='form-input'
@@ -75,18 +77,18 @@ export function Login({ onLogin }: LoginProps) {
               to="/forgot-password"
               className='login-page-nav-link-text'
             >
-              Elfelejtette jelszavát?
+              {t('login.forgotPassword')}
             </NavLink>
           </label>
           <button
             type="submit"
             className='application-button-style'
           >
-            Bejelentkezés
+            {t('login.submitButton')}
           </button>
         </form>
         <span className='login-page-registration-span'>
-          Nincs még fiókja?
+          {t('login.noAccountYet')}
           <NavLink
             to="/register"
             className='login-page-nav-link-text'
@@ -94,7 +96,7 @@ export function Login({ onLogin }: LoginProps) {
               marginRight: 'auto',
             }}
           >
-            Regisztráljon itt!
+            {t('login.registerHere')}
           </NavLink>
         </span>
       </div>

@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFacebook, faInstagram, faTiktok, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import { useTranslation } from 'react-i18next'
 import './css//header.css'
 import './css//header-container.css'
 import './css/social-media-link.css'
@@ -10,12 +11,14 @@ import '../../css/shared/visible-from-tablet-profile.css'
 // npm install @fortawesome/free-brands-svg-icons @fortawesome/fontawesome-svg-core @fortawesome/react-fontawesome --legacy-peer-deps
 
 export function Header() {
+  const { t } = useTranslation()
+
   return (
-    <header 
+    <header
       className='header-container'>
       <div className="header">
         <span>ImagineBar</span>
-        <span className='visible-from-mobile-landscape'> &#9679; Ahol álmaid étele vár</span>
+        <span className='visible-from-mobile-landscape'> &#9679; {t('header.tagline')}</span>
         <div className='visible-from-tablet-profile'>
           <span> &#9679; </span>
           <a href="https://facebook.com" className='social-media-link header-button-scale'>

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { convertRegistrationFormDataToBillingAddressFormData, convertRegistrationFormDataToShippingAddressFormData } from '../../../../converter/formDataConverter'
 import { RegisterFormBillingAddress } from './RegisterFormBillingAddress'
 import { RegisterFormShippingAddress } from './RegisterFormShippingAddress'
@@ -18,20 +19,21 @@ export function RegisterFormAddresses({
   isShippingAddressFormDisplayed,
   toggleShippingAddressForm
 }: RegisterFormAddressesProps) {
+  const { t } = useTranslation()
   return(
     <form onSubmit={handleSetAddressesStep} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem'}}>
-      <h2 style={{ margin: '0px' }}>Számlázási cím</h2>
+      <h2 style={{ margin: '0px' }}>{t('register.billingAddressTitle')}</h2>
       <RegisterFormBillingAddress
         billingAddressData={convertRegistrationFormDataToBillingAddressFormData(registrationFormData)}
         onChange={handleRegistrationDataChange}
       />
       <span>
-        <input type="checkbox" onChange={toggleShippingAddressForm}/> A szállítási cím megegyezik a számlázási címmel
+        <input type="checkbox" onChange={toggleShippingAddressForm}/> {t('register.shippingSameAsBilling')}
       </span>
       {isShippingAddressFormDisplayed && (
         <>
           <div className='navigation-bar-separator' />
-          <h2 style={{ margin: '0px' }}>Szállítási cím</h2>
+          <h2 style={{ margin: '0px' }}>{t('register.shippingAddressTitle')}</h2>
           <RegisterFormShippingAddress
             shippingAddressData={convertRegistrationFormDataToShippingAddressFormData(registrationFormData)}
             onChange={handleRegistrationDataChange}
@@ -43,7 +45,7 @@ export function RegisterFormAddresses({
         type="submit"
         style={{ marginTop: '1rem' }}
       >
-        Regisztráció
+        {t('register.registerButton')}
       </button>
     </form>
   )
