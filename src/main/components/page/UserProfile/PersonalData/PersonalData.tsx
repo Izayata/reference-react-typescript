@@ -117,7 +117,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
           </div>
         </div>
       )}
-      {editMode && (
+      {!editMode && (
         <button
           className="register-page-button show-on-mobile"
           onClick={handleEdit}
