@@ -67,7 +67,7 @@ Tests live in `src/test/**`, mirroring the `src/main/**` path of the thing under
 
 `src/test/components/**` (mirroring `src/main/components/**`) holds a different, lighter kind of test — component-level render/interaction smoke tests (mock `fetch` directly, assert on rendered text/DOM state and handler wiring) rather than exhaustive per-field validation, since the model/builder layer above already covers that. Currently only six components have coverage there (`AccountRouteGuard`, `Login`, `Register`, `Checkout`, `ShoppingCart`, `Modal`); most other components still have none.
 
-`converter/`, `myDecorators/`, and `utils/` files use `.ts` (they contain no JSX); `model/` and `builder/` files are still `.tsx` even though they also contain no JSX — a known, deliberately out-of-scope gap (AUDIT.md §3.7).
+`converter/`, `myDecorators/`, and `utils/` files use `.ts` (they contain no JSX) — with one known exception, `src/main/utils/EmailUtils.tsx`, missed by the original rename sweep; `model/` and `builder/` files are still `.tsx` even though they also contain no JSX — both are known, deliberately out-of-scope gaps (AUDIT.md §3.7).
 
 When adding a new domain field or model, follow this same Model → Builder → Converter → Utils (+ mirrored test) shape rather than introducing a different pattern.
 
