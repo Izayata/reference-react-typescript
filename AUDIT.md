@@ -1,15 +1,16 @@
 # Codebase Audit — reference-react-typescript
 
 **Date:** 2026-07-26
-**Scope:** Full repository — application source (`src/`), build/deploy config (`Dockerfile`, `nginx.conf`, `tsconfig.json`, `.eslintrc.json`), dependency manifest (`package.json` / `package-lock.json`), and test suite.
-**Methodology:** Manual review of source and config, cross-checked with live tool output: `npm install`, `npm run lint`, `npm test -- --watchAll=false` (CI mode), and `npm audit`. All findings below with a file/line reference were verified by reading the actual file at that location; the live command output is summarized in the Appendix.
+**Scope:** Full repository — application source (`src/`), build/deploy config (`Dockerfile`, `nginx.conf`, `tsconfig.json`, `.eslintrc.json`), dependency manifest (`package.json` / `package-lock.json`), test suite, and (§8) every frontend `fetch()` call cross-referenced against the documented backend contract in `API_ENDPOINTS.md`.
+**Methodology:** Manual review of source and config, cross-checked with live tool output: `npm install`, `npm run lint`, `npm test -- --watchAll=false` (CI mode), and `npm audit`. All findings below with a file/line reference were verified by reading the actual file at that location; the live command output is summarized in the Appendix. §8 additionally cross-references every `fetch()` call site in `src/` against the backend contract documented in `API_ENDPOINTS.md` (added to the repo after the initial audit pass) — that section assumes `API_ENDPOINTS.md` accurately reflects the backend's current routes.
 
-This audit is written to serve two audiences at once — as supporting material for a university thesis, and as a realistic example of what a professional pre-release review of a small-to-medium React/TypeScript app looks like. Findings are graded by severity (Critical / High / Medium / Low) and grouped by category, not by discovery order.
+This audit is written to serve two audiences at once — as supporting material for a university thesis, and as a realistic example of what a professional pre-release review of a small-to-medium React/TypeScript app looks like. Findings are graded by severity (Critical / High / Medium / Low, plus an occasional Informational note for non-defect observations) and grouped by category, not by discovery order.
 
 ---
 
 ## Executive summary
 
+- **The frontend and its documented backend API have drifted apart on nearly every dynamic endpoint.** Cross-referencing every `fetch()` call site against `API_ENDPOINTS.md` (§8) found that **15 of ~21 distinct integration points call a URL path — and in two cases an HTTP method — that doesn't exist in the documented backend contract.** This isn't a style nit: it means registration field-existence checks, signup, account loading, profile/address/password updates, the menu, food details, allergens, shopping-cart contents, checkout order submission, and forgot-password link validation would all **404 (or fail to bind)** against a backend that implements the documented API as written. Only `/auth-status`, `/csrf-token`, `/login`, `/logout`, and the two password-reset request/set endpoints line up.
 - **A real, verified functional bug**: three places in the app catch a validation error, format it, and then discard the formatted message instead of showing it — so users get silent failures at two registration steps and one checkout path (`Register.tsx`, `Checkout.tsx`).
 - **The configured test command fails today** (`npm test -- --watchAll=false` exits with code `1`) because `src/test/App.test.tsx` has no active test in it — anyone wiring up CI right now would hit a red build immediately, unrelated to real app logic.
 - **`npm run lint` currently reports 392 problems (127 errors, 265 warnings)** against the project's own `.eslintrc.json` — the codebase has drifted from its own style rules because nothing enforces them automatically.
@@ -39,7 +40,7 @@ This audit is written to serve two audiences at once — as supporting material 
 | # | Location | Severity | Description |
 |---|---|---|---|
 | 2.1 | `nginx.conf:25,35` | **High** | `Access-Control-Allow-Origin: '*'` is set on the proxied `/auth-status|csrf-token|login|v1|actuator` block, the same routes called throughout the app with `credentials: 'include'`. Browsers currently reject the wildcard-origin + credentialed-request combination, so this isn't exploitable as-is, but it's one small change away (adding `Access-Control-Allow-Credentials: true`, or any reverse-proxy that reflects the request origin) from letting any origin read authenticated responses — including Spring Boot `/actuator` endpoints. Should be an explicit origin allowlist, not `*`. |
-| 2.2 | `src/main/components/page/Register/Register.tsx` (signup `POST`), `src/main/components/page/ShoppingCart/ShoppingCart.tsx:14-20` (`fetchFoodsByIds`), `src/main/utils/myUser/PasswordUtils.tsx:16-27` (`isCommonPassword` check) | **Medium** | These three mutating `fetch` calls send no CSRF token and (for the latter two) no `credentials: 'include'`, unlike every other state-changing call in the app (Checkout, PersonalData, BillingAddress, ShippingAddress, LoginData, Login, ForgottenPassword, Logout all correctly attach `X-CSRF-TOKEN` via `fetchCsrfToken()` from `src/main/supports/fetch-utilities/fetchCsrfToken.tsx`). Low direct impact today (signup is inherently unauthenticated; the other two aren't obviously sensitive), but it's an inconsistency that should be resolved deliberately, not by omission. |
+| 2.2 | `src/main/components/page/Register/Register.tsx` (signup `POST`), `src/main/components/page/ShoppingCart/ShoppingCart.tsx:14-20` (`fetchFoodsByIds`), `src/main/utils/myUser/PasswordUtils.tsx:16-27` (`isCommonPassword` check) | **Medium** | These three mutating `fetch` calls send no CSRF token and (for the latter two) no `credentials: 'include'`, unlike every other state-changing call in the app (Checkout, PersonalData, BillingAddress, ShippingAddress, LoginData, Login, ForgottenPassword, Logout all correctly attach `X-CSRF-TOKEN` via `fetchCsrfToken()` from `src/main/supports/fetch-utilities/fetchCsrfToken.tsx`). At the time this was written the practical impact looked low (signup is inherently unauthenticated). **Correction, per §8:** the documented backend marks `POST /v1/registration` as **CSRF required**, so this gap is not actually low-impact — it's just currently masked by the fact that `Register.tsx` also calls the wrong URL path entirely (§8.1), so the request 404s before CSRF is ever checked. |
 | 2.3 | `.gitignore` (repo root) | **Low** | Ignores `.env.local`, `.env.development.local`, etc., but not the top-level `.env`. The current `.env` only holds `DANGEROUSLY_DISABLE_HOST_CHECK=true` / `HOST=0.0.0.0` (no secrets), but as-is, the first `git add .` in this repo (which currently has zero commits) would commit it. Add `.env` to `.gitignore` before any real secret is ever placed there. |
 | 2.4 | `package.json` dependencies + `npm audit` (live run) | **High** | `npm audit` reports **60 vulnerabilities: 2 critical, 33 high, 13 moderate, 12 low**, all transitive through `react-scripts` (webpack-dev-server, rollup, workbox-build, websocket-driver, shell-quote, ws, yaml, etc.). These are build-tooling/dev-server dependencies, not code shipped in the production bundle, so the practical exposure is to the build/CI machine and local dev server rather than end users — but `react-scripts@5.0.1` (Create React App) has been unmaintained since 2023, so none of this will be patched upstream without migrating off CRA. `typescript@4.9.5`, `@types/node@^17` (Node 17 is EOL), and `eslint@^8` (deprecated major, confirmed via install-time deprecation warning) compound the staleness. |
 | 2.5 | `src/main/components/functional/AccountRouteGuard/AccountRouteGuard.tsx:5,8-12` | **Medium** | The guard's local `authenticated`/`setAuthenticated` state is declared but `setAuthenticated` is never called anywhere — dead state. Protection is a `useEffect` that calls `navigate('/login')` only *after* first render, so a user who is already loaded into the app (`isAuthenticated === false`) and navigates client-side straight to `/account` will have `AccountPage` (and its own data-fetching effects) mount and paint for one cycle before the redirect fires. This is architecturally fine as *UX routing* (the real security boundary is correctly each API endpoint's own session check), but it provides no actual access-control guarantee on its own and shouldn't be mistaken for one. |
@@ -87,12 +88,57 @@ This audit is written to serve two audiences at once — as supporting material 
 |---|---|---|---|
 | 7.1 | repo-wide | **Low** | No i18n library is present (`package.json` has no `react-i18next`/`i18next`/`react-intl` etc.). All user-facing strings — labels, error messages, page copy — are hardcoded Hungarian literals inline in components (e.g. `Login.tsx`, `UserProfile.tsx`, `ErrorUtils.tsx`-driven messages throughout). Not a bug, but worth flagging given this repo is also positioned as an industry-reference example: a reference implementation would typically demonstrate an extraction/i18n layer. |
 
+### 8. Backend API contract mismatches
+
+`API_ENDPOINTS.md` documents the backend's actual request/response contract (paths, methods, CSRF requirements, body shapes). Every `fetch()` call site in `src/` was located and compared against it directly. The comparison assumes `API_ENDPOINTS.md` is accurate for the backend as it currently stands — if so, the frontend was written against (or has drifted from) a different set of routes almost everywhere except auth/session plumbing.
+
+#### 8.1 Endpoint path/method mismatches — **Critical**
+
+Every row below would return **404** (or fail Spring's parameter binding, for the query-vs-path-segment case) against a backend that implements `API_ENDPOINTS.md` as documented. This covers registration validation, signup, account loading, all profile/address/password updates, the menu, food details, allergens, cart contents, checkout, and password-reset link validation — i.e. nearly every screen in the app past the login form.
+
+| Frontend call | Documented backend endpoint | File:line | Notes |
+|---|---|---|---|
+| `GET /v1/req/isEmailExist/{email}` | `GET /v1/registration/email/{email}/exists` | `src/main/utils/EmailUtils.tsx:16` | Wrong path. |
+| `GET /v1/req/isUsernameExist/{username}` | `GET /v1/registration/username/{username}/exists` | `src/main/utils/myUser/UsernameUtils.tsx:15` | Wrong path. |
+| `POST /v1/req/isCommonPassword` | `POST /v1/registration/common-password` | `src/main/utils/myUser/PasswordUtils.tsx:16-24` | Wrong path — but `checkPasswordIsCommon` isn't called from anywhere else in `src/`, so this one's unreachable regardless (dead code, see also §3). |
+| `POST /v1/req/signup` | `POST /v1/registration` | `src/main/components/page/Register/Register.tsx:64` | Wrong path — registration itself is broken. Even if the path were fixed, no CSRF token is attached (§2.2), and the documented endpoint requires one. |
+| `GET /v1/account/getAuthenticatedUser` | `GET /v1/account/me` | `src/main/utils/pages/account/accountPageUtils.tsx:2` | Wrong path — the account page can't load the logged-in user's data. |
+| `PUT /v1/account/updatePassword` | `PATCH /v1/account/password` | `src/main/components/page/UserProfile/LoginData/LoginData.tsx:46` | Wrong path **and** wrong method. |
+| `PUT /v1/customer/updateBillingAddress` | `PUT /v1/customer/billing-address` | `src/main/components/page/UserProfile/BillingAddress/BillingAddress.tsx:55` | Wrong path (method is correct). |
+| `PUT /v1/customer/updateDefaultShippingAddress` | `PUT /v1/customer/shipping-address` | `src/main/components/page/UserProfile/ShippingAddress/ShippingAddress.tsx:56` | Wrong path (method is correct). |
+| `PUT /v1/customer/updatePersonalDetails` | `PATCH /v1/customer/personal-details` | `src/main/components/page/UserProfile/PersonalData/PersonalData.tsx:47` | Wrong path **and** wrong method. |
+| `GET /v1/foods/getMenuItemsBy/RESTAURANT` | `GET /v1/foods/menu/{placeToBuy}` | `src/main/components/page/Menu/Menu.tsx:60` (URL built in `src/main/pages/MenuPage/index.tsx:5`) | Wrong path. Also hardcodes the literal `RESTAURANT` segment rather than passing `PlaceToBuyEnum` dynamically — `FANTASY_WORLD` is never reachable from any menu route even once the path is fixed. |
+| `POST /v1/foods/getShoppingCartItemsData` | `POST /v1/foods/cart` | `src/main/components/page/ShoppingCart/ShoppingCart.tsx:14` | Wrong path — the cart page can't resolve line-item names/prices/images. |
+| `GET /v1/foods/getFoodDetailsBy/{foodId}` | `GET /v1/foods/{id}` | `src/main/components/page/FoodDetails/FoodDetails.tsx:38` | Wrong path — the food detail page 404s. |
+| `GET /v1/allergen/getAllAllergens` | `GET /v1/allergens` | `src/main/utils/food/AllergenUtils.tsx:7-12` | Wrong path (singular `allergen` vs. documented plural `allergens`) — the allergens page 404s. |
+| `POST /v1/orders/createOrder` | `POST /v1/orders` (authenticated) or `POST /v1/orders/guest` (public) | `src/main/components/page/Checkout/Checkout.tsx:333` | Wrong path either way — order submission, the entire commercial point of the app, 404s. See also §8.2. |
+| `GET /v1/password-reset/validate-{token}` | `GET /v1/password-reset/validate?token={token}` | `src/main/components/page/ForgottenPassword/ForgottenPassword.tsx:74` | The token is appended to the path with a literal hyphen instead of being sent as a `?token=` query parameter — won't bind to a `@RequestParam` on the backend. Breaks reset-link validation. |
+
+**Endpoints that do line up** (path and method both correct): `GET /auth-status`, `GET /csrf-token`, `POST /login`, `POST /logout`, `POST /v1/password-reset/request-password-reset-link`, `POST /v1/password-reset/set-new-password`.
+
+#### 8.2 Checkout doesn't branch between authenticated and guest order endpoints — **High**
+
+`Checkout.tsx:333` always `POST`s to the same URL regardless of `isAuthenticated`, but the documented API models this as two distinct endpoints — `POST /v1/orders` for logged-in customers (order gets attached to their `Customer` record) vs. `POST /v1/orders/guest` for anonymous checkout. Beyond the path typo in §8.1, the frontend has no branching logic at all for this, so even a path fix would need new conditional routing, not just a URL correction.
+
+#### 8.3 CSRF tokens sent to endpoints the backend documents as CSRF-exempt — **Low**
+
+`Login.tsx:30`, `ForgottenPassword.tsx:45`, and `ForgottenPassword.tsx:114` each call `fetchCsrfToken()` and attach the result before hitting `/login`, `/v1/password-reset/request-password-reset-link`, and `/v1/password-reset/set-new-password` — all three of which `API_ENDPOINTS.md` documents as **CSRF-exempt**. Harmless against a backend that simply ignores the extra token, but it's a wasted round-trip (an extra `GET /csrf-token` before every login attempt) and suggests the CSRF-exemption list wasn't consulted when these calls were written.
+
+#### 8.4 `/logout`'s CSRF token is sent as a body field, not a header — **Medium (unverified)**
+
+`API_ENDPOINTS.md` describes CSRF as "send `X-CSRF-TOKEN`" for any non-exempt mutating call, and `POST /logout` is explicitly listed as CSRF-required. `LogoutButton.tsx:19-37` does fetch and send a token, but as a `_csrf` field inside a `URLSearchParams` body (same pattern as `Login.tsx`, where it's harmless because `/login` is exempt) — not as the `X-CSRF-TOKEN` header the doc describes elsewhere. Whether Spring's `CsrfFilter` accepts a body parameter alongside/instead of the header depends on the backend's `CsrfTokenRequestHandler` configuration, which isn't visible from the frontend — flagged as a likely-but-unconfirmed logout failure, worth a quick manual check against the real backend rather than assuming either way.
+
+#### 8.5 Documented endpoints with no frontend caller — **Informational**
+
+`POST /v1/foods` (authenticated menu-item creation), `GET /v1/customers` (admin customer list), `GET /v1/orders/{id}` (order detail/receipt lookup), and `GET /v1/ingredients` are all defined in `API_ENDPOINTS.md` but never called anywhere in `src/`. Not a bug — there's simply no admin UI, order-history/receipt view, or ingredient listing built yet — but worth noting for anyone using this repo as a reference: the backend's capability surface is larger than what the current frontend exposes.
+
 ---
 
 ## Summary table
 
 | # | Finding | Severity |
 |---|---|---|
+| 8.1 | 15 of ~21 frontend API calls use a path/method that doesn't exist in the documented backend | **Critical** |
 | 1.1 | Silent validation-error swallowing — Register personal details step | High |
 | 1.2 | Silent validation-error swallowing — Register address step | High |
 | 6.1 | Modal has no keyboard/ARIA support | High |
@@ -101,6 +147,7 @@ This audit is written to serve two audiences at once — as supporting material 
 | 5.1 | No CI/CD — lint (392 problems) and tests (currently failing) run only manually | High |
 | 2.1 | `nginx.conf` wildcard CORS on credentialed API routes | High |
 | 2.4 | 60 npm audit vulnerabilities (2 critical) via unmaintained CRA toolchain | High |
+| 8.2 | Checkout never branches between authenticated/guest order endpoints | High |
 | 1.3 | Silent validation-error swallowing — Checkout submit (partial) | Medium |
 | 1.4 | `App.test.tsx` empty suite fails the test run outright | Medium |
 | 2.2 | Inconsistent CSRF/credentials coverage on 3 mutating requests | Medium |
@@ -111,6 +158,7 @@ This audit is written to serve two audiences at once — as supporting material 
 | 5.2 | No `jsx-a11y` lint rules configured | Medium |
 | 4.2 | No coverage thresholds/reporting configured | Medium |
 | 6.3 | Hamburger menu toggle not keyboard-operable | Medium |
+| 8.4 | `/logout` CSRF token sent as body field, not header (unverified against backend) | Medium |
 | 2.3 | `.gitignore` doesn't exclude top-level `.env` | Low |
 | 3.2 | Dead `counter` Redux feature still wired into the store | Low |
 | 3.4 | Assorted leftover `console.log`s / commented-out code | Low |
@@ -120,6 +168,8 @@ This audit is written to serve two audiences at once — as supporting material 
 | 5.3 | `tsconfig.json` `target: es5` inconsistent with `browserslist` | Low |
 | 6.4 | Additional non-semantic clickable `<div>`s | Low |
 | 7.1 | No i18n layer; all UI text hardcoded in Hungarian | Low |
+| 8.3 | Unneeded CSRF token fetches on 3 documented CSRF-exempt endpoints | Low |
+| 8.5 | 4 documented backend endpoints have no frontend caller (no admin/order-history UI) | Informational |
 
 ---
 
