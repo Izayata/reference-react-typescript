@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { MenuItemModel } from '../../../model/MenuItemModel'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { AddToCartButton } from '../../functional/AddToCartButton/AddToCartButton'
+import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWheatAwn } from '@fortawesome/free-solid-svg-icons'
@@ -83,7 +84,7 @@ export function formatPrice(amount: string, currency: string): string {
   return `${intAmount} ${currencyDisplay}`
 }
 
-export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][], printLine = false) {
+export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][]) {
   let sectionTitlePrintedFlag = false
 
   return (
@@ -151,12 +152,12 @@ export function renderSection(sectionTitle: string, menuItems: MenuItemModel[][]
 export function Menu({ url }: MenuProps) {
   const [menuItems, setMenuItems] = useState<MenuItemModel[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  
+  const { setModalMessage } = useModal()
+
   useEffect(() => {
     fetchMenuItems(url)
       .then(setMenuItems)
-      .catch(e => setError(e.message))
+      .catch(e => setModalMessage(e.message))
       .finally(() => setLoading(false))
   }, [])
 

@@ -88,13 +88,13 @@ const ERR_MENU_ITEM_MODEL_CATEGORY_NULL = () => new MenuItemModel(
   VALID_IMAGE_URL_MODEL
 )
 const ERR_MENU_ITEM_MODEL_CATEGORY_EMPTY_STRING = () => new MenuItemModel(
-    VALID_FOOD_ID,
-    VALID_FOOD_NAME_MODEL,
-    VALID_PRICE_MODEL,
-    '',
-    VALID_ALLERGENS,
-    VALID_IMAGE_URL_MODEL
-  )
+  VALID_FOOD_ID,
+  VALID_FOOD_NAME_MODEL,
+  VALID_PRICE_MODEL,
+  '',
+  VALID_ALLERGENS,
+  VALID_IMAGE_URL_MODEL
+)
 const ERR_MENU_ITEM_MODEL_CATEGORY_BLANK = () => new MenuItemModel(
   VALID_FOOD_ID,
   VALID_FOOD_NAME_MODEL,
@@ -211,12 +211,12 @@ describe('MenuItemModel', () => {
     )
   })
   it('should throw required error for empty string category', () => {
-  expectErrorMessages(
-    ERR_MENU_ITEM_MODEL_CATEGORY_EMPTY_STRING,
-    [ERR_MSG_CATEGORY_REQUIRED],
-    1
-  )
-})
+    expectErrorMessages(
+      ERR_MENU_ITEM_MODEL_CATEGORY_EMPTY_STRING,
+      [ERR_MSG_CATEGORY_REQUIRED],
+      1
+    )
+  })
   it('should throw required error for blank category', () => {
     expectErrorMessages(
       ERR_MENU_ITEM_MODEL_CATEGORY_BLANK,

@@ -1,7 +1,5 @@
-import { NavLinkPersist } from '../../supports/Persistence'
-import style from './nav.module.scss'
-import { useState, useRef, useEffect } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useState, useRef } from 'react'
+import { NavLink } from 'react-router-dom'
 import { HamburgerMenuButton } from './components/hamburger-menu/button/HamburgerMenuButton'
 import { NavigationMenu } from './navigation-menu/NavigationMenu'
 import { ShoppingBagContainer } from './components/shopping-bag/container/ShoppingBagContainer'
@@ -16,16 +14,10 @@ import './css/nav-bar-lower-row-container.css'
 import './css/restaurant-name.css'
 import '../../css/shared/no-display.css'
 import '../../css/shared/visible-from-desktop-landscape.css'
-import { NavigationLinkMenu } from './navigation-menu/navigation-link-menu/NavigationLinkMenu'
-import { SeparatorLine } from './navigation-menu/navigation-link-menu/separator-line/SeparatorLine'
 import { ProfileButton } from './components/profile-button/ProfileButton'
 
-// import '../../../css/shared/slide-in.css'
-
 export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLogout: () => void}) {
-  // const location = useLocation()
-
-  const [menuOpen, setMenuOpen] = useState(false)  
+  const [menuOpen, setMenuOpen] = useState(false)
   const [shoppingBagOpen, setShoppingBagOpen] = useState(false)
 
   const dropdownRef = useRef<HTMLDivElement>(null)

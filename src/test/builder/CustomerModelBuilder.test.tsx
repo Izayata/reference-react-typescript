@@ -2,6 +2,13 @@ import { CustomerModelBuilder } from '../../main/builder/CustomerModelBuilder'
 import { PersonalDetailsModelBuilder } from '../../main/builder/PersonalDetailsModelBuilder'
 import { AddressModelBuilder } from '../../main/builder/AddressModelBuilder'
 import { EmailModel } from '../../main/model/EmailModel'
+import { FirstnameModel } from '../../main/model/customer/FirstnameModel'
+import { LastnameModel } from '../../main/model/customer/LastnameModel'
+import { PhoneNumberModel } from '../../main/model/customer/PhoneNumberModel'
+import { ZipCodeModel } from '../../main/model/customer/address/ZipCodeModel'
+import { CityModel } from '../../main/model/customer/address/CityModel'
+import { StreetModel } from '../../main/model/customer/address/StreetModel'
+import { StreetNumberModel } from '../../main/model/customer/address/StreetNumberModel'
 import { expectErrorMessages } from '../../main/utils/test/ExpectErrorMessages'
 import { ERR_MSG_PERSONAL_DETAILS_REQUIRED } from '../../main/utils/PersonalDetailsUtils'
 import { ERR_MSG_EMAIL_REQUIRED } from '../../main/utils/EmailUtils'
@@ -9,25 +16,25 @@ import { ERR_MSG_SHIPPING_ADDRESS_REQUIRED, ERR_MSG_BILLING_ADDRESS_REQUIRED } f
 
 // Valid models for composing CustomerModel
 const VALID_PERSONAL_DETAILS_MODEL = new PersonalDetailsModelBuilder()
-  .setFirstname(new (require('../../main/model/customer/FirstnameModel').FirstnameModel)('János'))
-  .setLastname(new (require('../../main/model/customer/LastnameModel').LastnameModel)('Kovács'))
-  .setPhoneNumber(new (require('../../main/model/customer/PhoneNumberModel').PhoneNumberModel)('+36201234567'))
+  .setFirstname(new FirstnameModel('János'))
+  .setLastname(new LastnameModel('Kovács'))
+  .setPhoneNumber(new PhoneNumberModel('+36201234567'))
   .build()
 
 const VALID_EMAIL_MODEL = new EmailModel('janos.kovacs@example.com')
 
 const VALID_SHIPPING_ADDRESS_MODEL = new AddressModelBuilder()
-  .setZipCode(new (require('../../main/model/customer/address/ZipCodeModel').ZipCodeModel)('4032'))
-  .setCity(new (require('../../main/model/customer/address/CityModel').CityModel)('Debrecen'))
-  .setStreet(new (require('../../main/model/customer/address/StreetModel').StreetModel)('Kossuth Lajos utca'))
-  .setStreetNumber(new (require('../../main/model/customer/address/StreetNumberModel').StreetNumberModel)('21'))
+  .setZipCode(new ZipCodeModel('4032'))
+  .setCity(new CityModel('Debrecen'))
+  .setStreet(new StreetModel('Kossuth Lajos utca'))
+  .setStreetNumber(new StreetNumberModel('21'))
   .build()
 
 const VALID_BILLING_ADDRESS_MODEL = new AddressModelBuilder()
-  .setZipCode(new (require('../../main/model/customer/address/ZipCodeModel').ZipCodeModel)('4032'))
-  .setCity(new (require('../../main/model/customer/address/CityModel').CityModel)('Debrecen'))
-  .setStreet(new (require('../../main/model/customer/address/StreetModel').StreetModel)('Kossuth Lajos utca'))
-  .setStreetNumber(new (require('../../main/model/customer/address/StreetNumberModel').StreetNumberModel)('21'))
+  .setZipCode(new ZipCodeModel('4032'))
+  .setCity(new CityModel('Debrecen'))
+  .setStreet(new StreetModel('Kossuth Lajos utca'))
+  .setStreetNumber(new StreetNumberModel('21'))
   .build()
 
 // Invalid cases

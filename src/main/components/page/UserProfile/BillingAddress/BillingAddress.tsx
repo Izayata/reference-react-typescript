@@ -5,7 +5,7 @@ import { convertBillingAddressFormToAddressModel } from '../../../../converter/A
 import { toast } from 'react-toastify'
 import { sleep } from '../../../../utils/sleep/SleepUtils'
 import { LoadingOverlay } from '../../../functional/LoadingOverlay/LoadingOverlay'
-import { convertBillingAddressFormDataToFormData, convertShippingAddressFormDataToFormData } from '../../../../converter/formDataConverter'
+import { convertBillingAddressFormDataToFormData } from '../../../../converter/formDataConverter'
 import { AddressInput } from '../../../input/customer/address/AddressInput'
 import { handleErrorMessages } from '../../../../utils/ErrorUtils'
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'

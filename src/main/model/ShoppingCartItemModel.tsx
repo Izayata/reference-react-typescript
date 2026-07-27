@@ -9,19 +9,19 @@ import { ERR_MSG_FOOD_ID_REQUIRED, ERR_MSG_FOOD_NAME_REQUIRED, ERR_MSG_IMAGE_URL
 export class ShoppingCartItemModel {
   @NotNull({ message: ERR_MSG_FOOD_ID_REQUIRED })
   @NotUndefined({ message: ERR_MSG_FOOD_ID_REQUIRED })
-  foodId: number
+    foodId: number
 
   @NotNull({ message: ERR_MSG_FOOD_NAME_REQUIRED })
   @NotUndefined({ message: ERR_MSG_FOOD_NAME_REQUIRED })
-  foodName: FoodNameModel
+    foodName: FoodNameModel
 
   @NotNull({ message: ERR_MSG_PRICE_REQUIRED })
   @NotUndefined({ message: ERR_MSG_PRICE_REQUIRED })
-  price: PriceModel
+    price: PriceModel
 
   @NotNull({ message: ERR_MSG_IMAGE_URL_REQUIRED })
   @NotUndefined({ message: ERR_MSG_IMAGE_URL_REQUIRED })
-  imageUrl: ImageUrlModel
+    imageUrl: ImageUrlModel
 
   constructor(
     foodId: number,

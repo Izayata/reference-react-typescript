@@ -13,27 +13,27 @@ import { AllergenModel } from './food/AllergenModel'
 export class FoodDetailsModel {
   @NotNull({ message: ERR_MSG_FOOD_NAME_REQUIRED })
   @NotUndefined({ message: ERR_MSG_FOOD_NAME_REQUIRED })
-  foodName: FoodNameModel
+    foodName: FoodNameModel
 
   @NotNull({ message: ERR_MSG_PRICE_REQUIRED })
   @NotUndefined({ message: ERR_MSG_PRICE_REQUIRED })
-  price: PriceModel
+    price: PriceModel
 
   @NotNull({ message: ERR_MSG_DESCRIPTION_REQUIRED })
   @NotUndefined({ message: ERR_MSG_DESCRIPTION_REQUIRED })
-  description: DescriptionModel
+    description: DescriptionModel
 
   @NotNull({ message: ERR_MSG_INGREDIENT_NAME_REQUIRED })
   @NotUndefined({ message: ERR_MSG_INGREDIENT_NAME_REQUIRED })
-  ingredientNames: IngredientNameModel[]
+    ingredientNames: IngredientNameModel[]
 
   @NotNull({ message: ERR_MSG_ALLERGEN_NAMES_LIST_REQUIRED })
   @NotUndefined({ message: ERR_MSG_ALLERGEN_NAMES_LIST_REQUIRED })
-  allergens: AllergenModel[]
+    allergens: AllergenModel[]
 
   @NotNull({ message: ERR_MSG_IMAGE_URL_REQUIRED })
   @NotUndefined({ message: ERR_MSG_IMAGE_URL_REQUIRED })
-  imageUrl: ImageUrlModel
+    imageUrl: ImageUrlModel
 
   constructor(
     foodName: FoodNameModel,

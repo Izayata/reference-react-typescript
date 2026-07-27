@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
-import { Modal } from '../../../functional/Modal/Modal'
 import { AddressModel } from '../../../../model/customer/AddressModel'
 import { convertShippingAddressFormToAddressModel } from '../../../../converter/AddressModelConverter'
 import { sleep } from '../../../../utils/sleep/SleepUtils'

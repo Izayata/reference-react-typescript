@@ -1,5 +1,4 @@
 import React from 'react'
-import { ERR_MSG_COLOR_HEXA } from '../../../../utils/ErrorUtils'
 
 export const InputFieldXmark: React.FC = () => (
   <span className="input-form-mark" aria-label="Nem elérhető felhasználónév">

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AllergenModel } from '../../../model/food/AllergenModel'
 import { fetchAllergens } from '../../../utils/food/AllergenUtils'
-import { Modal } from '../../functional/Modal/Modal'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 
@@ -70,7 +69,7 @@ export function Allergen() {
 
   //longest name 41 characters long
 
-  function renderSectionOfFour(array: any[]) {
+  function renderSectionOfFour(array: AllergenModel[]) {
     return(      
       <section className='allergen-section'>
         {array.map(a => (

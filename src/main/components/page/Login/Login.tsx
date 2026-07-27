@@ -38,7 +38,6 @@ export function Login({ onLogin }: LoginProps) {
         onLogin()
         window.location.href = data.redirectUrl
       } else {
-        const errorText = await response.text()
         setModalMessage('Hibás felhasználónév vagy jelszó.')
       }
     } catch (err) {
