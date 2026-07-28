@@ -1,12 +1,10 @@
 import { EmailModel } from '../model/EmailModel'
-import { PasswordModel } from '../model/myUser/PasswordModel'
 import { UsernameModel } from '../model/myUser/UsernameModel'
 import { CustomerModel } from '../model/CustomerModel'
 import { MyUserModel } from '../model/MyUserModel'
 
 export class MyUserModelBuilder {
   private myUsername?: UsernameModel
-  private password?: PasswordModel
   private email?: EmailModel
   private customer?: CustomerModel
 
