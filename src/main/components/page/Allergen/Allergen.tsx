@@ -107,7 +107,7 @@ export function Allergen() {
 
   return (
     <div className='allergen-cards-container'>
-      <h2 className='page-title'>{t('allergen.pageTitle')}</h2>
+      <h1 className='page-title'>{t('allergen.pageTitle')}</h1>
       {sortIntoSectionOfFour(allergens).map((section, index) => (
         <div key={index}>
           {renderSectionOfFour(section)}

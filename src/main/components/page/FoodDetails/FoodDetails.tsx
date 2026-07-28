@@ -57,7 +57,7 @@ export function FoodDetails() {
 
   return (
     <section className='food-details-container'>
-      <h2 className="page-title">{food.foodName.value}</h2>
+      <h1 className="page-title">{food.foodName.value}</h1>
       <div className="card-container food-details-page">
         {loading && <LoadingOverlay />}
         <MenuItemImage

@@ -68,7 +68,7 @@ export function ShoppingCart() {
           <img className='shopping-cart-no-food-image' src="https://memesgenerator.hu/wp-content/uploads/mememe/2025/04/kaja-nem-lesz-115308-1.jpg" alt={t('shoppingCart.emptyCartImageAlt')} />
         </div>
         :
-        <h2 className='page-title'>{t('shoppingCart.pageTitle')}</h2>}
+        <h1 className='page-title'>{t('shoppingCart.pageTitle')}</h1>}
       {foods.length > 0 && (
         <div className='shopping-cart-container'>
           <DisplayShoppingCartContent foods={foods} setRefreshShoppingCart={setRefreshShoppingCart} setLoading={setLoading}/>
