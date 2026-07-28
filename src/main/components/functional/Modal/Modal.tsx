@@ -10,6 +10,8 @@ export function Modal({ message, onClose }: ModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
+    const previouslyFocusedElement = document.activeElement as HTMLElement | null
+
     closeButtonRef.current?.focus()
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -24,7 +26,10 @@ export function Modal({ message, onClose }: ModalProps) {
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      previouslyFocusedElement?.focus()
+    }
   }, [onClose])
 
   return (

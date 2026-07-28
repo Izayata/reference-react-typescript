@@ -13,7 +13,7 @@ export function ShoppingBagDropdown({ onClick }: { onClick: () => void }) {
     // their own, including triggering this bubble via Enter, so this wrapper itself
     // doesn't need to be a separate tab stop.
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-    <div className='shopping-bag-dropdown navigation-link-container' onClick={onClick}>
+    <div id="shopping-bag-dropdown" className='shopping-bag-dropdown navigation-link-container' onClick={onClick}>
       <NavLink className='navigation-link shopping-bag-link' to='/cart'>{t('nav.cart')}</NavLink>
       <div style={{
         width: '100%',

@@ -4,6 +4,7 @@ import { PasswordModel } from '../../../../model/myUser/PasswordModel'
 import { ValidationError } from 'class-validator'
 import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
+import { useTranslation } from 'react-i18next'
 import '../../../../css/shared/form/form-label-strong.css'
 
 interface PasswordInputProps {
@@ -14,6 +15,7 @@ interface PasswordInputProps {
 }
 
 export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, name, label }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const [allowed, setAllowed] = useState<boolean | null>(null)
 
@@ -90,10 +92,10 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, n
           value={value}
         />
         {value && !error && allowed && (
-          <InputFieldCheckmark/>
+          <InputFieldCheckmark ariaLabel={t('inputs.passwordValidAriaLabel')}/>
         )}
         {value && error && !allowed && (
-          <InputFieldXmark/>
+          <InputFieldXmark ariaLabel={t('inputs.passwordInvalidAriaLabel')}/>
         )}
       </div>
       <span id="password-error" className="error-message" aria-live="polite">

@@ -75,10 +75,10 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
           onInput={e => (e.currentTarget.setCustomValidity(''))}
         />
         {value && !error && allowed && (
-          <InputFieldCheckmark/>
+          <InputFieldCheckmark ariaLabel={t('inputs.passwordsMatchAriaLabel')}/>
         )}
         {value && error && !allowed && (
-          <InputFieldXmark/>
+          <InputFieldXmark ariaLabel={t('inputs.passwordsMismatchAriaLabel')}/>
         )}
       </div>
       <span id="confirm-password-error" className="error-message" aria-live="polite">

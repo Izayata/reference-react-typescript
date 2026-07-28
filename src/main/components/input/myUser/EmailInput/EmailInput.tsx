@@ -5,6 +5,7 @@ import { checkEmailExists, EMAIL_VALUE_ALLOWED_REGEX, EMAIL_VALUE_MAX_LENGTH, ER
 import { EmailModel } from '../../../../model/EmailModel'
 import { ValidationError } from 'class-validator'
 import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 
 interface EmailInputProps {
@@ -13,6 +14,7 @@ interface EmailInputProps {
 }
 
 export const EmailInput: React.FC<EmailInputProps> = ({ value, onChange }) => {
+  const { t } = useTranslation()
   const [error, setError] = useState<string[] | string>('')
   const [isAvailable, setAvailable] = useState<null | boolean>(null)
   const location = useLocation()
@@ -112,10 +114,10 @@ export const EmailInput: React.FC<EmailInputProps> = ({ value, onChange }) => {
           value={value}
         />
         {value && !error && isAvailable === true && (
-          <InputFieldCheckmark/>
+          <InputFieldCheckmark ariaLabel={t('inputs.emailAvailableAriaLabel')}/>
         )}
         {value && (error || isAvailable === false) && (
-          <InputFieldXmark/>
+          <InputFieldXmark ariaLabel={t('inputs.emailUnavailableAriaLabel')}/>
         )}
       </div>
       <span id="email-error" className="error-message" aria-live="polite">

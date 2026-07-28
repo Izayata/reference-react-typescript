@@ -138,7 +138,7 @@ export function CheckoutCustomerDetailsSection({
         </form>
       )}
       {!isAuthenticated && (
-        <form className='form-container' style={{ animation: 'none' }}>
+        <div className='form-container' style={{ animation: 'none' }}>
           <div>
             <h3 className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</h3>
             <div
@@ -215,7 +215,7 @@ export function CheckoutCustomerDetailsSection({
             </>
           )}
 
-        </form>
+        </div>
       )}
     </section>
   )

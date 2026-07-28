@@ -21,7 +21,7 @@ export function AddressInput({ formData, onChange }: AddressInputProps) {
   const location = useLocation()
 
   return (
-    <form className={location.pathname === '/checkout' ? 'form-orientation checkout' : 'form-orientation'}>
+    <div className={location.pathname === '/checkout' ? 'form-orientation checkout' : 'form-orientation'}>
       <div className='input-group-container'>
         <ZipInput
           name='zip'
@@ -51,6 +51,6 @@ export function AddressInput({ formData, onChange }: AddressInputProps) {
           onChange={onChange}
         />
       </div>
-    </form>
+    </div>
   )
 }
