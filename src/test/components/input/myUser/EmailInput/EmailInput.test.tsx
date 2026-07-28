@@ -37,7 +37,7 @@ describe('EmailInput', () => {
 
     changeValue('test@example.com')
 
-    expect(await screen.findByLabelText('Elérhető felhasználónév', {}, { timeout: 3000 })).toBeInTheDocument()
+    expect(await screen.findByLabelText('Elérhető e-mail cím', {}, { timeout: 3000 })).toBeInTheDocument()
   })
 
   it('shows an unavailable mark and error when the email is already taken', async () => {
@@ -46,7 +46,7 @@ describe('EmailInput', () => {
 
     changeValue('test@example.com')
 
-    expect(await screen.findByLabelText('Nem elérhető felhasználónév', {}, { timeout: 3000 })).toBeInTheDocument()
+    expect(await screen.findByLabelText('Nem elérhető e-mail cím', {}, { timeout: 3000 })).toBeInTheDocument()
     expect(await screen.findByText('A megadott email cím foglalt!')).toBeInTheDocument()
   })
 
@@ -59,6 +59,6 @@ describe('EmailInput', () => {
     changeValue('test@example.com')
 
     expect(await screen.findByText('Hiba történt az e-mail cím ellenőrzése során, próbálja újra!', {}, { timeout: 3000 })).toBeInTheDocument()
-    expect(screen.queryByLabelText('Elérhető felhasználónév')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Elérhető e-mail cím')).not.toBeInTheDocument()
   })
 })

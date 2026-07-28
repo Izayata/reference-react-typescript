@@ -126,6 +126,9 @@
   "header": {
     "tagline": "Ahol álmaid étele vár"
   },
+  "common": {
+    "loading": "Betöltés…"
+  },
   "inputs": {
     "firstnameLabel": "Keresztnév:",
     "lastnameLabel": "Vezetéknév:",
@@ -138,6 +141,12 @@
     "usernameLabel": "Felhasználónév:",
     "usernameAvailableAriaLabel": "Elérhető felhasználónév",
     "usernameUnavailableAriaLabel": "Nem elérhető felhasználónév",
+    "emailAvailableAriaLabel": "Elérhető e-mail cím",
+    "emailUnavailableAriaLabel": "Nem elérhető e-mail cím",
+    "passwordValidAriaLabel": "Érvényes jelszó",
+    "passwordInvalidAriaLabel": "Érvénytelen jelszó",
+    "passwordsMatchAriaLabel": "A jelszavak egyeznek",
+    "passwordsMismatchAriaLabel": "A jelszavak nem egyeznek",
     "confirmPasswordLabel": "Jelszó újra:",
     "passwordsDoNotMatch": "A jelszavak nem egyeznek!",
     "fieldRequired": "A mező kitöltése kötelező!"
@@ -388,6 +397,7 @@
   },
   "nav": {
     "openMenuAriaLabel": "Menü megnyitása",
+    "openCartAriaLabel": "Kosár megnyitása",
     "logoutFailed": "Kijelentkezés sikertelen!",
     "cart": "Kosár",
     "checkout": "Pénztár",

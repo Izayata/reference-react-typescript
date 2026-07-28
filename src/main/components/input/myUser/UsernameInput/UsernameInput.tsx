@@ -110,10 +110,10 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
           value={value}
         />
         {value && !error && isAvailable === true && (
-          <InputFieldCheckmark/>
+          <InputFieldCheckmark ariaLabel={t('inputs.usernameAvailableAriaLabel')}/>
         )}
         {value && (error || isAvailable === false) && (
-          <InputFieldXmark/>
+          <InputFieldXmark ariaLabel={t('inputs.usernameUnavailableAriaLabel')}/>
         )}
       </div>
       <span id="username-error" className="error-message" aria-live="polite">

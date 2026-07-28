@@ -32,8 +32,8 @@ export const RegisterFormShippingAddress: React.FC<RegisterFormShippingAddressPr
   }
 
   return (
-    <form>
+    <div>
       <AddressInput formData={convertShippingAddressFormDataToFormData(shippingAddressData)} onChange={handleAddressInputChange} />
-    </form>
+    </div>
   )
 }
