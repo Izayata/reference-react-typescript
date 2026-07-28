@@ -31,21 +31,25 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
       return
     }
 
+    let cancelled = false
+    let availabilityTimeout: ReturnType<typeof setTimeout> | undefined
+
     const validationTimeout = setTimeout(() => {
       try {
         new UsernameModel(value)
         setError('')
-        const availabilityTimeout = setTimeout(async () => {
+        availabilityTimeout = setTimeout(async () => {
           try {
             const exists = await checkUsernameExists(value)
+            if (cancelled) return
             setAvailable(!exists)
             if (exists) setError(ERR_MSG_USERNAME_VALUE_EXISTS)
           } catch (availabilityError: unknown) {
+            if (cancelled) return
             setAvailable(null)
             setError(availabilityError instanceof Error ? availabilityError.message : String(availabilityError))
           }
         }, 150)
-        return () => clearTimeout(availabilityTimeout)
       } catch (e: unknown) {
         const messages: string[] = []
         if (Array.isArray(e)) {
@@ -60,7 +64,11 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
       }
     }, 1000)
 
-    return () => clearTimeout(validationTimeout)
+    return () => {
+      cancelled = true
+      clearTimeout(validationTimeout)
+      clearTimeout(availabilityTimeout)
+    }
   }, [value])
 
   return (

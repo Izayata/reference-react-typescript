@@ -132,7 +132,7 @@ export function ForgottenPassword() {
     } catch (err: unknown) {
       setModalMessage(err instanceof Error ? err.message : t('forgottenPassword.unknownError'))
     } finally {
-      sleep(500)
+      await sleep(500)
       setLoading(false)
     }
   }

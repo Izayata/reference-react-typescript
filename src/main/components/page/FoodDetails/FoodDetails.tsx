@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { FoodDetailsModel } from '../../../model/FoodDetailsModel'
 import { AddToCartButton } from '../../functional/AddToCartButton/AddToCartButton'
 import { MenuItemImage } from '../Menu/MenuItemImage/MenuItemImage'
-import { Modal } from '../../functional/Modal/Modal'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
+import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 
 import './css/food-details-actions.css'
 import './css/food-details-allergens.css'
@@ -28,11 +28,12 @@ export function FoodDetails() {
   const { foodId } = useParams<{ foodId: string }>()
   const [food, setFood] = useState<FoodDetailsModel | null>(null)
   const [loading, setLoading] = useState(true)
-  const [modalMessage, setModalMessage] = useState<string | null>(null)
+  const { setModalMessage } = useModal()
 
   useEffect(() => {
     if (!foodId) {
       setModalMessage(t('foodDetails.missingFoodId'))
+      setLoading(false)
       return
     }
     fetch(`/v1/foods/${foodId}`)
@@ -45,15 +46,9 @@ export function FoodDetails() {
       .finally(() => setLoading(false))
   }, [foodId])
 
-  if(loading) return <LoadingOverlay />
+  if (loading) return <LoadingOverlay />
 
-  if (modalMessage) {
-    return <Modal message={modalMessage} onClose={() => setModalMessage(null)} />
-  }
-
-  if (!food) {
-    return <Modal message={t('foodDetails.fetchFailed')} onClose={() => setModalMessage(null)} />
-  }
+  if (!food) return null
 
   return (
     <section className='food-details-container'>

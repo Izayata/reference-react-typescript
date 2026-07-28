@@ -228,9 +228,11 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
     }
   }, [])
 
-  if (foods.length === 0 && !loading) {
-    navigate('/cart')
-  }
+  useEffect(() => {
+    if (foods.length === 0 && !loading) {
+      navigate('/cart')
+    }
+  }, [foods, loading, navigate])
 
   if (loading) return <LoadingOverlay/>
 
