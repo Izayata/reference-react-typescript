@@ -13,7 +13,7 @@ export function PersistSelectedStates({ children }: Props) {
     // Persist selected Redux state into the URL query string here, e.g.:
     // searchParams.set('someKey', someValue)
 
-    setSearchParams(searchParams)
+    setSearchParams(searchParams, { replace: true })
   }, [])
 
   return (<> { children } </>)

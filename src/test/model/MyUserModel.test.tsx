@@ -1,10 +1,7 @@
-import { MyUserModel } from '../../main/model/MyUserModel'
 import { EmailModel } from '../../main/model/EmailModel'
 import { UsernameModel } from '../../main/model/myUser/UsernameModel'
-import { PasswordModel } from '../../main/model/myUser/PasswordModel'
 import { expectErrorMessages } from '../../main/utils/test/ExpectErrorMessages'
 import { ERR_MSG_EMAIL_REQUIRED } from '../../main/utils/EmailUtils'
-import { ERR_MSG_PASSWORD_REQUIRED } from '../../main/utils/myUser/PasswordUtils'
 import { ERR_MSG_USERNAME_REQUIRED } from '../../main/utils/myUser/UsernameUtils'
 import { CustomerModelBuilder } from '../../main/builder/CustomerModelBuilder'
 import { PersonalDetailsModelBuilder } from '../../main/builder/PersonalDetailsModelBuilder'
@@ -62,18 +59,6 @@ const ERR_MYUSER_USERNAME_UNDEFINED = () => new MyUserModelBuilder()
 const ERR_MYUSER_USERNAME_NULL = () => new MyUserModelBuilder()
   .setEmail(VALID_EMAIL_MODEL)
   .setMyUsername(null as any)
-  .setCustomer(VALID_CUSTOMER_MODEL)
-  .build()
-
-const ERR_MYUSER_PASSWORD_UNDEFINED = () => new MyUserModelBuilder()
-  .setEmail(VALID_EMAIL_MODEL)
-  .setMyUsername(VALID_USERNAME_MODEL)
-  .setCustomer(VALID_CUSTOMER_MODEL)
-  .build()
-
-const ERR_MYUSER_PASSWORD_NULL = () => new MyUserModelBuilder()
-  .setEmail(VALID_EMAIL_MODEL)
-  .setMyUsername(VALID_USERNAME_MODEL)
   .setCustomer(VALID_CUSTOMER_MODEL)
   .build()
 
