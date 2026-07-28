@@ -75,7 +75,7 @@ export function UserProfile() {
 
   return (
     <div className = 'user-profile-content-container'>
-      <h2 className='page-title'>{t('userProfile.pageTitle')}</h2>
+      <h1 className='page-title'>{t('userProfile.pageTitle')}</h1>
       <div className = 'user-profile-data-card-container'>
         <div className='user-profile-data-card-container-group'>
           <LoginData user = {user} />

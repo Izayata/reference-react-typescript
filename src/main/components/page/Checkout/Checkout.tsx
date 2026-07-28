@@ -392,7 +392,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
   return (
     checkoutState === 'data' ? (
       <>
-        <h2 className='page-title'>{t('checkout.pageTitle')}</h2>
+        <h1 className='page-title'>{t('checkout.pageTitle')}</h1>
         <div className='checkout-content-container'>
           <CheckoutCustomerDetailsSection
             isAuthenticated={isAuthenticated}

@@ -7,7 +7,7 @@ export function NotFound() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-      <h2 className='page-title'>{t('notFound.title')}</h2>
+      <h1 className='page-title'>{t('notFound.title')}</h1>
       <p>{t('notFound.message')}</p>
       <NavLink to='/' className='application-button-style animated' style={{ textDecoration: 'none' }}>
         {t('notFound.backToHome')}
