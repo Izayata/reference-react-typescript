@@ -17,6 +17,6 @@ describe('fetchCsrfToken', () => {
       Promise.resolve({ ok: false, json: async () => ({}) })
     ) as unknown as typeof fetch
 
-    await expect(fetchCsrfToken()).rejects.toThrow('Failed to fetch CSRF token')
+    await expect(fetchCsrfToken()).rejects.toThrow('Hiba történt a biztonsági token lekérése során, próbálja újra!')
   })
 })

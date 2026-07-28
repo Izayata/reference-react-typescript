@@ -98,7 +98,8 @@
     "ERR_MSG_RESET_TOKEN_REQUIRED": "A token megadása kötelező",
     "ERR_MSG_RESET_NEW_PASSWORD_DETAILS_REQUIRED": "Új jelszót tartalmazó mező megadása kötelező",
     "ERR_MSG_USERNAME_AVAILABILITY_CHECK_FAILED": "Hiba történt a felhasználónév ellenőrzése során, próbálja újra!",
-    "ERR_MSG_EMAIL_AVAILABILITY_CHECK_FAILED": "Hiba történt az e-mail cím ellenőrzése során, próbálja újra!"
+    "ERR_MSG_EMAIL_AVAILABILITY_CHECK_FAILED": "Hiba történt az e-mail cím ellenőrzése során, próbálja újra!",
+    "ERR_MSG_CSRF_TOKEN_FETCH_FAILED": "Hiba történt a biztonsági token lekérése során, próbálja újra!"
   },
   "home": {
     "boldizsarWelcomePart1": "Üdvözöljük éttermünkben! Borstörő Boldizsár vagyok, főszakács és tulajdonos. Kisgyermekkoromban sokat figyeltem édesapámat, ahogy szenvedélyének élt és finomabbnál finomabb ételeket készített a szeretteinek. Az energia, amit tanúsított és a számos csodálatos étel hamar megérintettek és adtak számomra egy álmot, hogy egyszer a saját éttermemben készíthetek majd az embereknek olyan ételeket, amelyek minden képzeletüket felülmúlóan felejthetetlen élményt nyújtanak számukra.",

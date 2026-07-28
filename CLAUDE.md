@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Create React App (react-scripts 5) + TypeScript single-page app for a restaurant ordering site (menu browsing, food details, allergens, gallery, shopping cart, checkout, registration/login, account/profile management). Bootstrapped from CRA's Redux+TypeScript template (`package.json` name is still `redux-typescript-router`, and `src/main/features/counter` is the original template's demo Redux slice, largely unused by app logic) and then heavily extended into the restaurant domain.
 
-The app talks to a separate backend (proxied at `localhost:8080` in dev via the `proxy` field in `package.json`; in the Docker/nginx setup, `nginx.conf` proxies `/auth-status`, `/csrf-token`, `/login`, `/v1`, `/actuator` to a service named `app:8080` — the `/actuator` path suggests a Spring Boot backend). Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching (`src/main/supports/fetch-utilities/fetchCsrfToken.tsx`).
+The app talks to a separate backend (proxied at `localhost:8080` in dev via the `proxy` field in `package.json`; in the Docker/nginx setup, `nginx.conf` proxies `/auth-status`, `/csrf-token`, `/login`, `/v1`, `/actuator` to a service named `app:8080` — the `/actuator` path suggests a Spring Boot backend). Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching (`src/main/supports/fetch-utilities/fetchCsrfToken.ts`).
 
 ## Known issues — check `AUDIT.md` before assuming existing code is correct
 
