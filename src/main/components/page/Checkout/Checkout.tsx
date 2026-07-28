@@ -319,8 +319,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
       return new OrderModel(
         getCustomer(),
         orderItems,
-        paymentType,
-        isAuthenticated
+        paymentType
       )
     } catch (e: unknown) {
       setModalMessage(handleErrorMessages(e))
