@@ -40,6 +40,7 @@ Docker: `Dockerfile` builds with `node:18`, then serves the static build via `ng
 
 - `.github/workflows/ci.yml` runs on every push/PR to `main`: `npm ci` → `npm run lint` → `npx tsc --noEmit` → `npm run test:coverage` → `CI=true npm run build`. The build step uses the standard `CI=true` mode (not overridden), so any new `src/main/**` ESLint warning fails it immediately rather than accumulating silently.
 - `.husky/pre-commit` runs `npx lint-staged`, which runs `eslint` (check-only, no auto-fix) against staged `src/**/*.{js,jsx,ts,tsx}` files (config in `package.json`'s `"lint-staged"` key) — catches lint errors before they're committed, not just in CI.
+- `.github/dependabot.yml` runs weekly update checks against the `npm`, `github-actions`, and `docker` ecosystems (the app's dependency tree, the CI workflow's own action versions, and the `Dockerfile`'s base images respectively) — the automated mechanism for surfacing newly-disclosed vulnerabilities going forward, rather than relying on someone remembering to re-run `npm audit` manually.
 
 ## Architecture
 
