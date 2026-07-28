@@ -54,4 +54,40 @@ describe('UsernameInput', () => {
     expect(await screen.findByText('Hiba történt a felhasználónév ellenőrzése során, próbálja újra!', {}, { timeout: 3000 })).toBeInTheDocument()
     expect(screen.queryByLabelText('Elérhető felhasználónév')).not.toBeInTheDocument()
   })
+
+  it('ignores a stale availability-check response that resolves after the value has already changed', async () => {
+    // Regression test for AUDIT-3.md §1.4: the availability-check setTimeout's
+    // cleanup was never actually registered as a real effect cleanup (it was
+    // returned from inside the outer setTimeout callback, which setTimeout
+    // discards), so a still-in-flight check for a stale value could overwrite
+    // the UI state for whatever the user has since typed.
+    let resolveStaleCheck!: (value: { ok: boolean, json: () => Promise<unknown> }) => void
+    const staleCheckPromise = new Promise<{ ok: boolean, json: () => Promise<unknown> }>(resolve => {
+      resolveStaleCheck = resolve
+    })
+
+    global.fetch = jest.fn((url: string) => {
+      if (url.includes('StaleUserA')) return staleCheckPromise
+      return Promise.resolve({ ok: true, json: async () => ({ exists: false }) })
+    }) as unknown as typeof fetch
+
+    const { changeValue } = renderUsernameInput()
+    changeValue('StaleUserA')
+
+    // Wait past the 1000ms validation debounce + 150ms availability delay so the
+    // stale check has actually started (not merely been scheduled).
+    await new Promise(resolve => setTimeout(resolve, 1300))
+
+    changeValue('FreshUserB')
+
+    expect(await screen.findByLabelText('Elérhető felhasználónév', {}, { timeout: 3000 })).toBeInTheDocument()
+
+    // Now resolve the abandoned StaleUserA check as "taken" - without the fix this
+    // would incorrectly flip the UI back to unavailable/error for FreshUserB.
+    resolveStaleCheck({ ok: true, json: async () => ({ exists: true }) })
+    await new Promise(resolve => setTimeout(resolve, 50))
+
+    expect(screen.getByLabelText('Elérhető felhasználónév')).toBeInTheDocument()
+    expect(screen.queryByText('A megadott felhasználónév foglalt!')).not.toBeInTheDocument()
+  }, 10000)
 })
