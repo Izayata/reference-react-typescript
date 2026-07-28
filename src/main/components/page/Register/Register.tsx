@@ -146,7 +146,7 @@ export function Register() {
   return (
     <>
       {loadingOverlay && (<LoadingOverlay />)}
-      <div className="form-container" onSubmit={handleSetAddressesStep}>
+      <div className="form-container">
         {step === 'setUserDetails' && (
           <RegisterFormUserDetails
             registrationData={registrationFormData}

@@ -73,8 +73,8 @@ async function fetchMenuItems(url: string) {
 
 function sortIntoSectionOfFour(array: MenuItemModel[]) {
   const result = []
-  for (let i = 0; i < array.length; i += 3) {
-    result.push(array.slice(i, i + 3))
+  for (let i = 0; i < array.length; i += 4) {
+    result.push(array.slice(i, i + 4))
   }
   return result
 }
