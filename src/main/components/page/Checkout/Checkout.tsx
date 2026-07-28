@@ -333,12 +333,14 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
     }
 
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (isAuthenticated) {
+        headers['X-CSRF-TOKEN'] = await fetchCsrfToken()
+      }
+
       const response = await fetch(isAuthenticated ? '/v1/orders' : '/v1/orders/guest', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': await fetchCsrfToken()
-        },
+        headers,
         body: JSON.stringify(order)
       })
 
