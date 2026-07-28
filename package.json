@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8080",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-brands-svg-icons": "^7.0.0",
@@ -24,11 +27,16 @@
     "react-i18next": "^14.1.3",
     "react-phone-input-2": "^2.15.1",
     "react-redux": "^8.1.3",
-    "react-router-dom": "^6.30.0",
+    "react-router-dom": "^7.18.1",
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
     "sass": "^1.87.0",
     "web-vitals": "^2.1.4"
+  },
+  "overrides": {
+    "underscore": "^1.13.8",
+    "serialize-javascript": "^7.0.7",
+    "uuid": "^14.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -61,6 +69,9 @@
         "functions": 43,
         "lines": 46
       }
+    },
+    "moduleNameMapper": {
+      "^react-router/dom$": "<rootDir>/node_modules/react-router/dist/development/dom-export.js"
     }
   },
   "browserslist": {
