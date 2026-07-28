@@ -17,20 +17,14 @@ export class OrderModel {
     @NotUndefined({ message: 'Payment type is required (undefined)' })
       paymentType: string
 
-    @NotNull({ message: 'isAuthenticatedUser is required (null)' })
-    @NotUndefined({ message: 'isAuthenticatedUser is required (undefined)' })
-      isAuthenticatedUser?: boolean
-    
     constructor(
       customer: CustomerModel,
       orderItems: OrderItemModel[],
-      paymentType: string,
-      isAuthenticatedUser?: boolean
+      paymentType: string
     ) {
       this.customer = customer
       this.orderItems = orderItems
       this.paymentType = paymentType
-      this.isAuthenticatedUser = isAuthenticatedUser
       const errors = validateSync(this)
       if (errors.length > 0) {
         throw errors
