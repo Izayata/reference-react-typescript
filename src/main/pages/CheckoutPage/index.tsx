@@ -1,4 +1,4 @@
-import { Checkout } from '../../../components/page/Checkout/Checkout'
+import { Checkout } from '../../components/page/Checkout/Checkout'
 
 interface CheckoutPageProps {
   isAuthenticated: boolean
