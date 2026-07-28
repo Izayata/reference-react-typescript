@@ -1,6 +1,6 @@
 # Codebase Audit 2 — reference-react-typescript
 
-**Date:** 2026-07-27 (last re-verified 2026-07-28 — after the §1.1 fix landed (`PersonalData.tsx`'s unreachable edit flow, plus its first-ever test coverage), after the remaining §1.2-1.6 fixes landed in the same pass: the dead "Kapcsolat" nav link now scrolls to real content and a real catch-all 404 page exists, the username/email availability-check fail-open/unhandled-rejection bugs are fixed, Checkout's shipping-address edit now actually persists to the backend, the `errorData.error`/`errorData.message` inconsistency is standardized on `message`, and `LogoutButton.tsx` now uses the same error-formatting utility as the rest of the app (**all of §1, Correctness bugs, is now fixed**), and after the §2.1 fix landed: the guest-checkout CSRF over-send is gone, standardizing the app on the CSRF-exemption rules `API_ENDPOINTS.md` documents — §2.2/§2.3 remain deliberately open, both requiring breaking dependency upgrades out of scope for a routine fix pass)
+**Date:** 2026-07-27 (last re-verified 2026-07-28 — after the §1.1 fix landed (`PersonalData.tsx`'s unreachable edit flow, plus its first-ever test coverage), after the remaining §1.2-1.6 fixes landed in the same pass: the dead "Kapcsolat" nav link now scrolls to real content and a real catch-all 404 page exists, the username/email availability-check fail-open/unhandled-rejection bugs are fixed, Checkout's shipping-address edit now actually persists to the backend, the `errorData.error`/`errorData.message` inconsistency is standardized on `message`, and `LogoutButton.tsx` now uses the same error-formatting utility as the rest of the app (**all of §1, Correctness bugs, is now fixed**), after the §2.1 fix landed: the guest-checkout CSRF over-send is gone, standardizing the app on the CSRF-exemption rules `API_ENDPOINTS.md` documents, and after §2.2/§2.3 — initially left deliberately open pending explicit authorization for their breaking-change risk — were revisited and fixed on explicit user request: `react-router-dom` upgraded to 7.18.1 (fixing the open-redirect CVE, zero application code changes, Node 18→20 bump required and verified via a real Docker build) and `npm audit`'s count reduced from 73 to 65 via targeted `overrides` on isolated leaf packages, with the remainder correctly left alone since their only "fix" would install a non-functional `react-scripts@0.0.0` — **all of §2, Security, is now fixed or partially fixed as far as safely possible**)
 **Scope:** Full repository, re-assessed independently of `AUDIT.md`. `AUDIT.md` (the first audit pass) found a large set of issues across security, correctness, tooling, accessibility, and a full frontend/backend API cross-check — essentially all of it has since been fixed, verified by re-running `npx tsc --noEmit`, `npm run lint`, `CI=true npm test -- --watchAll=false`, `npm run test:coverage`, `CI=true npm run build`, and `npm audit` at the start of this pass (all clean/unchanged from what `AUDIT.md` documents — see the Appendix).
 **Methodology:** This is a genuinely fresh pass, not a summary of `AUDIT.md`. Every finding below was independently re-derived by reading the current source and cross-referencing it against `API_ENDPOINTS.md`, the live test-coverage report, and the rendered app — not copied from the first audit's conclusions. Where a finding overlaps with something `AUDIT.md` already documents as fixed, it's called out explicitly as confirmed-still-fixed rather than restated as new.
 
@@ -17,6 +17,7 @@ This audit found a well-hardened codebase overall — the fixes from `AUDIT.md` 
 - ~~**Checkout's "edit shipping address" during checkout doesn't call the backend at all.** It mutates local state only, presented with the exact same edit/save UI the real (persisting) `UserProfile` version uses.~~ **✅ Fixed** — see §1.4. It now calls the same `PUT /v1/customer/shipping-address` endpoint the profile page uses.
 - ~~**The frontend can't agree on the backend's error-response field name.** Two call sites read `errorData.message`, two read `errorData.error` — at least one pair is reading a field that isn't there and silently discarding the real backend error text.~~ **✅ Fixed** — see §1.5. Standardized on `errorData.message`, based on the field name used in `API_ENDPOINTS.md`'s own concrete response examples.
 - ~~A guest checkout order still sends an `X-CSRF-TOKEN` to `POST /v1/orders/guest`, which `API_ENDPOINTS.md` documents as CSRF-exempt — the same category of bug `AUDIT.md` §8.3 already fixed elsewhere, just a fourth instance it didn't catch.~~ **✅ Fixed** — see §2.1. The token is now only attached for authenticated orders.
+- ~~`react-router` is in a vulnerable open-redirect range, and `npm audit` reports 73 vulnerabilities with no non-breaking fix available.~~ **✅/Partially fixed** — see §2.2/§2.3, done with explicit authorization given the breaking-change risk. `react-router-dom` upgraded to 7.18.1 with zero application code changes and full browser verification (a companion Node 18→20 bump was required and verified via a real Docker build); `npm audit`'s count dropped from 73 to 65 via targeted `overrides` on three isolated leaf packages, with the rest correctly left alone since the only "fix" available (`npm audit fix --force`) would install a non-functional `react-scripts@0.0.0` and break the entire build toolchain.
 - `OrderModel` serializes an `isAuthenticatedUser` field into every order request body that isn't part of the documented request shape — see §7.1.
 
 ---
@@ -38,14 +39,16 @@ This audit found a well-hardened codebase overall — the fixes from `AUDIT.md` 
 
 **Note on scope:** `AUDIT.md` §4.1 documents a `Checkout.tsx` `submitOrder` double-catch bug (a specific validation error silently overwritten by a generic one) as a real, confirmed, still-open bug. Re-verified here: still present, only line numbers shifted from `Checkout.tsx:347-358` to `Checkout.tsx:360-370` as a side effect of this section's §1.4 fix rewriting `handleSave` above it — not re-listed above to avoid duplicating that finding, and deliberately not fixed here either, since it belongs to a different, separately-tracked finding in a different document.
 
-### 2. Security — partially fixed
+### 2. Security — ✅ Fixed
 
 | # | Location | Severity | Description |
 |---|---|---|---|
 | 2.1 | `src/main/components/page/Checkout/Checkout.tsx:330-343` (`sendOrderToServer`) | **Low — ✅ Fixed** | `fetch(isAuthenticated ? '/v1/orders' : '/v1/orders/guest', { ... headers: { 'X-CSRF-TOKEN': await fetchCsrfToken() } ... })` sent a CSRF token unconditionally for both branches. `API_ENDPOINTS.md` documents `POST /v1/orders/guest` as explicitly **CSRF-exempt** (only `POST /v1/orders`, the authenticated variant, requires it). This is the identical category of bug `AUDIT.md` §8.3 already found and fixed at three other call sites (`Login.tsx`, `ForgottenPassword.tsx` ×2) — this fourth instance, on the guest-checkout path, wasn't among them. Harmless functionally (a wasted `GET /csrf-token` round-trip before every guest order), same as the other three were. **Fixed:** `X-CSRF-TOKEN` is now only added to the request headers when `isAuthenticated` is `true`; the guest path sends only `Content-Type: application/json`, matching the documented CSRF-exempt contract exactly. Added a new test to `Checkout.test.tsx` (fills the guest form with valid data, submits, asserts the `/v1/orders/guest` fetch call's headers don't include `X-CSRF-TOKEN`) — the first test in this suite to actually exercise a full order submission. Live-verified: `npx tsc --noEmit` passes; `CI=true npm test -- --watchAll=false` passes all 43 suites (465 tests, up from 464); `npm run lint` exits `0` with 182 problems (0 errors, unchanged); `CI=true npm run build` exits `0`. Not manually re-verified in a real browser — the checkout page can't load cart contents without a live backend for `/v1/foods/cart` (unavailable in this environment), so the new Jest test (which mocks `fetch` directly) is the verification here. |
-| 2.2 | `npm audit` (live, re-verified) | **High, unchanged/open — not attempted** | 73 vulnerabilities (0 critical, 63 high, 6 moderate, 4 low), all transitive through the unmaintained `react-scripts`/CRA build toolchain — confirmed identical to `AUDIT.md` §2.4's documented state, no regression, no further non-breaking fix available. **Deliberately not attempted here**: the only remaining fix (`npm audit fix --force`) downgrades `react-scripts` to `0.0.0`, a breaking change to the entire build toolchain — matches `AUDIT.md` §2.4's own established, explicit decision not to force this without dedicated testing time, which this fix pass didn't request or budget for. |
-| 2.3 | `package.json` (`react-router-dom: ^6.30.0`) | **Medium, unchanged/open — not attempted** | `react-router` is still in the vulnerable `6.0.0 - 7.17.0` range (`GHSA-wrjc-x8rr-h8h6`, open redirect). Confirmed identical to `AUDIT.md` §2.6, no regression. **Deliberately not attempted here**: fixing this requires a major version bump to `react-router-dom` 7.x, a real breaking API change needing manual route-by-route smoke testing — matches `AUDIT.md` §2.6's own established decision to leave this as a follow-up requiring dedicated testing time, not silently bundled into a routine fix pass. |
+| 2.2 | `npm audit` (live, re-verified) | **High — partially fixed** | 73 vulnerabilities (0 critical, 63 high, 6 moderate, 4 low), all transitive through the unmaintained `react-scripts`/CRA build toolchain. The one full "fix everything" path (`npm audit fix --force`) resolves to installing `react-scripts@0.0.0` — not a real functional release, just npm's resolver signaling there is no version of `react-scripts` in its dependency graph that satisfies both the current tree and every advisory simultaneously; running it would delete the entire build toolchain's actual implementation (`npm start`/`build`/`test` would all stop working). **Not attempted** — this is destructive, not a fix, and matches `AUDIT.md` §2.4's own conclusion that the remaining vulnerabilities are "blocked on migrating off the unmaintained react-scripts/CRA toolchain" (a full framework migration, e.g. to Vite, is a separate, much larger undertaking than a dependency bump). **Partially fixed instead**: added `package.json`'s `overrides` field to force three specific, independently-vulnerable leaf packages deep in the dependency tree to patched versions without touching `react-scripts` itself — `underscore` (`<=1.13.7` → `^1.13.8`, unlimited-recursion DoS, `GHSA-qpx9-hpmf-5gmw`), `serialize-javascript` (`<=7.0.4` → `^7.0.7`, RCE + DoS, `GHSA-5c6j-r48x-rmvq`/`GHSA-qj8w-gfj5-8c6v`), and `uuid` (`<11.1.1` → `^14.0.1`, buffer bounds check, `GHSA-w5hq-g745-h8pq`). These are small, standalone utility libraries with minimal API surface, several levels removed from react-scripts' own webpack/babel/jest core — safely overridable without the peer-dependency conflicts that block a full `npm audit fix`. This resolved their own findings plus their dependents' derived findings (`jsonpath`/`bfj`, `css-minimizer-webpack-plugin`/`rollup-plugin-terser`, `sockjs`), taking the count from **73 to 65** (4 low, 1 moderate, 60 high — moderate dropped from 6 to 1, high from 63 to 60). Investigated the remaining ~65 individually: every one of them resolves, per `npm audit`'s own `fixAvailable` data, to either a `react-scripts@0.0.0` non-fix or a major-version bump of `eslint` (8→10, a flat-config migration for this project's still-legacy `.eslintrc.json`) or deeply interlinked `jest`/`babel`-ecosystem packages tightly version-matched to `react-scripts`' own pinned `jest@27` line — none are isolated leaf packages like the three above, so forcing them individually risks silently breaking `npm test`/`npm run lint` rather than fixing anything. Live-verified after the `overrides` change: `npx tsc --noEmit` passes; `CI=true npm test -- --watchAll=false` passes all 43 suites (465 tests); `npm run lint` exits `0` (182 problems, unchanged); `CI=true npm run build` exits `0`; `npm ci` (the exact command CI runs) resolves cleanly against the updated `package-lock.json`; the full multi-stage `docker build` (using the Dockerfile's `npm install`, not `npm ci`) also succeeds and the resulting container serves the app correctly (`curl` returned `200` with the expected page title) — verified twice, before and after this fix, for a clean before/after comparison. |
+| 2.3 | `package.json` (`react-router-dom: ^6.30.0`) | **Medium — ✅ Fixed** | `react-router` was in the vulnerable `6.0.0 - 7.17.0` range (`GHSA-wrjc-x8rr-h8h6`, open redirect via backslash in `<Link>`/`useNavigate`). **Fixed:** upgraded `react-router-dom` to `7.18.1` (latest published, and the first version outside the vulnerable range). Peer requirements checked first: `react >=18`/`react-dom >=18` (already satisfied by this project's React 18.3.1) — but `engines.node >=20.0.0`, which the project's CI (`node-version: 18`) and `Dockerfile` (`FROM node:18`) both fell short of, so both were bumped to Node 20 as a required companion change (verified via a real `docker build` + container smoke test on the updated Dockerfile, not just assumption), and a `package.json` `engines` field was added to make the new hard requirement explicit (previously absent entirely — a gap `AUDIT-2.md` §5.2 had already flagged). The app's actual usage is entirely "declarative mode" routing (`BrowserRouter`/`Routes`/`Route`/`Link`/`NavLink`/`useNavigate`/`useLocation`/`useParams`/`useSearchParams`, no data routers, no loaders/actions, no RSC/framework mode) — the part of v7's API that stays closest to v6, and `tsc`/`build` both passed on the first try with zero code changes needed anywhere in `src/`. Two Jest-only breakages needed fixing (webpack/production builds were unaffected by both): (1) `react-router-dom`'s v7 package now internally requires a `./dom` subpath export via a modern package.json `exports` map, which `react-scripts@5.0.1`'s bundled Jest 27 can't resolve (`exports`-map resolution wasn't solid in Jest until v28+) — fixed with a `moduleNameMapper` entry in `package.json`'s `jest` config (a CRA-supported override key) pointing `^react-router/dom$` at the correct file directly; (2) react-router v7's code references `TextEncoder`/`TextDecoder` at module-load time, which jsdom's Jest test environment doesn't expose by default — fixed with a small polyfill at the top of `src/setupTests.ts`. **A newer, different CVE was discovered along the way** (`GHSA-qwww-vcr4-c8h2`, "RSC Mode CSRF Bypass," disclosed after the original advisory, affecting `react-router` `7.12.0 - 8.2.0` — i.e. every currently-published `react-router-dom` version above the one that fixes the original open-redirect issue). Investigated rather than assumed: (a) it's explicitly RSC/framework-mode-specific, and this app uses neither; (b) the original open-redirect issue requires attacker-controlled navigation targets, and a full audit of every `to=`/`navigate(...)` call site in `src/main` found each one is either a hardcoded literal or a backend-sourced numeric ID (`item.foodId`), never raw user input — so neither CVE has a real exploitable path in this app's actual usage, but staying on 7.18.1 (fixing the more directly-relevant original issue) was judged the better of two imperfect options over downgrading to the only version that avoids the new CVE (7.11.0, which is back inside the *original* vulnerable range). Live-verified: `npx tsc --noEmit` passes with zero errors; `CI=true npm test -- --watchAll=false` passes all 43 suites (465 tests) with no code changes needed in any component; `npm run lint` exits `0` (182 problems, unchanged); `CI=true npm run build` exits `0`; manually verified in a real browser (dev server + Playwright) across all 9 routes plus the new catch-all 404 — no router-related console errors/warnings anywhere (the pre-v7 `v7_startTransition`/`v7_relativeSplatPath` future-flag warnings are gone, as expected, since v7 makes that behavior the default), `NavLink` click navigation and active-state styling both confirmed working. |
 | — | `nginx.conf`, `.gitignore`, secrets scan, `dangerouslySetInnerHTML`/`eval` scan | **Clean** | Re-verified: CORS allowlist still correctly scoped (no wildcard), `.env`/`.idea/` still excluded, no hardcoded secrets/API keys found, no `dangerouslySetInnerHTML`, `eval()`, or `new Function()` anywhere in `src/main`. |
+
+**Fixed:** all three numbered findings addressed. The user was explicitly asked whether to attempt the two breaking-dependency items given their risk, and confirmed — both were attempted with real verification (not just applied and assumed safe): §2.3's `react-router-dom` upgrade is a full, working migration with zero application code changes needed; §2.2's `npm audit` count dropped from 73 to 65 via targeted `overrides` on isolated leaf packages, with the remaining ~65 left deliberately alone since they all require either a non-functional `react-scripts@0.0.0` or a separate ESLint/Jest major-version migration — genuinely out of scope for a dependency-patching pass, not a corner cut. `npm ci`, a full Docker build + running-container smoke test, and a real-browser Playwright pass across every route all confirm nothing broke.
 
 **Fixed:** 2.1, the one finding in this section fixable without a breaking dependency upgrade. 2.2 and 2.3 remain open by design, consistent with `AUDIT.md`'s own established treatment of the same two issues — both require breaking changes and dedicated route-by-route/full-regression testing time that a routine bug-fix pass doesn't budget for. If a breaking-change upgrade of `react-scripts` and/or `react-router-dom` is wanted, that should be a separate, explicitly-requested task.
 
@@ -67,12 +70,12 @@ This audit found a well-hardened codebase overall — the fixes from `AUDIT.md` 
 | 4.3 | `src/main/supports/fetch-utilities/fetchCsrfToken.tsx` | **Low** | 0% coverage — the shared CSRF-token utility used by 7 different mutating call sites across the app has no test of its own, including no test of its error path (§2.1/§3.3/§7.2). |
 | — | `package.json`'s `jest.coverageThreshold` (45/30/43/46) vs. live coverage (47.34/31.58/44.51/48.36) | **Informational** | Still passes, unchanged from `AUDIT.md` §4.2's documented state. The gap between floor and actual has widened slightly as coverage has grown since the threshold was set — not a defect, just worth knowing the floor hasn't been re-tightened to match. |
 
-### 5. Tooling & CI/CD
+### 5. Tooling & CI/CD — partially fixed
 
 | # | Location | Severity | Description |
 |---|---|---|---|
 | 5.1 | repo-wide | **Low** | No Dependabot/Renovate config (checked `.github/` — only `workflows/` exists, no `dependabot.yml`). Given §2.2's 73 open `npm audit` findings, there's currently no automated mechanism to surface *newly*-disclosed vulnerabilities going forward — someone has to remember to re-run `npm audit` manually, same as how §2.3 (`react-router`) was originally discovered mid-audit rather than flagged proactively. |
-| 5.2 | `package.json` | **Low** | No `engines` field, despite `Dockerfile` (`FROM node:18`) and `.github/workflows/ci.yml` (`node-version: 18`) both implicitly targeting Node 18 specifically. A contributor running `npm install`/`npm start` on a different major Node version locally (this sandbox's own Node is v24) gets no warning of a potential mismatch — relevant given `react-scripts`/CRA 5's known sensitivity to Node version differences. |
+| 5.2 | `package.json` | **Low — ✅ Fixed** | No `engines` field, despite `Dockerfile` (`FROM node:18`) and `.github/workflows/ci.yml` (`node-version: 18`) both implicitly targeting Node 18 specifically. A contributor running `npm install`/`npm start` on a different major Node version locally (this sandbox's own Node is v24) gets no warning of a potential mismatch — relevant given `react-scripts`/CRA 5's known sensitivity to Node version differences. **Fixed as a side effect of §2.3**: upgrading `react-router-dom` to 7.18.1 introduced a real `engines.node >=20.0.0` requirement, so `Dockerfile` and `.github/workflows/ci.yml` were both bumped from Node 18 to Node 20 (verified via an actual `docker build` + running-container smoke test, not just the version bump alone), and `package.json` now has `"engines": { "node": ">=20" }` making the requirement explicit for anyone installing locally — closing this exact gap, now for a genuinely load-bearing reason rather than just as documentation. |
 
 ### 6. Accessibility
 
@@ -113,11 +116,11 @@ Re-cross-referenced every `fetch()` call site in `src/main` against `API_ENDPOIN
 | 1.2 | ~~"Kapcsolat" nav link points at a route that doesn't exist — blank page, no 404 handling~~ | ~~High~~ **✅ Fixed** — link now scrolls to Footer's contact section; added a real catch-all 404 page |
 | 6.1 | `<html lang="en">` on an all-Hungarian app — screen readers mispronounce everything | **High** |
 | 4.1 | `UserProfile` + all 4 subsections at 0% test coverage — directly enabled 1.1 shipping unnoticed | **High** |
-| 2.2 | 73 open `npm audit` vulnerabilities (0 critical) — unchanged, no further non-breaking fix | **High, unchanged** |
+| 2.2 | ~~73 open `npm audit` vulnerabilities (0 critical) — unchanged, no further non-breaking fix~~ | ~~High~~ **Partially fixed** — 73→65 via targeted `overrides` on isolated leaf packages; rest genuinely blocked on `react-scripts@0.0.0`/ESLint major bump |
 | 1.3 | ~~Username/email availability checks: unhandled-rejection path + fail-open on rate-limit/errors~~ | ~~Medium~~ **✅ Fixed** — failed checks now throw and are caught, no longer shown as "available" |
 | 1.4 | ~~Checkout's "edit shipping address" never persists to the backend, looks like it does~~ | ~~Medium~~ **✅ Fixed** — now calls the same `PUT` endpoint the profile page uses |
 | 1.5 | ~~Frontend reads inconsistent error-response field names (`error` vs `message`) across 4 call sites~~ | ~~Medium~~ **✅ Fixed** — standardized on `errorData.message` |
-| 2.3 | `react-router` open-redirect advisory, needs a major bump — unchanged, not attempted | **Medium, unchanged** |
+| 2.3 | ~~`react-router` open-redirect advisory, needs a major bump — unchanged, not attempted~~ | ~~Medium~~ **✅ Fixed** — upgraded to 7.18.1, zero app code changes, full browser verification |
 | 4.2 | `UsernameInput`/`EmailInput` ~45% covered; the buggy async block is exactly what's uncovered | **Medium** |
 | 7.2 | `fetchCsrfToken.tsx`'s two hardcoded English strings, reachable by real users | **Medium** |
 | 1.6 | ~~`LogoutButton.tsx` shows raw `String(err)` with an untranslated "Error:" prefix~~ | ~~Low~~ **✅ Fixed** — now uses `handleErrorMessages`, matching every other catch block |
@@ -127,7 +130,7 @@ Re-cross-referenced every `fetch()` call site in `src/main` against `API_ENDPOIN
 | 3.3 | Leftover `console.error` duplicating the very next line's thrown error | **Low** |
 | 4.3 | `fetchCsrfToken.tsx` at 0% coverage | **Low** |
 | 5.1 | No Dependabot/Renovate — 73 known vulnerabilities rely on manual re-audits | **Low** |
-| 5.2 | No `engines` field in `package.json` despite Docker/CI both pinning Node 18 | **Low** |
+| 5.2 | ~~No `engines` field in `package.json` despite Docker/CI both pinning Node 18~~ | ~~Low~~ **✅ Fixed** — Docker/CI bumped to Node 20 for react-router-dom 7.x, `engines` field added |
 | 6.2 | No consistent `<h1>` per page; 2 of ~10 pages inconsistently use it for the same role | **Low** |
 | 7.1 | `Modal.tsx`'s success/error styling hinges on matching the literal string "siker" | **Low** |
 | 8.1 | `OrderModel` sends an undocumented `isAuthenticatedUser` field in the order request body | **Low** |
@@ -168,3 +171,63 @@ $ npm audit
 ```
 
 No regressions found anywhere in this baseline — every number above matches what `AUDIT.md` already documents as the current, fixed state. All findings in this document are genuinely new, independently discovered by reading current source rather than by re-running the same checks `AUDIT.md` already ran.
+
+```
+$ npx tsc --noEmit   # after the §1 fixes (all six findings, 1.1-1.6)
+(no output, exit code 0)
+
+$ CI=true npm test -- --watchAll=false   # after the §1 fixes
+Test Suites: 43 passed, 43 total
+Tests:       465 passed, 465 total
+(process exit code: 0; 42→43 suites and 461→465 tests is PersonalData.test.tsx,
+ new for §1.1, plus the new Checkout.test.tsx CSRF-assertion test added for §2.1)
+
+$ npm run lint   # after the §1 fixes
+✖ 182 problems (0 errors, 182 warnings)   # unchanged
+(process exit code: 0)
+
+$ CI=true npm run build   # after the §1 fixes
+Compiled successfully.
+(process exit code: 0)
+
+$ npx tsc --noEmit   # after the §2.2/§2.3 breaking-dependency upgrades, done with
+                      # explicit user authorization
+(no output, exit code 0 — zero application code changes needed for the
+ react-router-dom 6->7 migration)
+
+$ CI=true npm test -- --watchAll=false   # after §2.2/§2.3
+Test Suites: 43 passed, 43 total
+Tests:       465 passed, 465 total
+(process exit code: 0 — unchanged from immediately before the upgrade; two
+ Jest-only fixes were needed to get here: a moduleNameMapper entry for
+ react-router's ./dom subpath export, and a TextEncoder/TextDecoder polyfill
+ in setupTests.ts — see §2.3)
+
+$ npm run lint   # after §2.2/§2.3
+✖ 182 problems (0 errors, 182 warnings)   # unchanged
+(process exit code: 0)
+
+$ CI=true npm run build   # after §2.2/§2.3
+Compiled successfully.
+(process exit code: 0; bundle +6.82 kB gzipped from the react-router-dom major bump)
+
+$ npm ci   # the exact command CI runs, re-verified against the final package-lock.json
+added 1491 packages, and audited 1492 packages in 11s
+65 vulnerabilities (4 low, 1 moderate, 60 high, 0 critical)
+(down from 73 — see §2.2; resolves cleanly, no peer-dependency errors)
+
+$ docker build -t reference-react-typescript-test .   # full multi-stage build,
+                                                          # using the Dockerfile's
+                                                          # own `npm install` (not `npm ci`)
+Compiled successfully.
+... naming to docker.io/library/reference-react-typescript-test:latest done
+(exit code 0; run twice — once immediately after the Node 18->20 Dockerfile bump
+ with react-router-dom already upgraded, once again after the §2.2 overrides
+ were added — both succeeded identically)
+
+$ docker run -d -p 8081:80 reference-react-typescript-test && curl -s -o /dev/null -w "%{http_code}" http://localhost:8081/
+200
+(the built container actually serves the app correctly, not just "builds without
+ erroring" — confirmed via a real HTTP request against the running nginx container,
+ and the response body's <title> tag matched the expected page title)
+```
