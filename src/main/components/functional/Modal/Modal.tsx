@@ -7,7 +7,6 @@ interface ModalProps {
 }
 
 export function Modal({ message, onClose }: ModalProps) {
-  const isSuccess = message.toLowerCase().includes('siker')
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export function Modal({ message, onClose }: ModalProps) {
       <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-message">
         <p
           id="modal-message"
-          className={`modal-message${isSuccess ? ' modal-message-success' : ''}`}
+          className="modal-message"
           style={{textAlign: `${message.includes('\n') ? 'left' : 'center'}`, whiteSpace: 'pre-line' }}
         >
           {message}

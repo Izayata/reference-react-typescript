@@ -8,7 +8,6 @@ export async function fetchCsrfToken(): Promise<string> {
   })
 
   if (!csrfResponse.ok) {
-    console.error('Failed to fetch CSRF token')
     throw new Error('Failed to fetch CSRF token')
   }
 
