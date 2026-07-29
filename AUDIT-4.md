@@ -1,0 +1,98 @@
+# Codebase Audit 4 — reference-react-typescript
+
+**Date:** 2026-07-29
+**Scope:** Full repository, re-assessed independently of `AUDIT.md`, `AUDIT-2.md`, and `AUDIT-3.md`. All three prior passes are, per their own documentation, essentially fully resolved (`AUDIT.md`: all sections fixed except two intentionally-deferred breaking-change items and one still-open correctness bug; `AUDIT-2.md`: all 8 sections fixed except one still-open correctness bug and a couple of by-design informational items; `AUDIT-3.md`: all 5 sections fixed/reviewed, with two informational dead-code notes left open by design). Re-ran the full baseline (`npx tsc --noEmit`, `npm run lint`, `CI=true npm test -- --watchAll=false`, `npm run test:coverage`, `CI=true npm run build`, `npm audit`) at the start of this pass — all clean/unchanged from what `AUDIT-3.md` documents (see the Appendix). No regressions found in previously-fixed work.
+**Methodology:** A fourth, genuinely independent pass, cross-referenced against all three prior audits before anything was reported, to guarantee nothing here duplicates an already-fixed or already-documented-open finding. Three parallel research subagents were launched at the start of this pass but hit an unrelated session/API limit mid-task and returned no usable output; the research below was instead carried out directly, manually, file by file — global "chrome" components (`Footer`, `Header`), every icon-only interactive element in the nav bar, the `Checkout`/`Register` "same address" checkbox pair, the `ShoppingCart` table markup against its CSS override chain, and roughly a dozen `utils/**` files cross-checked for regex-vs-message mismatches. Two candidate findings were investigated and explicitly ruled out rather than reported (see "Investigated, not findings" below) — nothing here is guessed or inferred from a pattern alone; every finding was confirmed by reading the actual file, and the headline finding was additionally confirmed empirically with a temporary, non-committed regression test.
+
+This audit found **4 new, verified issues**, smaller in count than `AUDIT-3.md`'s 17 but including one genuinely serious, previously-undetected correctness bug: `CheckoutOrderSummarySection.tsx` mutates a prop array as a side effect of rendering, which React 18's `<React.StrictMode>` (enabled app-wide) causes to silently duplicate every order line item sent to the backend on checkout, in every local development session. The remaining three are smaller — a stale placeholder brand name in the footer copyright line, seven icon-only interactive elements with no accessible name (the exact "one outlier among near-identical siblings" pattern that caught real bugs in both prior passes), and a checkbox missing a `<label>` wrapper that its near-identical sibling in the other form flow correctly has.
+
+---
+
+## Executive summary
+
+- **`CheckoutOrderSummarySection.tsx` mutates the `orderItems` prop array during render**, via three unabstracted IIFEs the checkout flow uses to build the order-items list and running total inline in JSX. Under React 18 `<React.StrictMode>` (enabled app-wide, `src/index.tsx`), React deliberately double-invokes this component's render body against the same props to surface exactly this class of bug — and here, because `orderItems` is a plain array prop (not reset per invocation, unlike the component's own local `let` variables), the second invocation pushes a second, duplicate `OrderItemModel` for every cart item. Empirically confirmed via a temporary Jest/RTL test wrapped in `<React.StrictMode>`: a one-item cart produced `orderItems: [{"foodId":1,"quantity":1},{"foodId":1,"quantity":1}]` (length 2) in the exact payload `getOrderToSubmit()`/`sendOrderToServer` submits to `POST /v1/orders`. The displayed total price is unaffected (computed via a separate, StrictMode-safely-reset local variable), so the corruption is entirely invisible on screen — a developer testing checkout locally has no visual indication every order they place is being submitted with duplicated line items. See §1.1.
+- **Seven icon-only interactive elements have no accessible name**: the four social-media links in `Header.tsx` (Facebook/Instagram/TikTok/YouTube) and three nav-bar `NavLink`s (`ProfileButton`, `LoginButton`, `LogoutButton`) each wrap a bare `FontAwesomeIcon` — which renders `aria-hidden="true"` by default — with no `aria-label`, no visually-hidden text, and no other content. A screen-reader user Tabbing through the header or nav bar hits seven controls announced with no name at all (just "link"). The nav bar's other two icon-only controls (`HamburgerMenuButton`, `ShoppingBagButton`) already correctly have an `aria-label` from `AUDIT.md`/`AUDIT-3.md` fixes — these seven are the outliers. See §2.1.
+- **`RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox is wrapped in a bare `<span>`, not a `<label>`**, unlike its near-identical sibling — `CheckoutCustomerDetailsSection.tsx`'s "billing same as shipping" checkbox — which correctly uses `<label style={{ textWrap: 'pretty' }}>`. Clicking the visible Hungarian prompt text next to Register's checkbox does nothing; only the small native checkbox square itself toggles it. A screen reader also announces it with no accessible name. See §2.2.
+- **`Footer.tsx`'s copyright line reads "© 2024 Thes. All rights reserved."** — a stale/placeholder brand name left over from before the app was branded "ImagineBar" everywhere else (nav bar, header, gallery alt text, i18n strings). See §3.1.
+
+Two other candidate leads were investigated this pass and explicitly ruled out — see "Investigated, not findings" below.
+
+---
+
+## Findings
+
+### 1. Correctness bugs
+
+| # | Location | Severity | Description |
+|---|---|---|---|
+| 1.1 | `src/main/components/page/Checkout/CheckoutOrderSummarySection.tsx:17-30,48-71` (component body and its item-list `.map`), fed by `src/main/components/page/Checkout/Checkout.tsx:64,323,419` (`orderItems` prop origin, consumption in `getOrderToSubmit`, and pass-through) | **High** | `CheckoutOrderSummarySection` receives `orderItems: OrderItemModel[]` as a prop (line 9/20) and, inside the JSX returned from its render body, runs three IIFEs per cart item to sidestep JSX's expression-only limitation: one (lines 53-57) constructs a new `OrderItemModel` and calls `orderItems.push(orderItem)` — a **side effect that mutates a prop** — one (lines 60-63) computes `orderItemTotal` into a local `let`, and one (line 65-67) accumulates it into a local `let orderTotal`. All three run purely to work around JSX not allowing statements, but only the first one mutates state that outlives a single render, because `orderItems` is a prop reference, not a fresh local variable reset at the top of the function like `orderItem`/`orderTotal`/`orderItemTotal` are (lines 28-30). React's function components are contractually required to be pure with respect to their inputs on every render — `<React.StrictMode>` (wraps the whole app, `src/index.tsx:20-28`) exists specifically to catch violations of this by calling render functions twice in a row against the same props/state in development, discarding the first pass's rendered output but *not* undoing any side effects the first pass already performed. Here, because `Checkout.tsx:64`'s `const orderItems: OrderItemModel[] = []` is created once per *`Checkout`* render and handed down as one stable array reference, and it's `CheckoutOrderSummarySection`'s own render body — not `Checkout`'s — that StrictMode double-invokes, both invocations push into the *same* array: the second invocation's `.push()` calls land on top of the first's, and nothing ever clears the array in between. Empirically confirmed with a temporary Jest/RTL test (not committed) that rendered `<Checkout>` inside `<React.StrictMode>` with a one-item cart in `localStorage`, filled the guest-checkout form via the existing `Checkout.test.tsx` field selectors, clicked "Megrendel", and inspected the mocked `fetch` call's body: `orderItems` came back as `[{"foodId":1,"quantity":1},{"foodId":1,"quantity":1}]` — length 2 for a 1-item cart. A parallel test checking the *displayed* total (`document.body.textContent`) confirmed it stays correct (not doubled) for the same run, since it's computed via `orderTotal`/`orderItemTotal`, both local `let`s reset to `0` at the top of every render invocation — this is exactly why the bug is invisible on screen: the number the user sees is right, but the array actually transmitted to `POST /v1/orders`/`POST /v1/orders/guest` (`Checkout.tsx:321-325`'s `getOrderToSubmit`, which reads the closed-over `orderItems` variable directly) is corrupted. Because `<React.StrictMode>`'s double-invoke behavior is a development-only diagnostic (stripped from production builds), this exact duplication is not currently reproducible against a production build — but every local dev session (the primary way this reference app's checkout flow gets exercised and demonstrated) submits duplicated order-item data to the backend on every single order placed, and the underlying pattern — mutating a prop as a side effect of rendering — is exactly the anti-pattern React's own rules prohibit and that future concurrent-rendering features (Suspense retries, offscreen prerendering) could resurface in production too. Not fixed here (discovery-only pass); the correct fix shape is to stop mutating `orderItems` from inside render — compute the item list and totals via a single `useMemo`/plain reduction over `foods`/`quantities` (or lift the item-list construction into `Checkout.tsx` alongside where `orderItems` is already declared) rather than pushing into the prop array as a JSX-rendering side effect. |
+
+**Not fixed in this pass** — discovery only, matching how `AUDIT-3.md` itself was first published before any "Fix N." work began.
+
+### 2. Accessibility
+
+| # | Location | Severity | Description |
+|---|---|---|---|
+| 2.1 | `src/main/components/header/Header.tsx:24-38` (4 links: Facebook, Instagram, TikTok, YouTube), `src/main/components/navigation-bar/components/profile-button/ProfileButton.tsx:9-19`, `.../login-button/LoginButton.tsx:9-19`, `.../logout-button/LogoutButton.tsx:44-53` | **High** | Seven `<a>`/`<NavLink>` elements each wrap only a bare `<FontAwesomeIcon>` with no other text content, and none has an `aria-label`/`aria-labelledby`. `FontAwesomeIcon` renders its SVG with `aria-hidden="true"` by default (a decorative-icon assumption, since most icons *do* sit next to real text) — so each of these seven links has a genuinely empty accessible name: a screen reader announces only "link" (or "Facebook link" at best, from guessing at the bare `href`), with no indication of what it does. This is a real WCAG 4.1.2 (Name, Role, Value) / 2.4.4 (Link Purpose) failure, not a style nitpick — a keyboard/screen-reader user cannot tell the profile, login, or logout buttons apart from each other, or any of the four footer social links apart from each other, by ear. Confirmed via a targeted grep (`grep -rln "FontAwesomeIcon" src/main/components/navigation-bar --include="*.tsx" \| xargs grep -L "aria-label"`) that these three nav-bar components are the *only* ones in that directory missing an `aria-label` — `HamburgerMenuButton` and `ShoppingBagButton` already correctly have one, fixed in `AUDIT.md` §6.3 and `AUDIT-3.md` §2.2 respectively — confirming this is the same "outlier among near-identical siblings" pattern both of those prior fixes addressed, just missed on these seven. `npm run lint` currently exits 0 with 210 warnings (no errors) — none of the active `jsx-a11y` rules (including `label-has-associated-control`, per `CLAUDE.md`'s "Linting conventions") happen to catch a plain link/NavLink with no accessible name at all, so this wasn't caught by tooling. Not fixed here (discovery-only pass); the fix shape is a translated `aria-label` on each of the seven elements — e.g. `aria-label={t('header.facebookLinkAriaLabel')}` etc. for `Header.tsx`'s four, and `aria-label={t('nav.profileLinkAriaLabel')}`/`loginLinkAriaLabel`/`logoutLinkAriaLabel` for the three nav-bar ones — following the same pattern `HamburgerMenuButton`/`ShoppingBagButton` already use. |
+| 2.2 | `src/main/components/page/Register/form/RegisterFormAddresses.tsx:30-32` vs. `src/main/components/page/Checkout/CheckoutCustomerDetailsSection.tsx:181-188` | **Medium** | Register's "shipping address same as billing" checkbox is wrapped in a bare `<span>`: `<span><input type="checkbox" onChange={toggleShippingAddressForm}/> {t('register.shippingSameAsBilling')}</span>` — no `<label>`, no `aria-label`/`aria-labelledby`, and the `<input>` itself is uncontrolled (no `checked` prop; it happens to start in visual sync with `isShippingAddressFormDisplayed`'s own `useState(true)` default only because both independently default to the "off"/unchecked-equivalent state, not because they're actually wired together). Its near-identical sibling in the other address-entry flow — Checkout's "billing address same as shipping" checkbox — is correctly wrapped: `<label style={{ textWrap: 'pretty' }}><input type='checkbox' checked={billingAddressSameAsShipping} onChange={onToggleBillingAddressSameAsShipping}/>{t('checkout.billingSameAsShipping')}</label>` (both freshly re-read and confirmed in this pass). The practical effect on Register's version: clicking the visible prompt text ("A szállítási cím megegyezik a számlázási címmel") does nothing — only clicking the small native checkbox square itself toggles `isShippingAddressFormDisplayed`, contrary to the standard, expected `<label>`-click-toggles-the-control behavior every other checkbox in this app (including its own Checkout sibling) provides. A screen reader also announces this checkbox with no name at all, unlike Checkout's version. The underlying show/hide *logic* itself (`toggleShippingAddressForm`/`handleSetAddressesStep` in `Register.tsx`) is correct — this is purely a markup/accessibility gap, not a functional bug in the address-copying behavior. Not fixed here (discovery-only pass); the fix shape is to wrap Register's checkbox in a real `<label>` the same way Checkout's already is, and add the matching `checked={isShippingAddressFormDisplayed}` prop while at it, since an uncontrolled checkbox that happens to coincidentally start in sync with its paired state is a latent bug waiting to desync if either default ever changes independently. |
+
+**Not fixed in this pass** — discovery only.
+
+### 3. Content quality
+
+| # | Location | Severity | Description |
+|---|---|---|---|
+| 3.1 | `src/main/features/footer/Footer.tsx:47` | **Low** | `<p>© 2024 Thes. All rights reserved.</p>` — "Thes" is not this app's brand name anywhere else in the codebase; the app is branded "ImagineBar" consistently everywhere else it appears (`NavigationBar.tsx:29`, `Header.tsx:20`, `hu.json`'s `footer.brandTitle` key, `GalleryPage/index.tsx`'s image alt text) — confirmed via a grep across all of those locations. This line is deliberately left untranslated per `CLAUDE.md`'s i18n architecture (copyright/developer-attribution lines are an explicit exemption from the full-i18n-extraction pass `AUDIT-2.md` §7 completed), so this is a plain string-content bug, not a missing-translation one — the fix is a literal text correction from "Thes" to "ImagineBar", not a new i18n key. |
+
+**Not fixed in this pass** — discovery only.
+
+---
+
+### Investigated, not findings
+
+- **`DisplayShoppingCartContent.tsx`'s `<tr>` (lines 122-198) has a `<div>` and a `<button>` as direct children alongside `<td>` siblings** — investigated as a possible invalid-table-nesting/ARIA-role bug. Ruled out: the entire `<tbody>`/`<tr>` chain is deliberately CSS-overridden to `display: flex` at every breakpoint (`shopping-cart-table-body.css`, `shopping-cart-order-item-container.css`, confirmed via a full read of both including their `@media` blocks), which blockifies all children uniformly (CSS "blockification" — a table-cell-level box loses its table-cell-ness once its parent generates a flex formatting context) and causes modern browsers to suppress the implicit table/row/cell ARIA roles the nesting concern would otherwise raise. Not a real bug.
+- **`PhoneNumberUtils.ts`'s `validatePhoneNumber` free function throws `ERR_MSG_PHONE_NUMBER_VALUE_REQUIRED` for a whitespace-only value instead of a format-specific message** — investigated as a possible message-mismatch bug (the same class `AUDIT-3.md` §1.5/1.6 fixed elsewhere). Ruled out as worth reporting: `grep -rn "validatePhoneNumber\b" src/main --include="*.tsx" --include="*.ts" | grep -v PhoneNumberUtils.ts` returns zero call sites — this function is dead code (the real `PhoneNumberModel.tsx` validates via `class-validator` decorators directly, never via this free function), matching the same already-acknowledged dead-`validate*`-utility pattern `AUDIT-3.md` §1's `checkPasswordIsCommon` note and §3's `NavLinkPersist`/`NavigatePersist` note both already document elsewhere in this codebase.
+
+---
+
+## Summary table
+
+| # | Finding | Severity |
+|---|---|---|
+| 1.1 | `CheckoutOrderSummarySection.tsx` mutates the `orderItems` prop array as a render side effect — StrictMode double-invocation duplicates every order line item submitted to the backend, in every local dev session | **High** |
+| 2.1 | 7 icon-only links (`Header.tsx`'s 4 social links, `ProfileButton`, `LoginButton`, `LogoutButton`) have no accessible name | **High** |
+| 2.2 | `RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox uses a bare `<span>` (unlabeled, uncontrolled) where its Checkout sibling correctly uses a `<label>` (labeled, controlled) | **Medium** |
+| 3.1 | `Footer.tsx`'s copyright line says "© 2024 Thes." instead of the app's real brand, "ImagineBar" | **Low** |
+
+---
+
+## Appendix: live tool output (this pass, 2026-07-29)
+
+```
+$ npx tsc --noEmit
+(no output, exit code 0)
+
+$ npm run lint
+✖ 210 problems (0 errors, 210 warnings)   # unchanged from AUDIT-3.md's documented state;
+                                            # all warnings are pre-existing src/test/** no-explicit-any
+(process exit code: 0)
+
+$ CI=true npm test -- --watchAll=false
+Test Suites: 69 passed, 69 total
+Tests:       591 passed, 591 total
+(process exit code: 0 — unchanged from AUDIT-3.md's final documented state)
+
+$ npm run test:coverage
+All files | 62.34% Stmts | 47.21% Branch | 58.92% Funcs | 63.24% Lines
+(process exit code: 0 — passes the 59/43/54/59 threshold; unchanged)
+
+$ CI=true npm run build
+Compiled successfully.
+(process exit code: 0 — unchanged)
+
+$ npm audit
+65 vulnerabilities (4 low, 1 moderate, 60 high, 0 critical)
+(unchanged from AUDIT-2.md §2.2's documented, already-investigated state)
+```
+
+No regressions found anywhere in this baseline — every number above matches what `AUDIT-3.md` already documents as the current, fixed state. All findings in this document are genuinely new, independently discovered by reading current source, and §1.1 was additionally verified empirically: a temporary Jest/RTL test (`<Checkout>` rendered inside `<React.StrictMode>`, guest checkout filled via `Checkout.test.tsx`'s existing selectors, order submitted, and the mocked `fetch` call's body inspected) reproduced the exact duplicated-`orderItems` payload described above; the test file was never committed and `git status --short` was confirmed clean after its deletion.
