@@ -1,12 +1,10 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../model/ShoppingCartItemModel'
-import { OrderItemModel } from '../../../model/order/OrderItemModel'
 
 interface CheckoutOrderSummarySectionProps {
   foods: ShoppingCartItemModel[]
   quantities: { [key: string]: number }
-  orderItems: OrderItemModel[]
   isCashPayment: boolean
   isCardPayment: boolean
   onSetPaymentToCash: () => void
@@ -17,7 +15,6 @@ interface CheckoutOrderSummarySectionProps {
 export function CheckoutOrderSummarySection({
   foods,
   quantities,
-  orderItems,
   isCashPayment,
   isCardPayment,
   onSetPaymentToCash,
@@ -25,9 +22,10 @@ export function CheckoutOrderSummarySection({
   onSubmitOrder
 }: CheckoutOrderSummarySectionProps) {
   const { t } = useTranslation()
-  let orderItem: OrderItemModel
-  let orderTotal = 0
-  let orderItemTotal = 0
+  const orderTotal = foods.reduce(
+    (total, food) => total + Number(food.price.amount) * Number(quantities[food.foodId]),
+    0
+  )
 
   return (
     <section className='form-container checkout-page order-summary'>
@@ -46,29 +44,17 @@ export function CheckoutOrderSummarySection({
           />
         </div>
         <div>
-          {foods.map(food => (
-            <>
+          {foods.map(food => {
+            const itemTotal = Number(food.price.amount) * Number(quantities[food.foodId])
+            return (
               <div key={food.foodId} className='checkout-order-item-list-container'>
                 <div>
-                  {(() => {
-                    orderItem = new OrderItemModel(food.foodId, quantities[food.foodId])
-                    orderItems.push(orderItem)
-                    return null
-                  })()}
-                  ×{orderItem.quantity} | {food.foodName.value}
+                  ×{quantities[food.foodId]} | {food.foodName.value}
                 </div>
-                {(() => {
-                  orderItemTotal = Number(food.price.amount) * Number(quantities[food.foodId])
-                  return null
-                })()}
-                <div className='checkout-order-item-price-container'>{(orderItemTotal).toFixed(0)} {t('menu.currencySuffix')}</div>
-                {(() => {
-                  orderTotal += orderItemTotal
-                  return null
-                })()}
+                <div className='checkout-order-item-price-container'>{itemTotal.toFixed(0)} {t('menu.currencySuffix')}</div>
               </div>
-            </>
-          ))}
+            )
+          })}
           <div
             style={{
               width: 'calc(100% - 2rem)',
