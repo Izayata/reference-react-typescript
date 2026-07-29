@@ -45,6 +45,7 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
         to=""
         className={'logout-button-nav-link-wrapper'}
         onClick={handleLogout}
+        aria-label={t('nav.logoutLinkAriaLabel')}
       >
         <FontAwesomeIcon
           icon={faArrowRightFromBracket}
