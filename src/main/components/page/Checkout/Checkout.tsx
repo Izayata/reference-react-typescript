@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../model/ShoppingCartItemModel'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
@@ -61,7 +61,10 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
   const [billingAddressSameAsShipping, setBillingAddressSameAsShipping] = useState(false)
   const { setModalMessage } = useModal()
   const navigate = useNavigate()
-  const orderItems: OrderItemModel[] = []
+  const orderItems = useMemo(
+    () => foods.map(food => new OrderItemModel(food.foodId, quantities[food.foodId])),
+    [foods, quantities]
+  )
 
   const fetchCustomerData = async () => {
     setLoading(true)
@@ -416,7 +419,6 @@ export const Checkout: React.FC<CheckoutProps> = ({ isAuthenticated }) => {
           <CheckoutOrderSummarySection
             foods={foods}
             quantities={quantities}
-            orderItems={orderItems}
             isCashPayment={isCashPayment}
             isCardPayment={isCardPayment}
             onSetPaymentToCash={setPaymentToCash}

@@ -1,3 +1,4 @@
+import React from 'react'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { ModalProvider, useModal } from '../../../../main/context/ModalMessageContext/ModalMessageContext'
@@ -8,8 +9,8 @@ function DisplayModalMessage() {
   return <>{modalMessage}</>
 }
 
-function renderCheckout(isAuthenticated = false) {
-  return render(
+function renderCheckout(isAuthenticated = false, strict = false) {
+  const tree = (
     <MemoryRouter initialEntries={['/checkout']}>
       <ModalProvider>
         <Routes>
@@ -20,6 +21,7 @@ function renderCheckout(isAuthenticated = false) {
       </ModalProvider>
     </MemoryRouter>
   )
+  return render(strict ? <React.StrictMode>{tree}</React.StrictMode> : tree)
 }
 
 const FOOD_ITEM = {
@@ -160,5 +162,34 @@ describe('Checkout', () => {
     const orderCall = (global.fetch as jest.Mock).mock.calls.find(call => call[0] === '/v1/orders/guest')
     const body = JSON.parse(orderCall[1].body)
     expect(Object.keys(body).sort()).toEqual(['customer', 'orderItems', 'paymentType'])
+  })
+
+  it('does not duplicate orderItems under React.StrictMode double-rendering (AUDIT-4.md §1.1)', async () => {
+    localStorage.setItem('shopping_cart', JSON.stringify({ 1: 1 }))
+    mockFetchWithOrderSubmission()
+    renderCheckout(false, true)
+
+    await screen.findByText('Pénztár', {}, { timeout: 3000 })
+
+    fireEvent.change(screen.getByLabelText(/Keresztnév/), { target: { value: 'Test' } })
+    fireEvent.change(screen.getByLabelText(/Vezetéknév/), { target: { value: 'User' } })
+    fireEvent.change(screen.getByLabelText(/Telefonszám/), { target: { value: '36204234442' } })
+    fireEvent.change(screen.getByLabelText(/e-Mail/), { target: { value: 'test@example.com' } })
+    fireEvent.click(screen.getByLabelText('A számlázási cím megegyezik a szállítási címmel'))
+    fireEvent.change(screen.getByLabelText(/Irányítószám/), { target: { value: '4028' } })
+    fireEvent.change(screen.getByLabelText(/Város/), { target: { value: 'Debrecen' } })
+    fireEvent.change(screen.getByLabelText(/Közterület/), { target: { value: 'Egyetem sgt' } })
+    fireEvent.change(screen.getByLabelText(/Házszám/), { target: { value: '1' } })
+    fireEvent.click(screen.getByLabelText('Készpénz'))
+
+    fireEvent.click(screen.getByText('Megrendel'))
+
+    await waitFor(() => {
+      expect((global.fetch as jest.Mock).mock.calls.some(call => call[0] === '/v1/orders/guest')).toBe(true)
+    })
+
+    const orderCall = (global.fetch as jest.Mock).mock.calls.find(call => call[0] === '/v1/orders/guest')
+    const body = JSON.parse(orderCall[1].body)
+    expect(body.orderItems).toEqual([{ foodId: 1, quantity: 1 }])
   })
 })
