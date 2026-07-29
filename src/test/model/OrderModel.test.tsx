@@ -112,9 +112,9 @@ describe('OrderModel', () => {
   })
 
   it('does not carry any field beyond customer, orderItems, and paymentType', () => {
-    // Regression-style check for AUDIT-2.md §8.1: OrderModel used to also carry
-    // an undocumented isAuthenticatedUser field. Guards against it (or any other
-    // extra field) silently reappearing in the serialized request body.
+    // Regression-style check: OrderModel used to also carry an undocumented
+    // isAuthenticatedUser field. Guards against it (or any other extra field)
+    // silently reappearing in the serialized request body.
     const order = VALID_ORDER_MODEL()
     expect(Object.keys(order).sort()).toEqual(['customer', 'orderItems', 'paymentType'])
   })

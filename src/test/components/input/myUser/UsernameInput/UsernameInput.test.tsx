@@ -42,10 +42,10 @@ describe('UsernameInput', () => {
   })
 
   it('surfaces an error instead of silently reporting "available" when the check itself fails', async () => {
-    // Regression test for AUDIT-2.md §1.3: a non-ok response used to be treated
-    // as "not taken" (checkUsernameExists returned false), showing a false
-    // available checkmark. It now throws, and this component catches that
-    // rejection (previously outside any reachable try/catch) and shows an error.
+    // Regression test: a non-ok response used to be treated as "not taken"
+    // (checkUsernameExists returned false), showing a false available
+    // checkmark. It now throws, and this component catches that rejection
+    // (previously outside any reachable try/catch) and shows an error.
     mockFetch({ ok: false })
     const { changeValue } = renderUsernameInput()
 
@@ -56,11 +56,11 @@ describe('UsernameInput', () => {
   })
 
   it('ignores a stale availability-check response that resolves after the value has already changed', async () => {
-    // Regression test for AUDIT-3.md §1.4: the availability-check setTimeout's
-    // cleanup was never actually registered as a real effect cleanup (it was
-    // returned from inside the outer setTimeout callback, which setTimeout
-    // discards), so a still-in-flight check for a stale value could overwrite
-    // the UI state for whatever the user has since typed.
+    // Regression test: the availability-check setTimeout's cleanup was never
+    // actually registered as a real effect cleanup (it was returned from
+    // inside the outer setTimeout callback, which setTimeout discards), so a
+    // still-in-flight check for a stale value could overwrite the UI state
+    // for whatever the user has since typed.
     let resolveStaleCheck!: (value: { ok: boolean, json: () => Promise<unknown> }) => void
     const staleCheckPromise = new Promise<{ ok: boolean, json: () => Promise<unknown> }>(resolve => {
       resolveStaleCheck = resolve

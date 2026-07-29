@@ -91,7 +91,7 @@ describe('Register', () => {
     expect(global.fetch).not.toHaveBeenCalled()
   })
 
-  it('toggles the shipping address form via the "same as billing" checkbox label, not just the checkbox itself (AUDIT-4.md §2.2)', async () => {
+  it('toggles the shipping address form via the "same as billing" checkbox label, not just the checkbox itself', async () => {
     mockExistenceFetch({ usernameExists: false, emailExists: false })
     renderRegister()
 
