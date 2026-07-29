@@ -44,7 +44,7 @@ export function Footer() {
         <h3>Credits</h3>
         <div>
           <p>Designed and Developed by Martin Juracskó</p>
-          <p>© 2024 Thes. All rights reserved.</p>
+          <p>© 2024 ImagineBar. All rights reserved.</p>
         </div>
       </section>
       <div

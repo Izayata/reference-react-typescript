@@ -1,6 +1,6 @@
 # Codebase Audit 4 — reference-react-typescript
 
-**Date:** 2026-07-29 (last re-verified 2026-07-29 — after the §1 fix landed: `CheckoutOrderSummarySection.tsx` no longer mutates the `orderItems` prop as a render side effect; `Checkout.tsx` now computes it via a pure `useMemo` over `foods`/`quantities`, and the summary section derives its displayed item list/total straight from `foods`/`quantities` with no side effects at all — **§1, Correctness bugs, is now fixed**), and after the §2 fixes landed: all seven icon-only links (`Header.tsx`'s 4 social links, plus `ProfileButton`/`LoginButton`/`LogoutButton`) now have a translated `aria-label`, and `RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox is now wrapped in a real `<label>` with a correctly-inverted `checked` binding, matching its Checkout sibling — **§2, Accessibility, is now fixed**.)
+**Date:** 2026-07-29 (last re-verified 2026-07-29 — after the §1 fix landed: `CheckoutOrderSummarySection.tsx` no longer mutates the `orderItems` prop as a render side effect; `Checkout.tsx` now computes it via a pure `useMemo` over `foods`/`quantities`, and the summary section derives its displayed item list/total straight from `foods`/`quantities` with no side effects at all — **§1, Correctness bugs, is now fixed**), after the §2 fixes landed: all seven icon-only links (`Header.tsx`'s 4 social links, plus `ProfileButton`/`LoginButton`/`LogoutButton`) now have a translated `aria-label`, and `RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox is now wrapped in a real `<label>` with a correctly-inverted `checked` binding, matching its Checkout sibling — **§2, Accessibility, is now fixed** — and after the §3 fix landed: `Footer.tsx`'s copyright line now reads "© 2024 ImagineBar." instead of "© 2024 Thes." — **§3, Content quality, is now fixed, closing out every section of this document**.)
 **Scope:** Full repository, re-assessed independently of `AUDIT.md`, `AUDIT-2.md`, and `AUDIT-3.md`. All three prior passes are, per their own documentation, essentially fully resolved (`AUDIT.md`: all sections fixed except two intentionally-deferred breaking-change items and one still-open correctness bug; `AUDIT-2.md`: all 8 sections fixed except one still-open correctness bug and a couple of by-design informational items; `AUDIT-3.md`: all 5 sections fixed/reviewed, with two informational dead-code notes left open by design). Re-ran the full baseline (`npx tsc --noEmit`, `npm run lint`, `CI=true npm test -- --watchAll=false`, `npm run test:coverage`, `CI=true npm run build`, `npm audit`) at the start of this pass — all clean/unchanged from what `AUDIT-3.md` documents (see the Appendix). No regressions found in previously-fixed work.
 **Methodology:** A fourth, genuinely independent pass, cross-referenced against all three prior audits before anything was reported, to guarantee nothing here duplicates an already-fixed or already-documented-open finding. Three parallel research subagents were launched at the start of this pass but hit an unrelated session/API limit mid-task and returned no usable output; the research below was instead carried out directly, manually, file by file — global "chrome" components (`Footer`, `Header`), every icon-only interactive element in the nav bar, the `Checkout`/`Register` "same address" checkbox pair, the `ShoppingCart` table markup against its CSS override chain, and roughly a dozen `utils/**` files cross-checked for regex-vs-message mismatches. Two candidate findings were investigated and explicitly ruled out rather than reported (see "Investigated, not findings" below) — nothing here is guessed or inferred from a pattern alone; every finding was confirmed by reading the actual file, and the headline finding was additionally confirmed empirically with a temporary, non-committed regression test.
 
@@ -13,7 +13,7 @@ This audit found **4 new, verified issues**, smaller in count than `AUDIT-3.md`'
 - ~~**`CheckoutOrderSummarySection.tsx` mutates the `orderItems` prop array during render**, via three unabstracted IIFEs the checkout flow uses to build the order-items list and running total inline in JSX. Under React 18 `<React.StrictMode>` (enabled app-wide, `src/index.tsx`), React deliberately double-invokes this component's render body against the same props to surface exactly this class of bug — and here, because `orderItems` is a plain array prop (not reset per invocation, unlike the component's own local `let` variables), the second invocation pushes a second, duplicate `OrderItemModel` for every cart item. The displayed total price is unaffected (computed via a separate, StrictMode-safely-reset local variable), so the corruption is entirely invisible on screen.~~ **✅ Fixed** — see §1.1. `orderItems` is now computed via a pure `useMemo` in `Checkout.tsx`, and the summary section no longer mutates anything during render; confirmed with a committed regression test that fails against the pre-fix code and passes against the fix.
 - ~~**Seven icon-only interactive elements have no accessible name**: the four social-media links in `Header.tsx` (Facebook/Instagram/TikTok/YouTube) and three nav-bar `NavLink`s (`ProfileButton`, `LoginButton`, `LogoutButton`) each wrap a bare `FontAwesomeIcon` — which renders `aria-hidden="true"` by default — with no `aria-label`, no visually-hidden text, and no other content.~~ **✅ Fixed** — see §2.1. All seven now have a translated `aria-label`, matching the pattern `HamburgerMenuButton`/`ShoppingBagButton` already used; confirmed in a real browser that each renders its correct accessible name.
 - ~~**`RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox is wrapped in a bare `<span>`, not a `<label>`**, unlike its near-identical sibling — `CheckoutCustomerDetailsSection.tsx`'s "billing same as shipping" checkbox — which correctly uses `<label style={{ textWrap: 'pretty' }}>`. Clicking the visible Hungarian prompt text next to Register's checkbox does nothing; only the small native checkbox square itself toggles it.~~ **✅ Fixed** — see §2.2. Now wrapped in a real `<label>` with a correctly-inverted `checked` binding; confirmed in a real browser that clicking the label text now toggles the checkbox and the shipping form.
-- **`Footer.tsx`'s copyright line reads "© 2024 Thes. All rights reserved."** — a stale/placeholder brand name left over from before the app was branded "ImagineBar" everywhere else (nav bar, header, gallery alt text, i18n strings). See §3.1.
+- ~~**`Footer.tsx`'s copyright line reads "© 2024 Thes. All rights reserved."** — a stale/placeholder brand name left over from before the app was branded "ImagineBar" everywhere else (nav bar, header, gallery alt text, i18n strings).~~ **✅ Fixed** — see §3.1. Now reads "© 2024 ImagineBar. All rights reserved."; confirmed in a real browser.
 
 Two other candidate leads were investigated this pass and explicitly ruled out — see "Investigated, not findings" below.
 
@@ -38,13 +38,15 @@ Two other candidate leads were investigated this pass and explicitly ruled out �
 
 **Fixed:** both findings in this section addressed. Live-verified: `npx tsc --noEmit` passes with zero errors; `CI=true npm test -- --watchAll=false` passes all 69 suites (593 tests, up from 592 — the new `Register.test.tsx` regression test, confirmed to fail against the pre-fix code before confirming it passes against the fix); `npm run lint` exits `0` with 210 problems (0 errors, unchanged); `npm run test:coverage` at `63.00/47.50/59.95/63.91`, comfortably above the `59/43/54/59` threshold; `CI=true npm run build` exits `0`. Both findings were additionally verified in a real browser (dev server + Playwright): §2.1 by reading each element's `aria-label` attribute directly off the live DOM; §2.2 by walking through Register's full flow to the addresses step and confirming a click on the checkbox's label text now toggles it and hides the shipping-address form.
 
-### 3. Content quality
+### 3. Content quality — ✅ Fixed
 
 | # | Location | Severity | Description |
 |---|---|---|---|
-| 3.1 | `src/main/features/footer/Footer.tsx:47` | **Low** | `<p>© 2024 Thes. All rights reserved.</p>` — "Thes" is not this app's brand name anywhere else in the codebase; the app is branded "ImagineBar" consistently everywhere else it appears (`NavigationBar.tsx:29`, `Header.tsx:20`, `hu.json`'s `footer.brandTitle` key, `GalleryPage/index.tsx`'s image alt text) — confirmed via a grep across all of those locations. This line is deliberately left untranslated per `CLAUDE.md`'s i18n architecture (copyright/developer-attribution lines are an explicit exemption from the full-i18n-extraction pass `AUDIT-2.md` §7 completed), so this is a plain string-content bug, not a missing-translation one — the fix is a literal text correction from "Thes" to "ImagineBar", not a new i18n key. |
+| 3.1 | `src/main/features/footer/Footer.tsx:47` | **Low — ✅ Fixed** | `<p>© 2024 Thes. All rights reserved.</p>` — "Thes" was not this app's brand name anywhere else in the codebase; the app is branded "ImagineBar" consistently everywhere else it appears (`NavigationBar.tsx:29`, `Header.tsx:20`, `hu.json`'s `footer.brandTitle` key, `GalleryPage/index.tsx`'s image alt text) — confirmed via a grep across all of those locations. This line is deliberately left untranslated per `CLAUDE.md`'s i18n architecture (copyright/developer-attribution lines are an explicit exemption from the full-i18n-extraction pass `AUDIT-2.md` §7 completed), so this was a plain string-content bug, not a missing-translation one. **Fixed:** the line now reads `<p>© 2024 ImagineBar. All rights reserved.</p>` — a literal text correction, no new i18n key needed. No dedicated `Footer.tsx` test suite exists (and none of the other 13 component test suites reference this string), so no regression test was added for a one-line static-text fix; verified instead by reading the corrected source and confirming the rendered text in a real browser. |
 
-**Not fixed in this pass** — discovery only.
+**Fixed:** the one finding in this section addressed. Live-verified: `npx tsc --noEmit` passes with zero errors; `CI=true npm test -- --watchAll=false` passes all 69 suites (593 tests, unchanged — no test coverage existed for this line to update); `npm run lint` exits `0` with 210 problems (0 errors, unchanged); `npm run test:coverage` at `63.00/47.50/59.95/63.91`, unchanged and still comfortably above the `59/43/54/59` threshold; `CI=true npm run build` exits `0`. Additionally verified in a real browser (dev server + Playwright): the footer's Credits section now renders "© 2024 ImagineBar. All rights reserved."
+
+**With this, all 3 sections of `AUDIT-4.md` are fixed.**
 
 ---
 
@@ -62,7 +64,7 @@ Two other candidate leads were investigated this pass and explicitly ruled out �
 | 1.1 | ~~`CheckoutOrderSummarySection.tsx` mutates the `orderItems` prop array as a render side effect — StrictMode double-invocation duplicates every order line item submitted to the backend, in every local dev session~~ | ~~High~~ **✅ Fixed** — `orderItems` now computed via a pure `useMemo` in `Checkout.tsx`; no more mutation, regression test included |
 | 2.1 | ~~7 icon-only links (`Header.tsx`'s 4 social links, `ProfileButton`, `LoginButton`, `LogoutButton`) have no accessible name~~ | ~~High~~ **✅ Fixed** — translated `aria-label` added to all seven, verified in a real browser |
 | 2.2 | ~~`RegisterFormAddresses.tsx`'s "shipping same as billing" checkbox uses a bare `<span>` (unlabeled, uncontrolled) where its Checkout sibling correctly uses a `<label>` (labeled, controlled)~~ | ~~Medium~~ **✅ Fixed** — now a real `<label>` with a correctly-inverted `checked` binding, regression test included |
-| 3.1 | `Footer.tsx`'s copyright line says "© 2024 Thes." instead of the app's real brand, "ImagineBar" | **Low** |
+| 3.1 | ~~`Footer.tsx`'s copyright line says "© 2024 Thes." instead of the app's real brand, "ImagineBar"~~ | ~~Low~~ **✅ Fixed** — now reads "© 2024 ImagineBar.", verified in a real browser |
 
 ---
 
@@ -148,3 +150,30 @@ Compiled successfully.
 ```
 
 Both §2 fixes were additionally verified in a real browser (dev server + Playwright). §2.1: loaded the homepage and read each of the seven elements' `aria-label` attribute directly off the live DOM (`Facebook`/`Instagram`/`TikTok`/`YouTube`/`Bejelentkezés` all confirmed present; `ProfileButton`/`LogoutButton` only render when authenticated, not reachable in this guest-only local environment, but share the identical fix pattern already confirmed working on `LoginButton`). Along the way, confirmed `Footer.tsx`'s own 4 social-media links (same CSS class, separate file) render real visible text next to each icon and correctly needed no change. §2.2: walked Register's full flow to the addresses step in a real browser (working around the same `react-phone-input-2` widget automation quirk noted in §1's verification — the field starts pre-populated with `"+36"`, so the remaining digits must be typed at the end rather than replacing the whole value) and confirmed clicking the checkbox's label text now checks it and hides the shipping-address section, with no new console errors.
+
+```
+$ npx tsc --noEmit   # after the §3 fix
+(no output, exit code 0)
+
+$ CI=true npm test -- --watchAll=false   # after the §3 fix
+Test Suites: 69 passed, 69 total
+Tests:       593 passed, 593 total
+(process exit code: 0 — unchanged; no test coverage existed for Footer.tsx
+ to update for a one-line static-text fix)
+
+$ npm run lint   # after the §3 fix
+✖ 210 problems (0 errors, 210 warnings)   # unchanged
+(process exit code: 0)
+
+$ npm run test:coverage   # after the §3 fix
+All files | 63% Stmts | 47.5% Branch | 59.95% Funcs | 63.91% Lines
+(process exit code: 0 — unchanged, still comfortably above the 59/43/54/59 threshold)
+
+$ CI=true npm run build   # after the §3 fix
+Compiled successfully.
+(process exit code: 0)
+```
+
+§3.1's fix was additionally verified in a real browser (dev server + Playwright): the footer's Credits section now renders "© 2024 ImagineBar. All rights reserved." in place of the stale "© 2024 Thes." text, confirmed via both a direct text-content read and a screenshot.
+
+**All 3 sections of `AUDIT-4.md` are now fixed.**
