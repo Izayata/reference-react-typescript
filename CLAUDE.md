@@ -46,6 +46,8 @@ Docker: `Dockerfile` builds with `node:18`, then serves the static build via `ng
 
 ## Architecture
 
+For a deeper treatment of this section — full domain-model ERD, every endpoint's auth/CSRF requirements, sequence diagrams for the auth/registration/checkout flows, and the reasoning behind the Model→Builder→Converter→Utils pattern — see `docs/DESIGN.md`.
+
 ### Directory layout
 
 - `src/app/` — Redux store setup (`store.ts`) and typed hooks (`useAppDispatch`/`useAppSelector` in `hooks.ts`).
