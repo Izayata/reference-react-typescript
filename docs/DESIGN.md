@@ -566,7 +566,12 @@ record in `AUDIT*.md` — cross-checked against it, but independently re-verifie
   dependency tree, not in a runtime dependency actually shipped to users. `package.json`'s
   `overrides` block pins three isolated leaf packages as a partial fix; the rest is blocked on
   either a non-functional `react-scripts@0.0.0` release or a separate `eslint` major-version
-  migration (`AUDIT-2.md` §2.2).
+  migration (`AUDIT-2.md` §2.2). This is now empirically confirmed, not just inferred: two
+  Dependabot PRs (bump `typescript` 4.9.5→7.0.2, bump `eslint` 8.57.1→10.8.0) both failed `npm ci`
+  itself with an `ERESOLVE` peer-dependency conflict against `react-scripts@5.0.1`'s own pinned
+  ranges — not a type/lint error a code change could fix. `.github/dependabot.yml` now ignores
+  **major**-version updates for both specifically (minor/patch bumps still proposed normally), so
+  Dependabot stops proposing PRs that can only ever fail CI this way.
 - **`Login.tsx` does a hard full-page redirect on success** (`window.location.href =
   data.redirectUrl`), not an SPA navigation — the only place in the app that leaves client-side
   routing entirely, worth knowing before assuming every navigation in this app is a
@@ -581,13 +586,15 @@ record in `AUDIT*.md` — cross-checked against it, but independently re-verifie
 
 ---
 
-## 10. Doc-Drift Note (flagged during research for this document, not fixed here)
+## 10. Doc-Drift Note — ✅ Fixed
 
-`CLAUDE.md`'s "Known issues" section currently only narrates `AUDIT.md` and `AUDIT-2.md`'s
-findings and fix history in prose — it does not mention that `AUDIT-3.md` (17 findings) and
-`AUDIT-4.md` (4 findings) exist, both fully worked through and merged since `CLAUDE.md` was last
-updated. This is a real gap for anyone reading `CLAUDE.md` alone (its own instruction to "check
-both before assuming an issue is still open" only names two of the four audit documents that now
-exist). Flagged here per this document's own research process rather than fixed automatically, in
-keeping with this repository's established pattern of only updating `CLAUDE.md` on an explicit,
-separate request.
+`CLAUDE.md`'s "Known issues" section previously only narrated `AUDIT.md` and `AUDIT-2.md`'s
+findings and fix history in prose — it didn't mention that `AUDIT-3.md` (17 findings) and
+`AUDIT-4.md` (4 findings) existed, both fully worked through and merged after `CLAUDE.md` was last
+updated. Flagged here when this document was first written, per an explicit follow-up request:
+`CLAUDE.md` now names all four audit documents (plus a pointer back to this document), carries
+summary paragraphs for `AUDIT-3.md`/`AUDIT-4.md` matching its existing style, and had three
+separately-discovered stale facts corrected in the same pass — its lint-warning count (182→210,
+`AUDIT-3.md` §4's new `converter/`/`myDecorators/` test coverage), its `Dockerfile` base image
+reference (`node:18`→`node:20`, matching §2's already-correct `node:20` here), and its
+`src/test/components/**` count (13→14, `NavigationMenu.test.tsx`).
