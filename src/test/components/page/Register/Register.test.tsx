@@ -90,4 +90,27 @@ describe('Register', () => {
     expect(screen.queryByText('Keresztnév:')).not.toBeInTheDocument()
     expect(global.fetch).not.toHaveBeenCalled()
   })
+
+  it('toggles the shipping address form via the "same as billing" checkbox label, not just the checkbox itself (AUDIT-4.md §2.2)', async () => {
+    mockExistenceFetch({ usernameExists: false, emailExists: false })
+    renderRegister()
+
+    fillUserDetailsStep()
+    fireEvent.click(screen.getByRole('button', { name: 'Tovább' }))
+    await screen.findByText('Keresztnév:')
+
+    fireEvent.change(screen.getByLabelText(/Keresztnév/), { target: { value: 'Test' } })
+    fireEvent.change(screen.getByLabelText(/Vezetéknév/), { target: { value: 'User' } })
+    fireEvent.change(screen.getByLabelText(/Telefonszám/), { target: { value: '36204234442' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Tovább' }))
+
+    await screen.findByText('Szállítási cím')
+    const checkbox = screen.getByLabelText('A szállítási cím megegyezik a számlázási címmel') as HTMLInputElement
+    expect(checkbox.checked).toBe(false)
+
+    fireEvent.click(screen.getByText('A szállítási cím megegyezik a számlázási címmel'))
+
+    expect(checkbox.checked).toBe(true)
+    expect(screen.queryByText('Szállítási cím')).not.toBeInTheDocument()
+  })
 })

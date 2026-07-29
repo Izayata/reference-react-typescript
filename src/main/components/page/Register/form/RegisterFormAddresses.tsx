@@ -27,9 +27,9 @@ export function RegisterFormAddresses({
         billingAddressData={convertRegistrationFormDataToBillingAddressFormData(registrationFormData)}
         onChange={handleRegistrationDataChange}
       />
-      <span>
-        <input type="checkbox" onChange={toggleShippingAddressForm}/> {t('register.shippingSameAsBilling')}
-      </span>
+      <label>
+        <input type="checkbox" checked={!isShippingAddressFormDisplayed} onChange={toggleShippingAddressForm}/> {t('register.shippingSameAsBilling')}
+      </label>
       {isShippingAddressFormDisplayed && (
         <>
           <div className='navigation-bar-separator' />

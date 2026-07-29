@@ -124,7 +124,11 @@
     "platformsTitle": "Platformok"
   },
   "header": {
-    "tagline": "Ahol álmaid étele vár"
+    "tagline": "Ahol álmaid étele vár",
+    "facebookLinkAriaLabel": "Facebook",
+    "instagramLinkAriaLabel": "Instagram",
+    "tiktokLinkAriaLabel": "TikTok",
+    "youtubeLinkAriaLabel": "YouTube"
   },
   "common": {
     "loading": "Betöltés…"
@@ -398,6 +402,9 @@
   "nav": {
     "openMenuAriaLabel": "Menü megnyitása",
     "openCartAriaLabel": "Kosár megnyitása",
+    "profileLinkAriaLabel": "Fiók megnyitása",
+    "loginLinkAriaLabel": "Bejelentkezés",
+    "logoutLinkAriaLabel": "Kijelentkezés",
     "logoutFailed": "Kijelentkezés sikertelen!",
     "cart": "Kosár",
     "checkout": "Pénztár",
