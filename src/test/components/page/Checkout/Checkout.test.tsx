@@ -164,7 +164,7 @@ describe('Checkout', () => {
     expect(Object.keys(body).sort()).toEqual(['customer', 'orderItems', 'paymentType'])
   })
 
-  it('does not duplicate orderItems under React.StrictMode double-rendering (AUDIT-4.md §1.1)', async () => {
+  it('does not duplicate orderItems under React.StrictMode double-rendering', async () => {
     localStorage.setItem('shopping_cart', JSON.stringify({ 1: 1 }))
     mockFetchWithOrderSubmission()
     renderCheckout(false, true)

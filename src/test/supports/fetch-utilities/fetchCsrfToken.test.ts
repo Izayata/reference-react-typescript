@@ -21,10 +21,10 @@ describe('fetchCsrfToken', () => {
   })
 
   it('throws instead of returning undefined when a 200 response has no csrfToken field', async () => {
-    // Regression test for AUDIT-3.md §3.2: an ok response whose body doesn't
-    // actually contain a csrfToken used to be returned as-is (undefined),
-    // which every caller then sent as a literal 'X-CSRF-TOKEN: undefined'
-    // header instead of surfacing a real error.
+    // Regression test: an ok response whose body doesn't actually contain a
+    // csrfToken used to be returned as-is (undefined), which every caller
+    // then sent as a literal 'X-CSRF-TOKEN: undefined' header instead of
+    // surfacing a real error.
     global.fetch = jest.fn(() =>
       Promise.resolve({ ok: true, json: async () => ({}) })
     ) as unknown as typeof fetch

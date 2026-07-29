@@ -22,9 +22,9 @@ describe('NavigationMenu', () => {
   })
 
   it('traps focus: Tab on the last link wraps back to the first', () => {
-    // Regression test for AUDIT-3.md §2.5: the open mobile menu had no focus
-    // trap, so Tab past the last link moved focus into visually-hidden
-    // background content instead of cycling back inside the menu.
+    // Regression test: the open mobile menu had no focus trap, so Tab past
+    // the last link moved focus into visually-hidden background content
+    // instead of cycling back inside the menu.
     renderOpenMenu()
 
     const links = screen.getAllByRole('link')

@@ -51,8 +51,8 @@ describe('EmailInput', () => {
   })
 
   it('surfaces an error instead of silently reporting "available" when the check itself fails', async () => {
-    // Regression test for AUDIT-2.md §1.3 — see UsernameInput.test.tsx for the
-    // full explanation; EmailInput had the identical bug/fix in checkEmailExists.
+    // Regression test — see UsernameInput.test.tsx for the full explanation;
+    // EmailInput had the identical bug/fix in checkEmailExists.
     mockFetch({ ok: false })
     const { changeValue } = renderEmailInput()
 

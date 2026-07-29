@@ -32,7 +32,7 @@ jobs:
       - name: Build
         # Runs with the default CI=true (react-scripts treats ESLint warnings as
         # build-breaking errors in that mode) now that src/main/** has zero
-        # warnings — see AUDIT.md §5.1/§6. Any new warning introduced in
+        # warnings. Any new warning introduced in
         # src/main/** will fail this step immediately rather than silently
         # accumulating; warnings confined to src/test/** don't affect it, since
         # CRA's build-time lint only covers files reachable from the app's

@@ -53,9 +53,9 @@ describe('Modal', () => {
   })
 
   it('restores focus to the element that triggered it once closed', () => {
-    // Regression test for AUDIT-3.md §2.4: closing the modal used to leave focus
-    // on <body> (the browser's default once the OK button unmounts) instead of
-    // returning it to whatever the user was focused on before the modal opened.
+    // Regression test: closing the modal used to leave focus on <body> (the
+    // browser's default once the OK button unmounts) instead of returning it
+    // to whatever the user was focused on before the modal opened.
     render(<TriggerAndModal />)
 
     const trigger = screen.getByRole('button', { name: 'Trigger' })

@@ -9,10 +9,8 @@ exact mechanics: what triggers a given flow, what an endpoint call actually send
 decisions shaped the domain layer.
 
 `CLAUDE.md` remains the source of truth for commands, linting conventions, and the day-to-day
-"where do I find X" directory map, and for the running log of audit findings (`AUDIT.md`,
-`AUDIT-2.md`, `AUDIT-3.md`, `AUDIT-4.md`) against this codebase. This document goes one level
-deeper on architecture and mechanics; it does not duplicate the audit history, though the "Known
-Limitations" section below cites specific still-open findings by number.
+"where do I find X" directory map. This document goes one level deeper on architecture and
+mechanics.
 
 **Scope:** the frontend SPA only. The backend (a separate service, `app:8080` in the Docker
 topology — its `/actuator` path and `PATCH`/`PUT` HTTP-method endpoints strongly suggest Spring
@@ -238,10 +236,10 @@ call site in `src/main` — 18 files, listed with their calling component):
 | `POST /login` | Public | exempt | `Login.tsx` |
 | `POST /logout` | Authenticated | **required** | `LogoutButton.tsx` |
 
-**Documented but never called from this frontend** (confirmed via `API_ENDPOINTS.md` cross-check,
-consistent with `AUDIT-2.md` §8.2/`AUDIT-3.md` §5.1): `GET /v1/customers` (Admin), `POST /v1/foods`
-(Authenticated), `GET /v1/ingredients` (Public), `GET /v1/orders/{id}` (Authenticated) — no
-admin UI, order-history, or ingredient-listing feature has been built yet to call them from.
+**Documented but never called from this frontend** (confirmed via a fresh cross-check against
+`API_ENDPOINTS.md`): `GET /v1/customers` (Admin), `POST /v1/foods` (Authenticated),
+`GET /v1/ingredients` (Public), `GET /v1/orders/{id}` (Authenticated) — no admin UI, order-history,
+or ingredient-listing feature has been built yet to call them from.
 
 ---
 
@@ -274,8 +272,8 @@ sequenceDiagram
 
 `isAuthenticated` is then passed as a prop to `Nav`, `LoginPage`, `CheckoutPage`, and wraps
 `/account` in `AccountRouteGuard` (redirects to `/login` if unauthenticated, in a `useEffect`, not
-during render — a pattern `AUDIT.md` §2.5 specifically fixed here as the reference case other
-render-phase-navigation bugs were later compared against). There is no separate auth context/hook;
+during render — avoiding the render-phase state-update anti-pattern React warns about). There is
+no separate auth context/hook;
 `handleLogin`/`handleLogout` (both just flip a `refreshValue` boolean to re-trigger the effect
 above) live in `App.tsx` alongside `isAuthenticated` itself and are prop-drilled everywhere they're
 needed.
@@ -358,16 +356,15 @@ sequenceDiagram
     end
 ```
 
-The double-catch on the "no payment method selected" path is a real, still-open bug
-(`AUDIT.md` §4.1, re-confirmed by every later audit pass) — see §9.
+The double-catch on the "no payment method selected" path is a real, still-open bug — see §9.
 
 `orderItems` itself is a `useMemo(() => foods.map(food => new OrderItemModel(...)), [foods, quantities])`
 in `Checkout.tsx` — a pure recomputation, not a value mutated by a child component during render.
-This wasn't always true: until `AUDIT-4.md` §1.1 was fixed, `CheckoutOrderSummarySection.tsx` built
-this same list by `.push()`-ing into the prop array as a side effect of its own render body, which
+This wasn't always true: `CheckoutOrderSummarySection.tsx` used to build this same list by
+`.push()`-ing into the prop array as a side effect of its own render body, which
 `<React.StrictMode>`'s deliberate double-invocation of render functions turned into duplicated
 order line items on every local dev checkout (invisible on screen, since the *displayed* total was
-computed via separately-reset local variables) — see §9 for why this class of bug is worth naming
+computed via separately-reset local variables) — see §6.3 for why this class of bug is worth naming
 explicitly as a lesson for future changes in this area.
 
 ---
@@ -388,8 +385,7 @@ reasons visible in the code itself:
    fields), Checkout's guest form, Checkout's *authenticated* pre-filled `myUserData`, and
    `UserProfile`'s edit forms. `AddressModelConverter.ts` centralizes all four conversions;
    without it, the "billing address same as shipping" copy-logic and the zip/city/street field
-   mapping would be duplicated across every one of those call sites (and, per `AUDIT.md` §3.6,
-   originally *was* duplicated before being de-duplicated into this one file).
+   mapping would be duplicated across every one of those call sites.
 2. **Chainable builders avoid unreadable long-positional constructors.** `CustomerModelBuilder`'s
    `.setPersonalDetails(...).setEmail(...).setBillingAddress(...).setShippingAddress(...).build()`
    (used in `Checkout.tsx`'s `getCustomer()`) reads as "build a customer from these parts," where
@@ -427,8 +423,8 @@ can't express, each intentionally narrow rather than defensively broad:
 
 The four-layer pattern guarantees a *constructed* model instance is valid — it says nothing about
 *when* or *how often* construction happens, or about mutating something after construction. The
-`AUDIT-4.md` §1.1 bug in §5.3 above is the clearest illustration: `OrderItemModel` instances were
-individually valid (each one's own constructor validated fine), but the *array* they were being
+`orderItems`-mutation bug described in §5.3 above is the clearest illustration: `OrderItemModel`
+instances were individually valid (each one's own constructor validated fine), but the *array* they were being
 collected into was mutated as a side effect of a render function rather than freshly derived each
 time — a bug this validation architecture had no mechanism to catch, because nothing about
 "is this one `OrderItemModel` valid" touches "how many times has `.push()` been called on this
@@ -453,7 +449,7 @@ discipline of treating render bodies as pure functions of props/state.
   which would otherwise serialize into a literal `"X-CSRF-TOKEN: undefined"` header) if the
   response isn't `ok`, or if a `200` response's body doesn't actually contain a non-empty
   `csrfToken` string — a defensive check added specifically because a malformed-but-`200` response
-  is easy to overlook (`AUDIT-3.md` §3.2).
+  is easy to overlook.
 - **CORS:** production-topology requests are same-origin through nginx (see §2); `nginx.conf`'s
   `$cors_allow_origin` map is an explicit allowlist (`localhost` + any port, for local
   cross-origin dev scenarios) rather than a reflected wildcard.
@@ -487,8 +483,8 @@ The result is passed to `setModalMessage` (from `useModal()`, `ModalMessageConte
 React context whose `modalMessage` state is rendered by exactly **one** `<Modal>` instance,
 mounted once in `App.tsx`. This means there is structurally only ever one error/message dialog in
 the whole app — a page component cannot accidentally stack two dialogs by managing its own local
-modal state (a real bug class `AUDIT-3.md` §1.1 found and fixed by migrating the one page that
-still did this, `FoodDetails.tsx`, onto the shared context).
+modal state (a real bug class this architecture prevents structurally: `FoodDetails.tsx` used to
+manage its own local modal state before being migrated onto the shared context).
 
 Not every call site respects this contract precisely: `UserProfile.tsx`'s
 `.catch(setModalMessage)` (line 40) passes the raw rejected `Error` object straight through
@@ -526,19 +522,18 @@ kind — every page re-fetches on mount.
 
 ## 9. Known Limitations / Tech Debt
 
-These are real, currently-true gaps confirmed by reading the current source (not the historical
-record in `AUDIT*.md` — cross-checked against it, but independently re-verified here):
+These are real, currently-true gaps confirmed by reading the current source:
 
 - **`Checkout.tsx`'s `submitOrder` double-catch** (§5.3): when no payment method is selected,
   `getOrderToSubmit`'s own `catch` sets a specific, correct error message, but `getOrderToSubmit`
   then returns `undefined`, which `submitOrder`'s own `if (!order) throw ...` turns into a *second*
   exception caught by `submitOrder`'s own outer `catch` — which overwrites the specific message
   with a generic "order data incomplete" one. The specific message is set but never actually seen
-  by the user. Open since `AUDIT.md` §4.1; re-confirmed still present in every later audit pass.
+  by the user.
 - **`UserProfile.tsx`'s account-fetch failure handling** (§8.1, line 40): passes a raw `Error`
   object to `setModalMessage` instead of its `.message`, and separately (line 50) calls
   `setModalMessage` unconditionally inside the render body itself when `!user` — a render-phase
-  side effect, not inside a `useEffect`. Open since `AUDIT-2.md` §1.7.
+  side effect, not inside a `useEffect`.
 - **The Redux store has zero reducers registered** (`src/app/store.ts`:
   `configureStore({ reducer: {} })`). `Provider`/`store` wrap the whole app (`src/index.tsx`) and
   `useAppDispatch`/`useAppSelector` (`src/app/hooks.ts`) exist as typed scaffolding, but nothing in
@@ -552,21 +547,20 @@ record in `AUDIT*.md` — cross-checked against it, but independently re-verifie
   `src/index.tsx`) — and carry their own latent bugs if ever wired up (a non-string `to` prop would
   stringify to `"[object Object]"`; naive `${search}` concatenation would double up a leading `?`
   if `to` already had its own query string). Documented, not fixed, since nothing currently
-  reaches this code (`AUDIT-3.md` §3's informational note).
+  reaches this code.
 - **`checkPasswordIsCommon` (`src/main/utils/myUser/PasswordUtils.ts`) is dead code.** It correctly
   calls the documented `POST /v1/registration/common-password` endpoint, but the function itself
   has zero call sites — no component wires a common-password pre-check into `PasswordInput.tsx`.
-  Reflects a feature that was never built, not broken code (`AUDIT-3.md` §5.1/§1's informational
-  notes).
+  Reflects a feature that was never built, not broken code.
 - **Four backend endpoints are documented but never called** (§4): `GET /v1/customers`,
   `POST /v1/foods`, `GET /v1/ingredients`, `GET /v1/orders/{id}` — no admin UI, order-history, or
   ingredient-listing feature exists yet to call them from.
-- **~65 open `npm audit` vulnerabilities** (0 critical, per the last full baseline run in
-  `AUDIT-4.md`'s appendix) live entirely in the `react-scripts`/CRA build toolchain's transitive
+- **~65 open `npm audit` vulnerabilities** (0 critical, per the last full baseline run against
+  this codebase) live entirely in the `react-scripts`/CRA build toolchain's transitive
   dependency tree, not in a runtime dependency actually shipped to users. `package.json`'s
   `overrides` block pins three isolated leaf packages as a partial fix; the rest is blocked on
   either a non-functional `react-scripts@0.0.0` release or a separate `eslint` major-version
-  migration (`AUDIT-2.md` §2.2). This is now empirically confirmed, not just inferred: two
+  migration. This is empirically confirmed, not just inferred: two
   Dependabot PRs (bump `typescript` 4.9.5→7.0.2, bump `eslint` 8.57.1→10.8.0) both failed `npm ci`
   itself with an `ERESOLVE` peer-dependency conflict against `react-scripts@5.0.1`'s own pinned
   ranges — not a type/lint error a code change could fix. `.github/dependabot.yml` now ignores
@@ -583,18 +577,3 @@ record in `AUDIT*.md` — cross-checked against it, but independently re-verifie
 - **Single-locale i18n.** The `i18next` setup (§8.3) supports exactly one locale (`hu`) with no
   locale switcher or `fallbackLng` chain beyond `hu` itself — adding a second locale means adding a
   second resource bundle and a switcher UI that doesn't exist today, not just translating strings.
-
----
-
-## 10. Doc-Drift Note — ✅ Fixed
-
-`CLAUDE.md`'s "Known issues" section previously only narrated `AUDIT.md` and `AUDIT-2.md`'s
-findings and fix history in prose — it didn't mention that `AUDIT-3.md` (17 findings) and
-`AUDIT-4.md` (4 findings) existed, both fully worked through and merged after `CLAUDE.md` was last
-updated. Flagged here when this document was first written, per an explicit follow-up request:
-`CLAUDE.md` now names all four audit documents (plus a pointer back to this document), carries
-summary paragraphs for `AUDIT-3.md`/`AUDIT-4.md` matching its existing style, and had three
-separately-discovered stale facts corrected in the same pass — its lint-warning count (182→210,
-`AUDIT-3.md` §4's new `converter/`/`myDecorators/` test coverage), its `Dockerfile` base image
-reference (`node:18`→`node:20`, matching §2's already-correct `node:20` here), and its
-`src/test/components/**` count (13→14, `NavigationMenu.test.tsx`).
