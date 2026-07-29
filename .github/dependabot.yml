@@ -5,6 +5,20 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
+    ignore:
+      # react-scripts@5.0.1 (this app's CRA build toolchain) hard-pins
+      # peerOptional typescript@"^3.2.1 || ^4" - TypeScript 5+ fails `npm ci`
+      # with an ERESOLVE conflict, not a type error, so no major bump is
+      # installable until the app moves off react-scripts. Minor/patch
+      # bumps within 4.x are still allowed.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      # @typescript-eslint/eslint-plugin@5.62.0 (and react-scripts's own
+      # bundled eslint-config-react-app/eslint-plugin-jest) peer-depend on
+      # eslint@"^6.0.0 || ^7.0.0 || ^8.0.0" - ESLint 9+ (flat config) fails
+      # `npm ci` the same way. Minor/patch bumps within 8.x are still allowed.
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
