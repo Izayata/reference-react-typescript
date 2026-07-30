@@ -119,7 +119,7 @@ export function PersonalData({ customer, onPersonalDataUpdated }: { customer: Cu
       )}
       {!editMode && (
         <button
-          className="register-page-button show-on-mobile"
+          className="application-button-style"
           onClick={handleEdit}
           type="button"
         >
