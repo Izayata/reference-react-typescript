@@ -4,17 +4,17 @@ import { CustomerModel } from '../model/CustomerModel'
 import { MyUserModel } from '../model/MyUserModel'
 
 export class MyUserModelBuilder {
-  private myUsername?: UsernameModel
   private email?: EmailModel
+  private myUsername?: UsernameModel
   private customer?: CustomerModel
-
-  setMyUsername(myUsername: UsernameModel) {
-    this.myUsername = myUsername
-    return this
-  }
 
   setEmail(email: EmailModel) {
     this.email = email
+    return this
+  }
+
+  setMyUsername(myUsername: UsernameModel) {
+    this.myUsername = myUsername
     return this
   }
 

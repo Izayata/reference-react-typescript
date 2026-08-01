@@ -1,5 +1,6 @@
 import { ResetPasswordRequestModel } from './ResetPasswordRequestModel'
 import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder'
+import { PasswordModel } from './myUser/PasswordModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
 import i18n from '../i18n/i18n'
 
@@ -9,8 +10,8 @@ const ERR_MSG_RESET_NEW_PASSWORD_DETAILS_REQUIRED = i18n.t('errors.ERR_MSG_RESET
 // Valid values for composing ResetPasswordRequestModel
 const VALID_TOKEN = 'a-valid-reset-token'
 const VALID_NEW_PASSWORD_DETAILS = new NewPasswordDetailsModelBuilder()
-  .setNewPassword('NewPassword456!')
-  .setConfirmNewPassword('NewPassword456!')
+  .setNewPassword(new PasswordModel('NewPassword456!'))
+  .setConfirmNewPassword(new PasswordModel('NewPassword456!'))
   .build()
 
 // Invalid cases

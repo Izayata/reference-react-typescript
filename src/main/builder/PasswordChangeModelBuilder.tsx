@@ -4,22 +4,22 @@ import { PasswordChangeModel } from '../model/PasswordChangeModel'
 
 export class PasswordChangeModelBuilder {
   private currentPassword?: PasswordModel
-  private newPasswordWrapper?: NewPasswordDetailsModel
+  private newPasswordDetails?: NewPasswordDetailsModel
 
-  setCurrentPassword(currentPassword: string) {
-    this.currentPassword = new PasswordModel(currentPassword)
+  setCurrentPassword(currentPassword: PasswordModel) {
+    this.currentPassword = currentPassword
     return this
   }
 
-  setNewPasswordWrapper(newPasswordWrapper: NewPasswordDetailsModel) {
-    this.newPasswordWrapper = newPasswordWrapper
+  setNewPasswordDetails(newPasswordDetails: NewPasswordDetailsModel) {
+    this.newPasswordDetails = newPasswordDetails
     return this
   }
 
   build() {
     return new PasswordChangeModel(
       this.currentPassword!,
-      this.newPasswordWrapper!
+      this.newPasswordDetails!
     )
   }
 }

@@ -19,12 +19,12 @@ npm run lint          # eslint src --ext .js,.ts,.jsx,.tsx
 npm run lint:fix       # eslint --fix
 ```
 
-- Run a single test file: `npm test -- src/test/model/customer/AddressModel.test.tsx`
+- Run a single test file: `npm test -- src/main/model/customer/AddressModel.test.tsx`
 - Run tests matching a name: `npm test -- -t "should throw required error"`
 - `npm test` runs in Jest watch mode by default (CRA); pass `CI=true npm test` for a single non-interactive run.
 - `npm run test:coverage` enforces the `jest.coverageThreshold` floor configured in `package.json` (a regression gate set a few points below current actual coverage, not an aspirational target) — it fails if coverage drops below that floor.
 - There is no separate typecheck script; `npm run build` (or `tsc --noEmit`) surfaces type errors since `tsconfig.json` has `noEmit: true`.
-- `npm run lint` currently exits `0` with 0 errors (210 warnings, all `no-explicit-any` in `src/test/**`'s exhaustive model/builder/converter/decorator tests, tracked but non-blocking, using the same `as any` convention across every one of those test files). Both `npm run build` and `CI=true npm run build` currently succeed — `src/main/**` has zero ESLint warnings, so CRA's CI=true warnings-as-errors mode has nothing to trip on (the remaining `src/test/**` warnings don't affect the build, since CRA's build-time lint only covers files reachable from the app's entry point).
+- `npm run lint` currently exits `0` with 0 errors (203 warnings, almost all `no-explicit-any` in the exhaustive model/builder/converter/decorator `*.test.ts(x)` files colocated under `src/main/**`, using the same `as any` convention across every one of those test files, plus a handful of pre-existing `no-unused-vars` stragglers in a few test files). Both `npm run build` and `CI=true npm run build` currently succeed — non-test `src/main/**` source files have zero ESLint warnings, so CRA's CI=true warnings-as-errors mode has nothing to trip on (the colocated `*.test.ts(x)` warnings don't affect the build, since CRA's build-time lint only covers files reachable from the app's entry point).
 
 Docker: `Dockerfile` builds with `node:20` (matching the `engines.node >=20` requirement in `package.json`), then serves the static build via `nginx:stable-alpine` using `nginx.conf` (which also reverse-proxies API paths to the `app` backend service — see above).
 
@@ -36,7 +36,7 @@ Docker: `Dockerfile` builds with `node:20` (matching the `engines.node >=20` req
 
 ## Architecture
 
-For a deeper treatment of this section — full domain-model ERD, every endpoint's auth/CSRF requirements, sequence diagrams for the auth/registration/checkout flows, and the reasoning behind the Model→Builder→Converter→Utils pattern — see `docs/DESIGN.md`.
+For a deeper treatment of this section — full domain-model ERD, every endpoint's auth/CSRF requirements, sequence diagrams for the auth/registration/checkout flows, and the reasoning behind the Model→Builder→Converter→Utils pattern — see `docs/DESIGN.md`. `docs/BUILDER_AUDIT.md` is a point-in-time audit of the `src/main/builder/**` layer specifically (per-builder inventory, findings against the intended Builder contract, and the fixes applied) — read it if you're touching an existing builder or adding a new one, for the reasoning behind conventions like "builders only ever accept pre-built child Models, never raw primitives."
 
 ### Directory layout
 
@@ -44,27 +44,27 @@ For a deeper treatment of this section — full domain-model ERD, every endpoint
 - `src/main/pages/` — route-level page components (thin, one `index.tsx` per route) wired up in `src/App.tsx`'s `<Routes>`. **Naming note:** these `pages/*Page` directories (e.g. `pages/LoginPage`) are distinct from the similarly-named `components/page/*` directories below (e.g. `components/page/Login`) — a page is a thin route wrapper that renders the matching presentational component; don't confuse the two when navigating the tree.
 - `src/main/components/` — reusable components, split into `page/` (page-specific sections like `Menu`, `Checkout`, `UserProfile` — see the naming note above), `input/` (form inputs grouped by domain: `customer/`, `myUser/`), `navigation-bar/`, `header/`, and `functional/` (behavioral wrappers: `AccountRouteGuard`, `Modal`, `LoadingOverlay`, etc).
 - `src/main/features/` — only `footer/` remains here (a plain component, not a Redux slice). The CRA-template Redux "feature" folder pattern (slice + component colocated) this directory was originally for has been removed entirely — it's not a pattern used anywhere in the app.
-- `src/main/model/`, `src/main/builder/`, `src/main/converter/`, `src/main/myDecorators/`, `src/main/utils/` — the domain model layer (see below); mirrored file-for-file by tests under `src/test/`.
+- `src/main/model/`, `src/main/builder/`, `src/main/converter/`, `src/main/myDecorators/`, `src/main/utils/` — the domain model layer (see below); each file has a colocated `*.test.ts(x)` sitting right next to it.
 - `src/main/context/` — React context providers (e.g. `ModalMessageContext` for a global message modal).
 - `src/main/supports/` — cross-cutting helpers: `Persistence.tsx` (query-string state persistence + nav helpers), `fetch-utilities/` (CSRF token fetch).
-- CSS is plain `.css` (Sass is a dependency but plain CSS is the convention seen), organized per-component in local `css/` subfolders plus shared styles in `src/main/css/`.
+- CSS is plain `.css` (Sass is a dependency but plain CSS is the convention seen), colocated as a single `<ComponentName>.css` directly in each component's own folder, plus shared/global styles in `src/main/css/`.
 
 ### Domain model pattern (the core architecture to understand)
 
 Almost every domain concept follows the same four-layer pattern, and understanding one instance (e.g. `AddressModel`) explains the rest:
 
 1. **Model** (`src/main/model/**`) — a class wrapping one value or composing sub-models. Validated in the constructor via `class-validator`'s `validateSync`, throwing the validation errors array if invalid. Composite models (e.g. `AddressModel`) hold nested leaf models (e.g. `ZipCodeModel`, `CityModel`); leaf models wrap a primitive (usually `string`) with decorators like `@NotBlank`, `@Matches`, `@Length`. Every model implements a manual `equals(other)` method (no `===`/deep-equal library). Custom decorators live in `src/main/myDecorators/` (`NotBlank`, `NotNull`, `NotUndefined`, `ValidPhoneNumber`, `NoZeroNorZeroSlash`), built with `class-validator`'s `registerDecorator`.
-2. **Builder** (`src/main/builder/**`) — one builder class per composite model, with chainable `setX()` methods and a `build()` that calls the model constructor (and thus triggers validation). Used instead of large constructors/object literals to build composite models incrementally.
+2. **Builder** (`src/main/builder/**`) — one builder class per composite model, with chainable `setX()` methods and a `build()` that calls the model constructor (and thus triggers validation). Used instead of large constructors/object literals to build composite models incrementally. Builders only ever accept pre-built child Models in their setters — never raw primitives (that conversion belongs to the Converter layer below) — and mirror their target Model's property names and constructor argument order exactly; see `docs/BUILDER_AUDIT.md` for the audit that established/tightened this contract. One builder (`RegistrationModelBuilder`) is a deliberate exception to the usual "construct fresh, chain, `build()`, discard" usage — it's designed to also be held across renders (e.g. via `useRef` in `Register.tsx`'s multi-step wizard) and filled in incrementally, since each `setX` is a safe overwrite.
 3. **Converter** (`src/main/converter/**`) — free functions that turn raw form data (a properly-typed inline object shape, e.g. from a `FormData`/registration form — not `any`) into a model instance, using the corresponding Builder.
 4. **Utils** (`src/main/utils/**`, mirrored per model) — colocated constants and pure helpers for a given model: error message strings (e.g. `ERR_MSG_ZIP_CODE_REQUIRED`, resolved via `i18n.t('errors.ERR_MSG_ZIP_CODE_REQUIRED')` — see "Internationalization (i18n)" below), regexes, and validation constants referenced by both the Model and its tests.
 
-Tests live in `src/test/**`, mirroring the `src/main/**` path of the thing under test (e.g. `src/main/model/customer/AddressModel.tsx` → `src/test/model/customer/AddressModel.test.tsx`). Test files exhaustively cover required/null/undefined cases for every validated field plus `equals()` behavior, using the shared assertion helper `expectErrorMessages` (`src/main/utils/test/ExpectErrorMessages.tsx`).
+Tests are colocated as a `*.test.ts(x)` file sitting directly next to the file it tests (e.g. `src/main/model/customer/AddressModel.tsx` + `src/main/model/customer/AddressModel.test.tsx` in the same folder) — this used to be a separate `src/test/**` mirror tree, but was flattened into colocation; don't recreate the old mirror structure for new files. Model/Builder/Converter test files exhaustively cover required/null/undefined cases for every validated field plus `equals()` behavior, using the shared assertion helper `expectErrorMessages` (`src/main/utils/test/ExpectErrorMessages.ts`); Builder test files additionally use `expectSetterReturnsSameInstance` (`src/main/utils/test/ExpectSetterChaining.ts`) to assert chaining/overwrite mechanics on one representative field per builder.
 
-`src/test/components/**` (mirroring `src/main/components/**`) holds a different, lighter kind of test — component-level render/interaction smoke tests (mock `fetch` directly, assert on rendered text/DOM state and handler wiring) rather than exhaustive per-field validation, since the model/builder layer above already covers that. 14 components currently have coverage there (`AccountRouteGuard`, `Login`, `Register`, `Checkout`, `ShoppingCart`, `Modal`, `NavigationMenu`, `UsernameInput`, `EmailInput`, and the full `UserProfile` feature area — `UserProfile`, `PersonalData`, `BillingAddress`, `ShippingAddress`, `LoginData`); most other components still have none.
+Components have a different, lighter kind of colocated test — render/interaction smoke tests (mock `fetch` directly, assert on rendered text/DOM state and handler wiring) rather than exhaustive per-field validation, since the model/builder layer above already covers that. 14 components currently have coverage (`AccountRouteGuard`, `Login`, `Register`, `Checkout`, `ShoppingCart`, `Modal`, `NavigationMenu`, `UsernameInput`, `EmailInput`, and the full `UserProfile` feature area — `UserProfile`, `PersonalData`, `BillingAddress`, `ShippingAddress`, `LoginData`); most other components still have none.
 
 `converter/`, `myDecorators/`, and `utils/` files use `.ts` (they contain no JSX) — with one known exception, `src/main/utils/EmailUtils.tsx`, missed by the original rename sweep; `model/` and `builder/` files are still `.tsx` even though they also contain no JSX — both are known, deliberately out-of-scope gaps.
 
-When adding a new domain field or model, follow this same Model → Builder → Converter → Utils (+ mirrored test) shape rather than introducing a different pattern.
+When adding a new domain field or model, follow this same Model → Builder → Converter → Utils (+ colocated test) shape rather than introducing a different pattern.
 
 ### Internationalization (i18n)
 

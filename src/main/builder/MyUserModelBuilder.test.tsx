@@ -12,6 +12,7 @@ import { CityModel } from '../model/customer/address/CityModel'
 import { StreetModel } from '../model/customer/address/StreetModel'
 import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
 import { ERR_MSG_EMAIL_REQUIRED } from '../utils/EmailUtils'
 import { ERR_MSG_USERNAME_REQUIRED } from '../utils/myUser/UsernameUtils'
 import { ERR_MSG_CUSTOMER_REQUIRED } from '../utils/MyUserModelUtils'
@@ -142,5 +143,20 @@ describe('MyUserModelBuilder', () => {
 
   it('should accept a valid MyUserModel', () => {
     expect(VALID_MYUSER_MODEL_BUILDER).not.toThrow()
+  })
+
+  it('setEmail returns the same builder instance for chaining', () => {
+    const builder = new MyUserModelBuilder()
+    expectSetterReturnsSameInstance(builder, b => b.setEmail(VALID_EMAIL_MODEL))
+  })
+
+  it('setEmail overwrites a previously set value', () => {
+    const model = new MyUserModelBuilder()
+      .setEmail(new EmailModel('other@example.com'))
+      .setEmail(VALID_EMAIL_MODEL)
+      .setMyUsername(VALID_USERNAME_MODEL)
+      .setCustomer(VALID_CUSTOMER_MODEL)
+      .build()
+    expect(model.email.value).toBe(VALID_EMAIL_MODEL.value)
   })
 })

@@ -1,15 +1,16 @@
 import { RegistrationModelBuilder } from './RegistrationModelBuilder'
-import { MyUserRegistrationModel } from '../model/MyUserRegistrationModel'
-import { PersonalDetailsModel } from '../model/PersonalDetailsModel'
-import { AddressModel } from '../model/customer/AddressModel'
+import { MyUserRegistrationModelBuilder } from './MyUserRegistrationModelBuilder'
+import { PersonalDetailsModelBuilder } from './PersonalDetailsModelBuilder'
+import { AddressModelBuilder } from './AddressModelBuilder'
+import { NewPasswordDetailsModelBuilder } from './NewPasswordDetailsModelBuilder'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
 import { ERR_MSG_MY_USER_REQUIRED } from '../utils/MyUserRegistrationUtils'
 import { ERR_MSG_PERSONAL_DETAILS_REQUIRED } from '../utils/PersonalDetailsUtils'
 import { ERR_MSG_SHIPPING_ADDRESS_REQUIRED, ERR_MSG_BILLING_ADDRESS_REQUIRED } from '../utils/customer/AddressUtils'
 import { EmailModel } from '../model/EmailModel'
 import { UsernameModel } from '../model/myUser/UsernameModel'
 import { PasswordModel } from '../model/myUser/PasswordModel'
-import { NewPasswordDetailsModel } from '../model/NewPasswordDetailsModel'
 import { FirstnameModel } from '../model/customer/FirstnameModel'
 import { LastnameModel } from '../model/customer/LastnameModel'
 import { PhoneNumberModel } from '../model/customer/PhoneNumberModel'
@@ -20,32 +21,36 @@ import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
 
 const VALID_PASSWORD = new PasswordModel('ValidPass123!')
 // Valid models for composing RegistrationModel
-const VALID_MY_USER_MODEL = new MyUserRegistrationModel(
-  new EmailModel('test@example.com'),
-  new UsernameModel('testuser'),
-  new NewPasswordDetailsModel(VALID_PASSWORD, VALID_PASSWORD)
-)
-const VALID_PERSONAL_DETAILS_MODEL = new PersonalDetailsModel(
-  new FirstnameModel('János'),
-  new LastnameModel('Kovács'),
-  new PhoneNumberModel('+36201234567')
-)
-const VALID_SHIPPING_ADDRESS_MODEL = new AddressModel(
-  new ZipCodeModel('4032'),
-  new CityModel('Debrecen'),
-  new StreetModel('Kossuth Lajos utca'),
-  new StreetNumberModel('21')
-)
-const VALID_BILLING_ADDRESS_MODEL = new AddressModel(
-  new ZipCodeModel('4032'),
-  new CityModel('Debrecen'),
-  new StreetModel('Kossuth Lajos utca'),
-  new StreetNumberModel('21')
-)
+const VALID_MY_USER_MODEL = new MyUserRegistrationModelBuilder()
+  .setEmail(new EmailModel('test@example.com'))
+  .setMyUsername(new UsernameModel('testuser'))
+  .setNewPasswordDetails(
+    new NewPasswordDetailsModelBuilder()
+      .setNewPassword(VALID_PASSWORD)
+      .setConfirmNewPassword(VALID_PASSWORD)
+      .build()
+  )
+  .build()
+const VALID_PERSONAL_DETAILS_MODEL = new PersonalDetailsModelBuilder()
+  .setFirstname(new FirstnameModel('János'))
+  .setLastname(new LastnameModel('Kovács'))
+  .setPhoneNumber(new PhoneNumberModel('+36201234567'))
+  .build()
+const VALID_SHIPPING_ADDRESS_MODEL = new AddressModelBuilder()
+  .setZipCode(new ZipCodeModel('4032'))
+  .setCity(new CityModel('Debrecen'))
+  .setStreet(new StreetModel('Kossuth Lajos utca'))
+  .setStreetNumber(new StreetNumberModel('21'))
+  .build()
+const VALID_BILLING_ADDRESS_MODEL = new AddressModelBuilder()
+  .setZipCode(new ZipCodeModel('4032'))
+  .setCity(new CityModel('Debrecen'))
+  .setStreet(new StreetModel('Kossuth Lajos utca'))
+  .setStreetNumber(new StreetNumberModel('21'))
+  .build()
 
 // Invalid cases
 const ERR_REGISTRATION_MODEL_BUILDER_MY_USER_UNDEFINED = () => new RegistrationModelBuilder()
-  .setMyUser(undefined as any)
   .setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL)
   .setShippingAddress(VALID_SHIPPING_ADDRESS_MODEL)
   .setBillingAddress(VALID_BILLING_ADDRESS_MODEL)
@@ -60,7 +65,6 @@ const ERR_REGISTRATION_MODEL_BUILDER_MY_USER_NULL = () => new RegistrationModelB
 
 const ERR_REGISTRATION_MODEL_BUILDER_PERSONAL_DETAILS_UNDEFINED = () => new RegistrationModelBuilder()
   .setMyUser(VALID_MY_USER_MODEL)
-  .setPersonalDetails(undefined as any)
   .setShippingAddress(VALID_SHIPPING_ADDRESS_MODEL)
   .setBillingAddress(VALID_BILLING_ADDRESS_MODEL)
   .build()
@@ -75,7 +79,6 @@ const ERR_REGISTRATION_MODEL_BUILDER_PERSONAL_DETAILS_NULL = () => new Registrat
 const ERR_REGISTRATION_MODEL_BUILDER_SHIPPING_ADDRESS_UNDEFINED = () => new RegistrationModelBuilder()
   .setMyUser(VALID_MY_USER_MODEL)
   .setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL)
-  .setShippingAddress(undefined as any)
   .setBillingAddress(VALID_BILLING_ADDRESS_MODEL)
   .build()
 
@@ -90,7 +93,6 @@ const ERR_REGISTRATION_MODEL_BUILDER_BILLING_ADDRESS_UNDEFINED = () => new Regis
   .setMyUser(VALID_MY_USER_MODEL)
   .setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL)
   .setShippingAddress(VALID_SHIPPING_ADDRESS_MODEL)
-  .setBillingAddress(undefined as any)
   .build()
 
 const ERR_REGISTRATION_MODEL_BUILDER_BILLING_ADDRESS_NULL = () => new RegistrationModelBuilder()
@@ -188,5 +190,28 @@ describe('RegistrationModelBuilder', () => {
 
   it('should accept valid registration model', () => {
     expect(VALID_REGISTRATION_MODEL_BUILDER).not.toThrow()
+  })
+
+  it('setPersonalDetails returns the same builder instance for chaining', () => {
+    const builder = new RegistrationModelBuilder()
+    expectSetterReturnsSameInstance(builder, b => b.setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL))
+  })
+
+  it('overwrites a previously set field when setPersonalDetails is called again, supporting incremental use across renders (e.g. Register.tsx\'s useRef)', () => {
+    const OTHER_PERSONAL_DETAILS_MODEL = new PersonalDetailsModelBuilder()
+      .setFirstname(new FirstnameModel('Anna'))
+      .setLastname(new LastnameModel('Szabó'))
+      .setPhoneNumber(new PhoneNumberModel('+36301234567'))
+      .build()
+
+    const result = new RegistrationModelBuilder()
+      .setMyUser(VALID_MY_USER_MODEL)
+      .setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL)
+      .setPersonalDetails(OTHER_PERSONAL_DETAILS_MODEL)
+      .setShippingAddress(VALID_SHIPPING_ADDRESS_MODEL)
+      .setBillingAddress(VALID_BILLING_ADDRESS_MODEL)
+      .build()
+
+    expect(result.personalDetails.firstname.value).toBe('Anna')
   })
 })

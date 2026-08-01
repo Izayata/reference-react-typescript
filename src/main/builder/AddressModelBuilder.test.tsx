@@ -5,6 +5,7 @@ import { StreetModel } from '../model/customer/address/StreetModel'
 import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
 import { ZipCodeModel } from '../model/customer/address/ZipCodeModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
 import {
   ERR_MSG_CITY_REQUIRED,
   ERR_MSG_STREET_NUMBER_REQUIRED,
@@ -192,5 +193,21 @@ describe('AddressModelBuilder', () => {
 
   it('should accept valid address with null floorDoor', () => {
     expect(VALID_ADDRESS_MODEL_BUILDER_NULL_FLOOR_DOOR).not.toThrow()
+  })
+
+  it('setZipCode returns the same builder instance for chaining', () => {
+    const builder = new AddressModelBuilder()
+    expectSetterReturnsSameInstance(builder, b => b.setZipCode(VALID_ZIP_MODEL))
+  })
+
+  it('setZipCode overwrites a previously set value', () => {
+    const model = new AddressModelBuilder()
+      .setZipCode(new ZipCodeModel('1111'))
+      .setZipCode(VALID_ZIP_MODEL)
+      .setCity(VALID_CITY_MODEL)
+      .setStreet(VALID_STREET_MODEL)
+      .setStreetNumber(VALID_STREET_NUMBER_MODEL)
+      .build()
+    expect(model.zipCode.value).toBe(VALID_ZIP_MODEL.value)
   })
 })

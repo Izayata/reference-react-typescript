@@ -10,6 +10,7 @@ import { PasswordChangeModelBuilder } from '../../../../builder/PasswordChangeMo
 import { MyUserModel } from '../../../../model/MyUserModel'
 import { PasswordChangeModel } from '../../../../model/PasswordChangeModel'
 import { NewPasswordDetailsModelBuilder } from '../../../../builder/NewPasswordDetailsModelBuilder'
+import { PasswordModel } from '../../../../model/myUser/PasswordModel'
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'
 
 export function LoginData({ user }: { user: MyUserModel }) {
@@ -70,11 +71,11 @@ export function LoginData({ user }: { user: MyUserModel }) {
     try {
       const passwordChangeBuilder = new PasswordChangeModelBuilder()
       const passwordChangeData = passwordChangeBuilder
-        .setCurrentPassword(passwordForm.currentPassword)
-        .setNewPasswordWrapper(
+        .setCurrentPassword(new PasswordModel(passwordForm.currentPassword))
+        .setNewPasswordDetails(
           new NewPasswordDetailsModelBuilder()
-            .setNewPassword(passwordForm.newPassword)
-            .setConfirmNewPassword(passwordForm.confirmNewPassword)
+            .setNewPassword(new PasswordModel(passwordForm.newPassword))
+            .setConfirmNewPassword(new PasswordModel(passwordForm.confirmNewPassword))
             .build()
         )
         .build()
