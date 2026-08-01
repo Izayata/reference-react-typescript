@@ -10,6 +10,7 @@ import { CityModel } from '../model/customer/address/CityModel'
 import { StreetModel } from '../model/customer/address/StreetModel'
 import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
 import { ERR_MSG_PERSONAL_DETAILS_REQUIRED } from '../utils/PersonalDetailsUtils'
 import { ERR_MSG_EMAIL_REQUIRED } from '../utils/EmailUtils'
 import { ERR_MSG_SHIPPING_ADDRESS_REQUIRED, ERR_MSG_BILLING_ADDRESS_REQUIRED } from '../utils/customer/AddressUtils'
@@ -178,5 +179,21 @@ describe('CustomerModelBuilder', () => {
 
   it('should accept valid customer model', () => {
     expect(VALID_CUSTOMER_MODEL_BUILDER).not.toThrow()
+  })
+
+  it('setEmail returns the same builder instance for chaining', () => {
+    const builder = new CustomerModelBuilder()
+    expectSetterReturnsSameInstance(builder, b => b.setEmail(VALID_EMAIL_MODEL))
+  })
+
+  it('setEmail overwrites a previously set value', () => {
+    const model = new CustomerModelBuilder()
+      .setPersonalDetails(VALID_PERSONAL_DETAILS_MODEL)
+      .setEmail(new EmailModel('other@example.com'))
+      .setEmail(VALID_EMAIL_MODEL)
+      .setShippingAddress(VALID_SHIPPING_ADDRESS_MODEL)
+      .setBillingAddress(VALID_BILLING_ADDRESS_MODEL)
+      .build()
+    expect(model.email.value).toBe(VALID_EMAIL_MODEL.value)
   })
 })

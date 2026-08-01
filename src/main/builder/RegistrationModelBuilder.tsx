@@ -3,6 +3,10 @@ import { AddressModel } from '../model/customer/AddressModel'
 import { MyUserRegistrationModel } from '../model/MyUserRegistrationModel'
 import { PersonalDetailsModel } from '../model/PersonalDetailsModel'
 
+// Unlike every other builder in this layer, this one is designed to also support being held
+// across renders (e.g. via `useRef` in Register.tsx's multi-step wizard) and filled in
+// incrementally across separate event handlers. Each `setX` is a plain overwrite, so calling one
+// again with a later value is always safe — no `reset()` is needed.
 export class RegistrationModelBuilder {
   private myUser?: MyUserRegistrationModel
   private personalDetails?: PersonalDetailsModel

@@ -10,12 +10,12 @@ import {
 // Valid passwords and wrappers for composing PasswordChangeModel
 const VALID_CURRENT_PASSWORD = new PasswordModel('CurrentPass123!')
 const VALID_NEW_PASSWORD_DETAILS = new NewPasswordDetailsModelBuilder()
-  .setNewPassword('NewPassword456!')
-  .setConfirmNewPassword('NewPassword456!')
+  .setNewPassword(new PasswordModel('NewPassword456!'))
+  .setConfirmNewPassword(new PasswordModel('NewPassword456!'))
   .build()
 const SAME_AS_CURRENT_PASSWORD_DETAILS = new NewPasswordDetailsModelBuilder()
-  .setNewPassword('CurrentPass123!')
-  .setConfirmNewPassword('CurrentPass123!')
+  .setNewPassword(new PasswordModel('CurrentPass123!'))
+  .setConfirmNewPassword(new PasswordModel('CurrentPass123!'))
   .build()
 
 // Invalid cases using direct constructor

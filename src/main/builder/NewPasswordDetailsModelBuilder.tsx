@@ -5,13 +5,13 @@ export class NewPasswordDetailsModelBuilder {
   private newPassword?: PasswordModel
   private confirmNewPassword?: PasswordModel
 
-  setNewPassword(newPassword: string) {
-    this.newPassword = new PasswordModel(newPassword)
+  setNewPassword(newPassword: PasswordModel) {
+    this.newPassword = newPassword
     return this
   }
 
-  setConfirmNewPassword(confirmNewPassword: string) {
-    this.confirmNewPassword = new PasswordModel(confirmNewPassword)
+  setConfirmNewPassword(confirmNewPassword: PasswordModel) {
+    this.confirmNewPassword = confirmNewPassword
     return this
   }
 

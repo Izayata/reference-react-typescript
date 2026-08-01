@@ -4,9 +4,14 @@ import { MyUserRegistrationModel } from '../model/MyUserRegistrationModel'
 import { NewPasswordDetailsModel } from '../model/NewPasswordDetailsModel'
 
 export class MyUserRegistrationModelBuilder {
+  private email?: EmailModel
   private myUsername?: UsernameModel
   private newPasswordDetails?: NewPasswordDetailsModel
-  private email?: EmailModel
+
+  setEmail(email: EmailModel) {
+    this.email = email
+    return this
+  }
 
   setMyUsername(myUsername: UsernameModel) {
     this.myUsername = myUsername
@@ -15,11 +20,6 @@ export class MyUserRegistrationModelBuilder {
 
   setNewPasswordDetails(newPasswordDetails: NewPasswordDetailsModel) {
     this.newPasswordDetails = newPasswordDetails
-    return this
-  }
-
-  setEmail(email: EmailModel) {
-    this.email = email
     return this
   }
 

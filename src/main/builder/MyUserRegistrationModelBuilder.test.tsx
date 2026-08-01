@@ -3,6 +3,7 @@ import { UsernameModel } from '../model/myUser/UsernameModel'
 import { PasswordModel } from '../model/myUser/PasswordModel'
 import { EmailModel } from '../model/EmailModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
 import { ERR_MSG_USERNAME_REQUIRED } from '../utils/myUser/UsernameUtils'
 import { ERR_MSG_PASSWORD_REQUIRED, ERR_MSG_CONFIRM_PASSWORD_REQUIRED, ERR_MSG_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_PASSWORD_VALUE } from '../utils/myUser/PasswordUtils'
 import { ERR_MSG_EMAIL_REQUIRED } from '../utils/EmailUtils'
@@ -20,7 +21,6 @@ const VALID_NEW_PASSWORD_DETAILS_MODEL = new NewPasswordDetailsModel(
 
 // Invalid cases
 const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_USERNAME_UNDEFINED = () => new MyUserRegistrationModelBuilder()
-  .setMyUsername(undefined as any)
   .setEmail(VALID_EMAIL_MODEL)
   .setNewPasswordDetails(VALID_NEW_PASSWORD_DETAILS_MODEL)
   .build()
@@ -33,7 +33,6 @@ const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_USERNAME_NULL = () => new MyUserReg
 
 const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_EMAIL_UNDEFINED = () => new MyUserRegistrationModelBuilder()
   .setMyUsername(VALID_USERNAME_MODEL)
-  .setEmail(undefined as any)
   .setNewPasswordDetails(VALID_NEW_PASSWORD_DETAILS_MODEL)
   .build()
 
@@ -46,7 +45,6 @@ const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_EMAIL_NULL = () => new MyUserRegist
 const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_NEW_PASSWORD_DETAILS_UNDEFINED = () => new MyUserRegistrationModelBuilder()
   .setMyUsername(VALID_USERNAME_MODEL)
   .setEmail(VALID_EMAIL_MODEL)
-  .setNewPasswordDetails(undefined as any)
   .build()
 
 const ERR_MY_USER_REGISTRATION_MODEL_BUILDER_NEW_PASSWORD_DETAILS_NULL = () => new MyUserRegistrationModelBuilder()
@@ -126,5 +124,20 @@ describe('MyUserRegistrationModelBuilder', () => {
 
   it('should accept valid user registration model', () => {
     expect(VALID_MY_USER_REGISTRATION_MODEL_BUILDER).not.toThrow()
+  })
+
+  it('setEmail returns the same builder instance for chaining', () => {
+    const builder = new MyUserRegistrationModelBuilder()
+    expectSetterReturnsSameInstance(builder, b => b.setEmail(VALID_EMAIL_MODEL))
+  })
+
+  it('setEmail overwrites a previously set value', () => {
+    const model = new MyUserRegistrationModelBuilder()
+      .setEmail(new EmailModel('other@example.com'))
+      .setEmail(VALID_EMAIL_MODEL)
+      .setMyUsername(VALID_USERNAME_MODEL)
+      .setNewPasswordDetails(VALID_NEW_PASSWORD_DETAILS_MODEL)
+      .build()
+    expect(model.email.value).toBe(VALID_EMAIL_MODEL.value)
   })
 })
