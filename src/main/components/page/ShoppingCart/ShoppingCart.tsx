@@ -6,9 +6,7 @@ import { DisplayShoppingCartContent } from './DisplayShoppingCartContent/Display
 import { Link } from 'react-router-dom'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 
-import './css/shopping-cart-container.css'
-import './css/shopping-cart-empty-message.css'
-import './css/shopping-cart-no-food-image.css'
+import './ShoppingCart.css'
 import { sleep } from '../../../utils/sleep/SleepUtils'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
 

@@ -11,15 +11,7 @@ import { MyUserModelBuilder } from '../../../builder/MyUserModelBuilder'
 import { MyUserModel } from '../../../model/MyUserModel'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
 
-import './css/user-profile-content-container.css'
-import './css/shared/user-profile-data-card-container.css'
-import './css/shared/user-profile-data-card-container-group.css'
-import './css/shared/user-profile-data-container.css'
-import './css/shared/user-profile-data-container-data-item.css'
-import './css/shared/user-profile-data-container-data-item-container.css'
-import './css/shared/user-profile-data-container-title.css'
-import './css/shared/user-profile-edit-mode-button-container.css'
-import './css/user-profile-title.css'
+import './UserProfile.css'
 import { sleep } from '../../../utils/sleep/SleepUtils'
 
 export function UserProfile() {

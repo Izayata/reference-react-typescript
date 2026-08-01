@@ -1,0 +1,49 @@
+.personal-information-element-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.personal-information-element-phone-number {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.checkout-content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem
+}
+
+@media (min-width: 1024px) {
+    .checkout-content-container {
+        flex-direction: row;
+        /* align-items: flex-start; */
+        /* gap: 2rem; */
+    }
+}
+
+.checkout-section-title {
+    margin: 0;
+}
+
+.checkout-order-item-list-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    gap: 1rem;
+}
+
+.checkout-order-item-price-container {
+    text-align: end;
+}
+
+.checkout-order-price-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}

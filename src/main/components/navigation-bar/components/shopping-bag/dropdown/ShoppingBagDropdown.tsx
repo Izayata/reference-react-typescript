@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import '../../../../../css/container/navigation-link-container.css'
-import './css/shopping-bag-dropdown.css'
+import './ShoppingBagDropdown.css'
 import '../../../../../css/shared/navigation-link.css'
 
 export function ShoppingBagDropdown({ onClick }: { onClick: () => void }) {

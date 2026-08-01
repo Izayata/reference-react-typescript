@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { SeparatorLine } from './separator-line/SeparatorLine'
-import './css/navigation-link-menu.css'
+import './NavigationLinkMenu.css'
 import '../../../../css/shared/navigation-link.css'
 import '../../../../css/container/navigation-link-container.css'
 

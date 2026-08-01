@@ -1,7 +1,7 @@
 import { RefObject } from 'react'
 import { ShoppingBagButton } from '../button/ShoppingBagButton'
 import { ShoppingBagDropdown } from '../dropdown/ShoppingBagDropdown'
-import './css/shopping-bag-container.css'
+import './ShoppingBagContainer.css'
 import { useLocation } from 'react-router-dom'
 
 interface ShoppingBagContainerProps {

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { NavigationLinkMenu } from './navigation-link-menu/NavigationLinkMenu'
-import './css/menu-container.css'
+import './NavigationMenu.css'
 
 interface OpenedHamburgerMenuContainerProps {
   menuOpen: boolean;

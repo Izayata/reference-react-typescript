@@ -1,0 +1,32 @@
+.fa-arrow-right-to-bracket {
+  padding: .25rem;
+  border-radius: 5px;
+}
+
+.fa-arrow-right-to-bracket:hover {
+  color: #d8ba7e !important;
+  background-color: #1f0800 !important;
+}
+
+.login-button-nav-link-wrapper {
+  border-radius: 5px;
+  /* padding: .25rem; */
+  /* margin: auto 0; */
+  transition: transform 0.3s ease, margin 0.3s ease;
+  transform-origin: center;
+  color: inherit;
+}
+
+.login-button-nav-link-wrapper.active:hover {
+  background-color: transparent;
+}
+
+.login-button-nav-link-wrapper:hover {
+  background-color: transparent;
+  transform: scale(1.25);
+}
+
+.login-button-nav-link-wrapper.active {
+  color: #d8ba7e !important;
+  background-color: #1f0800 !important;
+}

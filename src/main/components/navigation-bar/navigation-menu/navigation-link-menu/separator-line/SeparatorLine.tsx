@@ -1,4 +1,4 @@
-import './css/.navigation-link-menu-separator-line.css'
+import './SeparatorLine.css'
 
 export function SeparatorLine() {
   return (
