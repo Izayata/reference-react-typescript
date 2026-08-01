@@ -1,7 +1,0 @@
-.personal-information-element-container {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    gap: 1rem;
-}

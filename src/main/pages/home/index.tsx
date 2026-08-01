@@ -1,11 +1,4 @@
-import './css/home-page-container.css'
-import './css/banner-element-img.css'
-import './css/banner-element-container.css'
-import './css/banner-element-img-container.css'
-import './css/banner-movement-animation.css'
-import './css/banner-paragraph-style.css'
-import './css/banner-separator.css'
-import './css/szezonalis-esemenyunk-container.css'
+import './Home.css'
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'

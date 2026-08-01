@@ -4,7 +4,7 @@ import 'react-phone-input-2/lib/style.css'
 import { countryLocalization, PHONE_NUMBER_VALUE_ALLOWED_REGEX } from '../../../../utils/customer/PhoneNumberUtils'
 import { PhoneNumberModel } from '../../../../model/customer/PhoneNumberModel'
 import { DisplayErrors, getErrorMessages } from '../../../../utils/ErrorUtils'
-import './css/phone-number-input.css'
+import './PhoneNumberInput.css'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 

@@ -23,12 +23,7 @@ import { faMound } from '@fortawesome/free-solid-svg-icons'
 
 
 import '../../../css/shared/form/form-container.css'
-import './css/allergen-cards-container.css'
-import './css/allergen-details-container.css'
-import './css/allergen-icon.css'
-import './css/allergen-name.css'
-import './css/allergen-page-title.css'
-import './css/allergen-section.css'
+import './Allergen.css'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 export function Allergen() {

@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBagShopping } from '@fortawesome/free-solid-svg-icons'
 import { RefObject, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import './css/shopping-bag-icon.css'
+import './ShoppingBagButton.css'
 
 interface ShoppingBagButtonProps {
   shoppingBagOpen: boolean;

@@ -1,0 +1,34 @@
+.fa-arrow-right-from-bracket {
+  padding: .25rem;
+  border-radius: 5px;
+}
+
+.fa-arrow-right-from-bracket:hover {
+  color: #d8ba7e !important;
+  background-color: #1f0800 !important;
+}
+
+@media(min-width: 1280px) {
+  .fa-arrow-right-from-bracket {
+    padding: .25rem;
+  }
+}
+
+.logout-button-nav-link-wrapper {
+  border-radius: 5px;
+  /* padding: 0; */
+  /* margin: 0; */
+  margin-top: auto;
+  transition: transform 0.3s ease, margin 0.3s ease;
+  transform-origin: center;
+  color: inherit;
+}
+
+.logout-button-nav-link-wrapper.active:hover {
+  background-color: transparent;
+}
+
+.logout-button-nav-link-wrapper:hover {
+  background-color: transparent;
+  transform: scale(1.25);
+}

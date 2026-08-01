@@ -1,8 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import './css/gallery-container.css'
-import './css/gallery-slider.css'
-import './css/gallery-slider-nav.css'
-import './css/gallery-slider-wrapper.css'
+import './GalleryPage.css'
 
 export function GalleryPage() {
   const { t } = useTranslation()
