@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
+import { DisplayErrors } from '../../../../utils/ErrorUtils'
 import { useTranslation } from 'react-i18next'
 
 interface ConfirmPasswordInputProps {
@@ -82,7 +83,7 @@ export const ConfirmPasswordInput: React.FC<ConfirmPasswordInputProps> = ({ valu
         )}
       </div>
       <span id="confirm-password-error" className="error-message" aria-live="polite">
-        { error === '' ? '' : <li>{error}</li> }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

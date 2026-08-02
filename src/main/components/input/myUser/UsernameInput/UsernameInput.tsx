@@ -3,7 +3,7 @@ import { checkUsernameExists, ERR_MSG_USERNAME_VALUE_EXISTS, USERNAME_VALUE_ALLO
 import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
 import { UsernameModel } from '../../../../model/myUser/UsernameModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../utils/ErrorUtils'
 import { useTranslation } from 'react-i18next'
 
 interface UsernameInputProps {
@@ -51,15 +51,7 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
           }
         }, 150)
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
         setAvailable(null)
       }
     }, 1000)
@@ -117,12 +109,7 @@ export const UsernameInput: React.FC<UsernameInputProps> = ({ value, onChange}) 
         )}
       </div>
       <span id="username-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

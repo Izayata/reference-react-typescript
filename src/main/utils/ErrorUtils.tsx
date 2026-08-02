@@ -5,7 +5,7 @@ export const ERR_MSG_COLOR_HEXA = '#8A0017'
 export const handleErrorMessages = (e: unknown): string => {
   const messages = getErrorMessages(e)
   if (Array.isArray(messages)) {
-    return messages.join('\n')
+    return messages.map((i) => '• ' + i).join('\n')
   }
 
   return messages
@@ -16,7 +16,7 @@ export const getErrorMessages = (e: unknown): string[] | string => {
   if (Array.isArray(e)) {
     e.forEach((err: ValidationError) => {
       if (err.constraints) {
-        messages.push(...Object.values(err.constraints).map((i) => '• ' + i))
+        messages.push(...Object.values(err.constraints))
       }
     })
   }
