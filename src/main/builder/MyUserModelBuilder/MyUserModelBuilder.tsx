@@ -1,7 +1,7 @@
-import { EmailModel } from '../model/EmailModel'
-import { UsernameModel } from '../model/myUser/UsernameModel'
-import { CustomerModel } from '../model/CustomerModel'
-import { MyUserModel } from '../model/MyUserModel'
+import { EmailModel } from '../../model/EmailModel'
+import { UsernameModel } from '../../model/myUser/UsernameModel'
+import { CustomerModel } from '../../model/CustomerModel'
+import { MyUserModel } from '../../model/MyUserModel'
 
 export class MyUserModelBuilder {
   private email?: EmailModel

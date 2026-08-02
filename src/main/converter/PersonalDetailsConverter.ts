@@ -1,4 +1,4 @@
-import { PersonalDetailsModelBuilder } from '../builder/PersonalDetailsModelBuilder'
+import { PersonalDetailsModelBuilder } from '../builder/PersonalDetailsModelBuilder/PersonalDetailsModelBuilder'
 import { FirstnameModel } from '../model/customer/FirstnameModel'
 import { LastnameModel } from '../model/customer/LastnameModel'
 import { PhoneNumberModel } from '../model/customer/PhoneNumberModel'

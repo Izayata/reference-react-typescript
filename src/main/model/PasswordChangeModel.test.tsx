@@ -1,6 +1,6 @@
 import { PasswordChangeModel } from './PasswordChangeModel'
 import { PasswordModel } from './myUser/PasswordModel'
-import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder'
+import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder/NewPasswordDetailsModelBuilder'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
 import {
   ERR_MSG_CURRENT_PASSWORD_REQUIRED,

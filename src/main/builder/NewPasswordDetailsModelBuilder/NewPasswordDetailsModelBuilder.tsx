@@ -1,5 +1,5 @@
-import { PasswordModel } from '../model/myUser/PasswordModel'
-import { NewPasswordDetailsModel } from '../model/NewPasswordDetailsModel'
+import { PasswordModel } from '../../model/myUser/PasswordModel'
+import { NewPasswordDetailsModel } from '../../model/NewPasswordDetailsModel'
 
 export class NewPasswordDetailsModelBuilder {
   private newPassword?: PasswordModel

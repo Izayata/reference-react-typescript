@@ -1,17 +1,17 @@
 import { AddressModelBuilder } from './AddressModelBuilder'
-import { CityModel } from '../model/customer/address/CityModel'
-import { FloorDoorModel } from '../model/customer/address/FloorDoorModel'
-import { StreetModel } from '../model/customer/address/StreetModel'
-import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
-import { ZipCodeModel } from '../model/customer/address/ZipCodeModel'
-import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
-import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
+import { CityModel } from '../../model/customer/address/CityModel'
+import { FloorDoorModel } from '../../model/customer/address/FloorDoorModel'
+import { StreetModel } from '../../model/customer/address/StreetModel'
+import { StreetNumberModel } from '../../model/customer/address/StreetNumberModel'
+import { ZipCodeModel } from '../../model/customer/address/ZipCodeModel'
+import { expectErrorMessages } from '../../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../../utils/test/ExpectSetterChaining'
 import {
   ERR_MSG_CITY_REQUIRED,
   ERR_MSG_STREET_NUMBER_REQUIRED,
   ERR_MSG_STREET_REQUIRED,
   ERR_MSG_ZIP_CODE_REQUIRED
-} from '../utils/customer/AddressUtils'
+} from '../../utils/customer/AddressUtils'
 
 // Valid models for composing AddressModel
 const VALID_ZIP_MODEL = new ZipCodeModel('4032')

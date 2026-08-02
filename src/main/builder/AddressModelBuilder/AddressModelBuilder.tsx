@@ -1,9 +1,9 @@
-import { AddressModel } from '../model/customer/AddressModel'
-import { CityModel } from '../model/customer/address/CityModel'
-import { FloorDoorModel } from '../model/customer/address/FloorDoorModel'
-import { StreetModel } from '../model/customer/address/StreetModel'
-import { StreetNumberModel } from '../model/customer/address/StreetNumberModel'
-import { ZipCodeModel } from '../model/customer/address/ZipCodeModel'
+import { AddressModel } from '../../model/customer/AddressModel'
+import { CityModel } from '../../model/customer/address/CityModel'
+import { FloorDoorModel } from '../../model/customer/address/FloorDoorModel'
+import { StreetModel } from '../../model/customer/address/StreetModel'
+import { StreetNumberModel } from '../../model/customer/address/StreetNumberModel'
+import { ZipCodeModel } from '../../model/customer/address/ZipCodeModel'
 
 export class AddressModelBuilder {
   private zipCode?: ZipCodeModel

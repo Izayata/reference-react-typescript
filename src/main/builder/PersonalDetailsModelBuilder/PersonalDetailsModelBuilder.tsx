@@ -1,7 +1,7 @@
-import { FirstnameModel } from '../model/customer/FirstnameModel'
-import { LastnameModel } from '../model/customer/LastnameModel'
-import { PhoneNumberModel } from '../model/customer/PhoneNumberModel'
-import { PersonalDetailsModel } from '../model/PersonalDetailsModel'
+import { FirstnameModel } from '../../model/customer/FirstnameModel'
+import { LastnameModel } from '../../model/customer/LastnameModel'
+import { PhoneNumberModel } from '../../model/customer/PhoneNumberModel'
+import { PersonalDetailsModel } from '../../model/PersonalDetailsModel'
 
 export class PersonalDetailsModelBuilder {
   private firstname?: FirstnameModel
