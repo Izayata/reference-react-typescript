@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { STREET_NUMBER_VALUE_ALLOWED_REGEX, STREET_NUMBER_VALUE_MAX_LENGTH, STREET_NUMBER_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/StreetNumberUtils'
 import { StreetNumberModel } from '../../../../../model/customer/address/StreetNumberModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -27,15 +27,7 @@ export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, valu
         new StreetNumberModel(value)
         setError('')
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
       }
     }, 350)
 
@@ -72,12 +64,7 @@ export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, valu
         value={value}
       />
       <span id="streetNumber-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

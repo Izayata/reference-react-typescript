@@ -3,7 +3,7 @@ import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
 import { checkEmailExists, EMAIL_VALUE_ALLOWED_REGEX, EMAIL_VALUE_MAX_LENGTH, ERR_MSG_EMAIL_VALUE_EXISTS } from '../../../../utils/EmailUtils'
 import { EmailModel } from '../../../../model/EmailModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../utils/ErrorUtils'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -55,15 +55,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({ value, onChange }) => {
           }
         }, 150)
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
         setAvailable(null)
       }
     }, 1000)
@@ -121,12 +113,7 @@ export const EmailInput: React.FC<EmailInputProps> = ({ value, onChange }) => {
         )}
       </div>
       <span id="email-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

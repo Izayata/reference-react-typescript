@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ZIP_CODE_VALUE_ALLOWED_REGEX, ZIP_CODE_VALUE_LENGTH } from '../../../../../utils/customer/address/ZipCodeUtils'
 import { ZipCodeModel } from '../../../../../model/customer/address/ZipCodeModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -27,15 +27,7 @@ export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => 
         new ZipCodeModel(value)
         setError('')
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
       }
     }, 500)
 
@@ -71,12 +63,7 @@ export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => 
         value={value}
       />
       <span id="zip-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { PASSWORD_VALUE_ALLOWED_REGEX, PASSWORD_VALUE_MAX_LENGTH, PASSWORD_VALUE_MIN_LENGTH } from '../../../../utils/myUser/PasswordUtils'
 import { PasswordModel } from '../../../../model/myUser/PasswordModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../utils/ErrorUtils'
 import { InputFieldCheckmark } from '../InputFieldCheckmark/InputFieldCheckmark'
 import { InputFieldXmark } from '../InputFieldXmark/InputFieldXmark'
 import { useTranslation } from 'react-i18next'
@@ -39,16 +39,8 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, n
         setAllowed(true)
         setError('')
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
         setAllowed(false)
-        setError(messages)
+        setError(getErrorMessages(e))
       }
     }, 1000)
   
@@ -99,12 +91,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({ value, onChange, n
         )}
       </div>
       <span id="password-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

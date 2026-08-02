@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FLOOR_DOOR_VALUE_ALLOWED_REGEX, FLOOR_DOOR_VALUE_MAX_LENGTH, FLOOR_DOOR_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/FloorDoorUtils'
 import { FloorDoorModel } from '../../../../../model/customer/address/FloorDoorModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -27,15 +27,7 @@ export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onC
         new FloorDoorModel(value)
         setError('')
       } catch (e: unknown) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
       }
     }, 500)
 
@@ -68,12 +60,7 @@ export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onC
         value={value}
       />
       <span id="floorDoor-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )

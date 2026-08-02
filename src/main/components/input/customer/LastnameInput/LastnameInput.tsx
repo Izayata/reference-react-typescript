@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { LASTNAME_VALUE_ALLOWED_REGEX, LASTNAME_VALUE_MAX_LENGTH, LASTNAME_VALUE_MIN_LENGTH } from '../../../../utils/customer/LastnameUtils'
 import { LastnameModel } from '../../../../model/customer/LastnameModel'
-import { ValidationError } from 'class-validator'
+import { getErrorMessages, DisplayErrors } from '../../../../utils/ErrorUtils'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -26,15 +26,7 @@ export const LastnameInput: React.FC<LastnameInputProps> = ({ value, onChange })
         new LastnameModel(value)
         setError('')
       } catch (e) {
-        const messages: string[] = []
-        if (Array.isArray(e)) {
-          e.forEach((err: ValidationError) => {
-            if (err.constraints) {
-              messages.push(...Object.values(err.constraints))
-            }
-          })
-        }
-        setError(messages)
+        setError(getErrorMessages(e))
       }
     }, 500)
 
@@ -71,12 +63,7 @@ export const LastnameInput: React.FC<LastnameInputProps> = ({ value, onChange })
         value={value}
       />
       <span id="lastname-error" className="error-message" aria-live="polite">
-        {Array.isArray(error)
-          ? error.map((msg, idx) => (
-            <li key = {idx}>{msg}</li>
-          )) 
-          : error === '' ? '' :<li>{error}</li>
-        }
+        <DisplayErrors error={error} />
       </span>
     </label>
   )
