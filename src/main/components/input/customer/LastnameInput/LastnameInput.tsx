@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { LASTNAME_VALUE_ALLOWED_REGEX, LASTNAME_VALUE_MAX_LENGTH, LASTNAME_VALUE_MIN_LENGTH } from '../../../../utils/customer/LastnameUtils'
 import { LastnameModel } from '../../../../model/customer/LastnameModel'
-import { getErrorMessages, DisplayErrors } from '../../../../utils/ErrorUtils'
+import { DisplayErrors } from '../../../../utils/ErrorUtils'
+import { useDebouncedModelValidation } from '../../useDebouncedModelValidation'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
@@ -12,26 +13,8 @@ interface LastnameInputProps {
 
 export const LastnameInput: React.FC<LastnameInputProps> = ({ value, onChange }) => {
   const { t } = useTranslation()
-  const [error, setError] = useState<string[] | string>('')
+  const error = useDebouncedModelValidation(value, LastnameModel)
   const location = useLocation()
-  
-  useEffect(() => {
-    if (!value) {
-      setError('')
-      return
-    }
-    
-    const validationTimeout = setTimeout(() => {
-      try {
-        new LastnameModel(value)
-        setError('')
-      } catch (e) {
-        setError(getErrorMessages(e))
-      }
-    }, 500)
-
-    return () => clearTimeout(validationTimeout)
-  }, [value])
 
   return (
     <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`}>
