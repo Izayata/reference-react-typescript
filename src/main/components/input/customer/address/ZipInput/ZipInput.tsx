@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { ZIP_CODE_VALUE_ALLOWED_REGEX, ZIP_CODE_VALUE_LENGTH } from '../../../../../utils/customer/address/ZipCodeUtils'
 import { ZipCodeModel } from '../../../../../model/customer/address/ZipCodeModel'
-import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { useDebouncedModelValidation } from '../../../useDebouncedModelValidation'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -14,25 +15,7 @@ interface ZipInputProps {
 
 export const ZipInput: React.FC<ZipInputProps> = ({ name, value, onChange }) => {
   const { t } = useTranslation()
-  const [error, setError] = useState<string[] | string>('')
-  
-  useEffect(() => {
-    if (!value) {
-      setError('')
-      return
-    }
-    
-    const validationTimeout = setTimeout(() => {
-      try {
-        new ZipCodeModel(value)
-        setError('')
-      } catch (e: unknown) {
-        setError(getErrorMessages(e))
-      }
-    }, 500)
-
-    return () => clearTimeout(validationTimeout)
-  }, [value])
+  const error = useDebouncedModelValidation(value, ZipCodeModel)
 
   return (
     <label className='form-label'>

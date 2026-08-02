@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { CITY_VALUE_ALLOWED_REGEX, CITY_VALUE_MAX_LENGTH, CITY_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/CityUtils'
 import { CityModel } from '../../../../../model/customer/address/CityModel'
-import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { useDebouncedModelValidation } from '../../../useDebouncedModelValidation'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -14,25 +15,7 @@ interface CityInputProps {
 
 export const CityInput: React.FC<CityInputProps> = ({ name, value, onChange }) => {
   const { t } = useTranslation()
-  const [error, setError] = useState<string[] | string>('')
-
-  useEffect(() => {
-    if (!value) {
-      setError('')
-      return
-    }
-    
-    const validationTimeout = setTimeout(() => {
-      try {
-        new CityModel(value)
-        setError('')
-      } catch (e: unknown) {
-        setError(getErrorMessages(e))
-      }
-    }, 500)
-
-    return () => clearTimeout(validationTimeout)
-  }, [value])
+  const error = useDebouncedModelValidation(value, CityModel)
 
   return (
     <label className='form-label'>

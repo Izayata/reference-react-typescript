@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { STREET_NUMBER_VALUE_ALLOWED_REGEX, STREET_NUMBER_VALUE_MAX_LENGTH, STREET_NUMBER_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/StreetNumberUtils'
 import { StreetNumberModel } from '../../../../../model/customer/address/StreetNumberModel'
-import { getErrorMessages, DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { DisplayErrors } from '../../../../../utils/ErrorUtils'
+import { useDebouncedModelValidation } from '../../../useDebouncedModelValidation'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
@@ -14,25 +15,7 @@ interface StreetNumberInputProps {
 
 export const StreetNumberInput: React.FC<StreetNumberInputProps> = ({ name, value, onChange }) => {
   const { t } = useTranslation()
-  const [error, setError] = useState<string[] | string>('')
-  
-  useEffect(() => {
-    if (!value) {
-      setError('')
-      return
-    }
-    
-    const validationTimeout = setTimeout(() => {
-      try {
-        new StreetNumberModel(value)
-        setError('')
-      } catch (e: unknown) {
-        setError(getErrorMessages(e))
-      }
-    }, 350)
-
-    return () => clearTimeout(validationTimeout)
-  }, [value])
+  const error = useDebouncedModelValidation(value, StreetNumberModel, 350)
 
   return (
     <label className="form-label">

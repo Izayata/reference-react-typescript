@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 import { countryLocalization, PHONE_NUMBER_VALUE_ALLOWED_REGEX } from '../../../../utils/customer/PhoneNumberUtils'
 import { PhoneNumberModel } from '../../../../model/customer/PhoneNumberModel'
-import { DisplayErrors, getErrorMessages } from '../../../../utils/ErrorUtils'
+import { DisplayErrors } from '../../../../utils/ErrorUtils'
+import { useDebouncedModelValidation } from '../../useDebouncedModelValidation'
 import './PhoneNumberInput.css'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -15,26 +16,8 @@ interface PhoneNumberInputProps {
 
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({value, onChange }) => {
   const { t } = useTranslation()
-  const [error, setError] = useState<string[] | string>('')
+  const error = useDebouncedModelValidation(value, PhoneNumberModel)
   const location = useLocation()
-    
-  useEffect(() => {
-    if (!value) {
-      setError('')
-      return
-    }
-    
-    const validationTimeout = setTimeout(() => {
-      try {
-        new PhoneNumberModel(value)
-        setError('')
-      } catch (e: unknown) {
-        setError(getErrorMessages(e))
-      }
-    }, 500)
-
-    return () => clearTimeout(validationTimeout)
-  }, [value])
 
   return (
     <label className={`${location.pathname === '/checkout' ? 'form-label checkout' : 'form-label'}`} htmlFor="phone-number-input">
