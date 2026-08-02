@@ -1,8 +1,6 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useTranslation } from 'react-i18next'
 import './Footer.css'
-import { IconProp } from '@fortawesome/fontawesome-svg-core'
-import { faFacebook, faInstagram, faTiktok, faYoutube } from '@fortawesome/free-brands-svg-icons'
+import { SocialLinks } from '../../components/social-links/SocialLinks'
 
 export function Footer() {
   const { t } = useTranslation()
@@ -57,26 +55,7 @@ export function Footer() {
       <section>
         <h3>{t('footer.platformsTitle')}</h3>
         <div style={{display: 'flex', flexDirection: 'column'}}>
-          <p>
-            <a href="https://facebook.com" className='social-media-link header-button-scale'>
-              <FontAwesomeIcon icon={faFacebook as IconProp} /> - Facebook
-            </a>
-          </p>
-          <p>
-            <a href="https://instagram.com" className='social-media-link header-button-scale'>
-              <FontAwesomeIcon icon={faInstagram as IconProp} /> - Instagram
-            </a>
-          </p>
-          <p>
-            <a href="https://tiktok.com" className='social-media-link header-button-scale'>
-              <FontAwesomeIcon icon={faTiktok as IconProp} /> - Tiktok
-            </a>
-          </p>
-          <p>
-            <a href="https://www.youtube.com/watch?v=BBJa32lCaaY" className='social-media-link header-button-scale'>
-              <FontAwesomeIcon icon={faYoutube as IconProp} /> - Youtube
-            </a>
-          </p>
+          <SocialLinks variant='icon-and-label' />
         </div>
       </section>
       
