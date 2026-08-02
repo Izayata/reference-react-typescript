@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 import { fetchAuthenticatedUserDetails } from '../../../utils/pages/account/accountPageUtils'
 import { LoadingOverlay } from '../../functional/LoadingOverlay/LoadingOverlay'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
-import { MyUserModelBuilder } from '../../../builder/MyUserModelBuilder'
+import { MyUserModelBuilder } from '../../../builder/MyUserModelBuilder/MyUserModelBuilder'
 import { MyUserModel } from '../../../model/MyUserModel'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
 

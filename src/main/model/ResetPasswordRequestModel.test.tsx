@@ -1,5 +1,5 @@
 import { ResetPasswordRequestModel } from './ResetPasswordRequestModel'
-import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder'
+import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder/NewPasswordDetailsModelBuilder'
 import { PasswordModel } from './myUser/PasswordModel'
 import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
 import i18n from '../i18n/i18n'

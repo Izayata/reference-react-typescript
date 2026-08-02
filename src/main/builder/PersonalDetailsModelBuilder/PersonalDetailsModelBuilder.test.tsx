@@ -1,12 +1,12 @@
 import { PersonalDetailsModelBuilder } from './PersonalDetailsModelBuilder'
-import { FirstnameModel } from '../model/customer/FirstnameModel'
-import { LastnameModel } from '../model/customer/LastnameModel'
-import { PhoneNumberModel } from '../model/customer/PhoneNumberModel'
-import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
-import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
-import { ERR_MSG_FIRSTNAME_REQUIRED } from '../utils/customer/FirstnameUtils'
-import { ERR_MSG_LASTNAME_REQUIRED } from '../utils/customer/LastnameUtils'
-import { ERR_MSG_PHONE_NUMBER_REQUIRED } from '../utils/customer/PhoneNumberUtils'
+import { FirstnameModel } from '../../model/customer/FirstnameModel'
+import { LastnameModel } from '../../model/customer/LastnameModel'
+import { PhoneNumberModel } from '../../model/customer/PhoneNumberModel'
+import { expectErrorMessages } from '../../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../../utils/test/ExpectSetterChaining'
+import { ERR_MSG_FIRSTNAME_REQUIRED } from '../../utils/customer/FirstnameUtils'
+import { ERR_MSG_LASTNAME_REQUIRED } from '../../utils/customer/LastnameUtils'
+import { ERR_MSG_PHONE_NUMBER_REQUIRED } from '../../utils/customer/PhoneNumberUtils'
 
 // Valid models for composing PersonalDetailsModel
 const VALID_FIRSTNAME_MODEL = new FirstnameModel('János')

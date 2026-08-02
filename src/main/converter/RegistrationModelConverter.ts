@@ -1,4 +1,4 @@
-import { RegistrationModelBuilder } from '../builder/RegistrationModelBuilder'
+import { RegistrationModelBuilder } from '../builder/RegistrationModelBuilder/RegistrationModelBuilder'
 import { RegistrationModel } from '../model/RegistrationModel'
 import { convertRegistrationFormDataToBillingAddressModel, convertRegistrationFormDataToShippingAddressModel } from './AddressModelConverter'
 import { convertRegistrationDataToMyUserRegistrationModel } from './MyUserRegistrationModelConverter'

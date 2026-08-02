@@ -1,9 +1,9 @@
 import { PasswordChangeModelBuilder } from './PasswordChangeModelBuilder'
-import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder'
-import { PasswordModel } from '../model/myUser/PasswordModel'
-import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
-import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
-import { ERR_MSG_CURRENT_PASSWORD_REQUIRED, ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED } from '../utils/PasswordChangeUtils'
+import { NewPasswordDetailsModelBuilder } from '../NewPasswordDetailsModelBuilder/NewPasswordDetailsModelBuilder'
+import { PasswordModel } from '../../model/myUser/PasswordModel'
+import { expectErrorMessages } from '../../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../../utils/test/ExpectSetterChaining'
+import { ERR_MSG_CURRENT_PASSWORD_REQUIRED, ERR_MSG_NEW_PASSWORD_DETAILS_REQUIRED } from '../../utils/PasswordChangeUtils'
 
 // Valid values for composing PasswordChangeModel via the builder
 const VALID_CURRENT_PASSWORD = new PasswordModel('CurrentPass123!')

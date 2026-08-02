@@ -9,7 +9,7 @@ import { convertRegistrationDataToMyUserRegistrationModel } from '../../../conve
 import { checkUsernameExists, ERR_MSG_USERNAME_VALUE_EXISTS } from '../../../utils/myUser/UsernameUtils'
 import { checkEmailExists, ERR_MSG_EMAIL_VALUE_EXISTS } from '../../../utils/EmailUtils'
 import { useModal } from '../../../context/ModalMessageContext/ModalMessageContext'
-import { RegistrationModelBuilder } from '../../../builder/RegistrationModelBuilder'
+import { RegistrationModelBuilder } from '../../../builder/RegistrationModelBuilder/RegistrationModelBuilder'
 import { handleErrorMessages } from '../../../utils/ErrorUtils'
 import { RegisterFormPersonalDetails } from './form/RegisterFormPersonalDetails'
 import { convertRegistrationDataToPersonalDetailsModel } from '../../../converter/PersonalDetailsConverter'

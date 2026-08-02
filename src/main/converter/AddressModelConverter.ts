@@ -1,4 +1,4 @@
-import { AddressModelBuilder } from '../builder/AddressModelBuilder'
+import { AddressModelBuilder } from '../builder/AddressModelBuilder/AddressModelBuilder'
 import { CityModel } from '../model/customer/address/CityModel'
 import { FloorDoorModel } from '../model/customer/address/FloorDoorModel'
 import { StreetModel } from '../model/customer/address/StreetModel'

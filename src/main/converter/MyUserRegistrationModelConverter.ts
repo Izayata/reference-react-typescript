@@ -1,4 +1,4 @@
-import { MyUserRegistrationModelBuilder } from '../builder/MyUserRegistrationModelBuilder'
+import { MyUserRegistrationModelBuilder } from '../builder/MyUserRegistrationModelBuilder/MyUserRegistrationModelBuilder'
 import { EmailModel } from '../model/EmailModel'
 import { UsernameModel } from '../model/myUser/UsernameModel'
 import { MyUserRegistrationModel } from '../model/MyUserRegistrationModel'

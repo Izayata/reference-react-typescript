@@ -1,12 +1,12 @@
 import { NewPasswordDetailsModelBuilder } from './NewPasswordDetailsModelBuilder'
-import { PasswordModel } from '../model/myUser/PasswordModel'
-import { expectErrorMessages } from '../utils/test/ExpectErrorMessages'
-import { expectSetterReturnsSameInstance } from '../utils/test/ExpectSetterChaining'
+import { PasswordModel } from '../../model/myUser/PasswordModel'
+import { expectErrorMessages } from '../../utils/test/ExpectErrorMessages'
+import { expectSetterReturnsSameInstance } from '../../utils/test/ExpectSetterChaining'
 import {
   ERR_MSG_NEW_PASSWORD_REQUIRED,
   ERR_MSG_CONFIRM_NEW_PASSWORD_REQUIRED,
   ERR_MSG_NEW_PASSWORD_VALUE_DO_NOT_MATCH_CONFIRM_NEW_PASSWORD_VALUE
-} from '../utils/PasswordChangeUtils'
+} from '../../utils/PasswordChangeUtils'
 
 const VALID_PASSWORD = new PasswordModel('ValidPass123!')
 

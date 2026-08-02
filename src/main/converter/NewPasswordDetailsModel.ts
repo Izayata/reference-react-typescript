@@ -1,6 +1,6 @@
 import { PasswordModel } from '../model/myUser/PasswordModel'
 import { NewPasswordDetailsModel } from '../model/NewPasswordDetailsModel'
-import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder'
+import { NewPasswordDetailsModelBuilder } from '../builder/NewPasswordDetailsModelBuilder/NewPasswordDetailsModelBuilder'
 
 export function convertRegistrationDataToNewPasswordDetailsModel(registrationData: {
   password: string
