@@ -1,17 +1,16 @@
 .fa-bars {
   cursor: pointer;
-  transition: transform 0.3s ease, margin 0.3s ease;
-  transform-origin: center;
+  transition: font-size 0.3s ease, margin 0.3s ease;
   padding: .25rem;
   border-radius: 5px;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .fa-bars:hover {
   background-color: #1f0800;
   color: #d8ba7e;
-  transform: scale(1.25);
-
+  font-size: 1.25em;
 }
 
 @media (min-width: 1280px) {
@@ -27,6 +26,7 @@
   border: none;
   border-left: 2px solid #695A3D;
   border-radius: 5px;
+  flex-shrink: 0;
 }
 
 @media (min-width: 1280px) {

@@ -5,28 +5,29 @@
   text-align: center;
   display: block;
   color: #000;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   margin-top: auto;
   margin-bottom: auto;
   border-radius: 5px;
-  transition: transform 0.3s ease, margin 0.3s ease;
+  transition: font-size 0.3s ease, margin 0.3s ease;
   cursor: pointer;
 }
 .navigation-link.shopping-bag-link {
   font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .navigation-link.shopping-bag-link:hover {
-  transform: none;
-  margin-left: none;
-  margin-right: none;
+  font-size: 1.5rem;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* a.navigation-link.button-scale.active:hover, */
 .navigation-link:hover {
   background-color: #1f0800;
   color: #d8ba7e;
-  transform: scale(1.25);
+  font-size: calc(1.2rem * 1.25);
   margin-left: calc(1.25*0.25rem);
   margin-right: calc(1.25*0.25rem);
 }
@@ -39,13 +40,12 @@ a.navigation-link.active {
 
 @media (min-width: 1280px) {
   .navigation-link.shopping-bag-link:hover {
-    transform: scale(1.25);
+    font-size: calc(1.25rem * 1.25);
     margin-left: calc(1.25*0.25rem);
     margin-right: calc(1.25*0.25rem);
   }
 
   .navigation-link.shopping-bag-link {
     font-size: 1.25rem;
-    
   }
 }

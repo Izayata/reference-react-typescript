@@ -26,7 +26,6 @@ export function NavigationLinkMenu() {
                 style={{
                   paddingTop: '.25rem',
                   paddingBottom: '.25rem',
-                  fontSize: '1.2rem',
                   fontWeight: '600',
                 }}
               >
@@ -44,7 +43,6 @@ export function NavigationLinkMenu() {
           style={{
             paddingTop: '.25rem',
             paddingBottom: '.25rem',
-            fontSize: '1.2rem',
             fontWeight: '600',
           }}
         >
@@ -59,7 +57,6 @@ export function NavigationLinkMenu() {
           style={{
             paddingTop: '.25rem',
             paddingBottom: '.25rem',
-            fontSize: '1.2rem',
             fontWeight: '600',
           }}
         >
@@ -72,7 +69,6 @@ export function NavigationLinkMenu() {
           style={{
             paddingTop: '.25rem',
             paddingBottom: '.25rem',
-            fontSize: '1.2rem',
             fontWeight: '600',
           }}
         >

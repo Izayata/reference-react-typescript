@@ -3,16 +3,16 @@
   background-color: #8c7851;
   border-radius: 50%;
   z-index: 998;
-  transition: transform 0.3s ease, margin .3s ease;
-  transform-origin: center;
+  transition: font-size 0.3s ease, margin .3s ease;
   cursor: pointer;
   border: 2px solid #00000077;
+  flex-shrink: 0;
 }
 
 .fa-bag-shopping:hover {
   color: #d8ba7e;
   background-color: #1f0800;
-  transform: scale(1.25);
+  font-size: 1.25em;
 }
 
 .fa-bag-shopping.active {
