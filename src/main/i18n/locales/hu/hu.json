@@ -596,7 +596,9 @@
     "reorderSuccess": "A tételek a kosárhoz lettek adva!"
   },
   "gallery": {
-    "goToImageAriaLabel": "Ugrás a {{index}}. képre"
+    "goToImageAriaLabel": "Ugrás a {{index}}. képre",
+    "previousImageAriaLabel": "Előző kép",
+    "nextImageAriaLabel": "Következő kép"
   },
   "notFound": {
     "title": "404 - Az oldal nem található",
