@@ -3,8 +3,7 @@
   padding: .25rem;
   margin-top: auto;
   text-decoration: none;
-  transition: transform 0.3s ease, margin 0.3s ease;
-  transform-origin: right center;
+  transition: font-size 0.3s ease, margin 0.3s ease;
   color: inherit;
 }
 
@@ -15,5 +14,5 @@
 .logout-button-nav-link-wrapper:hover {
   background-color: #1f0800;
   color: #d8ba7e;
-  transform: scale(1.25);
+  font-size: 1.25em;
 }
