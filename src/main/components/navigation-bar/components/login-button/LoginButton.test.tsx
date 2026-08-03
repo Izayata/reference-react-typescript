@@ -10,7 +10,7 @@ describe('LoginButton', () => {
       </MemoryRouter>
     )
 
-    const link = screen.getByRole('link', { name: 'Bejelentkezés' })
+    const link = screen.getByRole('link', { name: 'Belépés' })
     expect(link).toHaveAttribute('href', '/login')
   })
 })

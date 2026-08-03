@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Modal } from '../../../functional/Modal/Modal'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { useTranslation } from 'react-i18next'
 import './LogoutButton.css'
 import { fetchCsrfToken } from '../../../../supports/fetch-utilities/fetchCsrfToken'
@@ -44,12 +42,8 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
         to=""
         className={'logout-button-nav-link-wrapper'}
         onClick={handleLogout}
-        aria-label={t('nav.logoutLinkAriaLabel')}
       >
-        <FontAwesomeIcon
-          icon={faArrowRightFromBracket}
-          className='logout-icon'
-        />
+        {t('nav.logout')}
       </NavLink>
     </>
   )
