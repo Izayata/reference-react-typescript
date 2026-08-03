@@ -23,6 +23,7 @@ import { Modal } from './main/components/functional/Modal/Modal'
 import { ModalProvider, useModal } from './main/context/ModalMessageContext/ModalMessageContext'
 import { GalleryPage } from './main/pages/GalleryPage'
 import { NotFoundPage } from './main/pages/NotFoundPage'
+import { ScrollToTop } from './main/components/functional/ScrollToTop/ScrollToTop'
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -76,6 +77,7 @@ function AppContent() {
 
   return (
     <div className="app-container">
+      <ScrollToTop />
       {modalMessage && (<Modal message={modalMessage} onClose={() => setModalMessage(null)} />)}
       <ToastContainer autoClose = {2000} />
       <div className='slide-in'>
