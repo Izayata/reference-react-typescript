@@ -2,74 +2,100 @@ import './Home.css'
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { sleep } from '../../utils/sleep/SleepUtils'
+
+const BANNER_ORDER = ['borstoro-boldizsar', 'alapanyagaink', 'honap-kedvence'] as const
+type BannerState = typeof BANNER_ORDER[number]
 
 export function Home() {
   const { t } = useTranslation()
-  const [bannerState, setBannerState] = useState<'borstoro-boldizsar' | 'alapanyagaink' | 'honap-kedvence'>('borstoro-boldizsar')
+  const [bannerState, setBannerState] = useState<BannerState>(BANNER_ORDER[0])
+  const [isBannerPaused, setIsBannerPaused] = useState(false)
+
+  function goToBanner(direction: 1 | -1) {
+    const currentIndex = BANNER_ORDER.indexOf(bannerState)
+    const nextIndex = (currentIndex + direction + BANNER_ORDER.length) % BANNER_ORDER.length
+    setBannerState(BANNER_ORDER[nextIndex])
+  }
 
   useEffect(() => {
+    if (isBannerPaused) return
+
+    let cancelled = false
     const changeBanner = async () => {
       await sleep(30000)
-      if (bannerState === 'alapanyagaink') {
-        setBannerState('honap-kedvence')
-        return
-      }
-      if (bannerState === 'borstoro-boldizsar') {
-        setBannerState('alapanyagaink')
-        return
-      }
-      if (bannerState === 'honap-kedvence') {
-        setBannerState('borstoro-boldizsar')
-        return
-      }
+      if (cancelled) return
+      goToBanner(1)
     }
 
     changeBanner()
-  }, [bannerState])
+    return () => { cancelled = true }
+  }, [bannerState, isBannerPaused])
 
   return (
     <div className='home-page-container'>
-      {bannerState === 'borstoro-boldizsar' && (
-        <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'darkkhaki'}}>
-          <div className='banner-element-img-container'>
-            <img className="banner-element-img" src="https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg" alt="Source: https://www.pexels.com/photo/man-in-white-dress-shirt-wearing-eyeglasses-3814446/" />
+      <div
+        className='banner-rotator'
+        onMouseEnter={() => setIsBannerPaused(true)}
+        onMouseLeave={() => setIsBannerPaused(false)}
+      >
+        <button
+          type='button'
+          className='banner-rotator-arrow banner-rotator-arrow-prev'
+          onClick={() => goToBanner(-1)}
+          aria-label={t('home.previousBannerAriaLabel')}
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
+        </button>
+        {bannerState === 'borstoro-boldizsar' && (
+          <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'darkkhaki'}}>
+            <div className='banner-element-img-container'>
+              <img className="banner-element-img" src="https://images.pexels.com/photos/3814446/pexels-photo-3814446.jpeg" alt="Source: https://www.pexels.com/photo/man-in-white-dress-shirt-wearing-eyeglasses-3814446/" />
+            </div>
+            <p className='banner-paragraph-style'>
+              {t('home.boldizsarWelcomePart1')}
+              <br />
+              <br />
+              {t('home.boldizsarWelcomePart2')}
+            </p>
           </div>
-          <p className='banner-paragraph-style'>
-            {t('home.boldizsarWelcomePart1')}
-            <br />
-            <br />
-            {t('home.boldizsarWelcomePart2')}
-          </p>
-        </div>
-      )}
-      {bannerState === 'alapanyagaink' && (
-        <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'burlywood'}}>
-          <div className='banner-element-img-container'>
-            <img className='banner-element-img' src="https://images.pexels.com/photos/4252142/pexels-photo-4252142.jpeg" alt="Source: https://www.pexels.com/photo/person-slicing-vegetable-on-chopping-board-4252142/" />
+        )}
+        {bannerState === 'alapanyagaink' && (
+          <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'burlywood'}}>
+            <div className='banner-element-img-container'>
+              <img className='banner-element-img' src="https://images.pexels.com/photos/4252142/pexels-photo-4252142.jpeg" alt="Source: https://www.pexels.com/photo/person-slicing-vegetable-on-chopping-board-4252142/" />
+            </div>
+            <p className='banner-paragraph-style'>
+              {t('home.alapanyagaink')}
+            </p>
           </div>
-          <p className='banner-paragraph-style'>
-            {t('home.alapanyagaink')}
-          </p>
-        </div>
-        
-      )}
-      {bannerState === 'honap-kedvence' && (
-        <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'darksalmon'}}>
-          <div className='banner-element-img-container'>
-            <img
-              className='banner-element-img'
-              src="https://gabykonyha.hu/wp-content/uploads/2021/11/Glutenmentes-vegan-sutotokos-gnocchi-16.jpg"
-              alt="Source: https://gabykonyha.hu/mindenmentes-foetelek/sutotokos-gnocchi-pestos-gombaval/"
-              style={{transform: 'scale(1.5) translateY(-7px)'}}
-            />
+        )}
+        {bannerState === 'honap-kedvence' && (
+          <div className='banner-element-container banner-movement-animation' style={{backgroundColor: 'darksalmon'}}>
+            <div className='banner-element-img-container'>
+              <img
+                className='banner-element-img'
+                src="https://gabykonyha.hu/wp-content/uploads/2021/11/Glutenmentes-vegan-sutotokos-gnocchi-16.jpg"
+                alt="Source: https://gabykonyha.hu/mindenmentes-foetelek/sutotokos-gnocchi-pestos-gombaval/"
+                style={{transform: 'scale(1.5) translateY(-7px)'}}
+              />
+            </div>
+            <p className='banner-paragraph-style'>
+              {t('home.honapKedvenceOffer')}
+            </p>
           </div>
-          <p className='banner-paragraph-style'>
-            {t('home.honapKedvenceOffer')}
-          </p>
-        </div>
-        
-      )}
+        )}
+        <button
+          type='button'
+          className='banner-rotator-arrow banner-rotator-arrow-next'
+          onClick={() => goToBanner(1)}
+          aria-label={t('home.nextBannerAriaLabel')}
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
+        </button>
+      </div>
       <div
         className='banner-separator'
       />

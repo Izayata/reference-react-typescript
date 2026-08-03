@@ -67,25 +67,43 @@
 }
 
 .banner-movement-animation {
-    animation: banner-fade-in 1s ease-in-out forwards, banner-fade-out 1s 29000ms ease-in-out forwards;
+    animation: banner-fade-in 1s ease-in-out forwards;
 }
 
-@keyframes banner-fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+.banner-rotator {
+    position: relative;
 }
 
-@keyframes banner-fade-out {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+.banner-rotator-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 50%;
+    background-color: #fff;
+    opacity: .75;
+    color: #000;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.banner-rotator-arrow:hover {
+    opacity: 1;
+}
+
+.banner-rotator-arrow-prev {
+    left: 0.5rem;
+}
+
+.banner-rotator-arrow-next {
+    right: 0.5rem;
 }
 
 .banner-paragraph-style {
