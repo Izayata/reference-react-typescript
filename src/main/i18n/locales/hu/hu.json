@@ -408,7 +408,6 @@
     "logoutFailed": "Kijelentkezés sikertelen!",
     "cart": "Kosár",
     "checkout": "Pénztár",
-    "menu": "Étlap",
     "allergens": "Allergének",
     "gallery": "Galéria",
     "contact": "Kapcsolat"
@@ -431,8 +430,8 @@
     "fetchError": "Hiba történt az étlap elemek lekérésekor.",
     "currencySuffix": "Ft",
     "soups": "Levesek",
-    "mainDishes": "Főételek",
-    "drinks": "Üdítők",
+    "mainDishes": "Egytálételek",
+    "drinks": "Italok",
     "desserts": "Desszertek",
     "allergensLabel": "Allergének: "
   },

@@ -1,12 +1,15 @@
 import { render, screen, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { ActiveMenuCategoryProvider } from '../../../context/ActiveMenuCategoryContext/ActiveMenuCategoryContext'
 import { NavigationMenu } from './NavigationMenu'
 
 function renderOpenMenu() {
   const setMenuOpen = jest.fn()
   render(
     <MemoryRouter>
-      <NavigationMenu menuOpen={true} setMenuOpen={setMenuOpen} />
+      <ActiveMenuCategoryProvider>
+        <NavigationMenu menuOpen={true} setMenuOpen={setMenuOpen} />
+      </ActiveMenuCategoryProvider>
     </MemoryRouter>
   )
   return { setMenuOpen }
