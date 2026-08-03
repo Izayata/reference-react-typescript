@@ -36,6 +36,9 @@ function mockFetch() {
     if (url === '/v1/foods/cart') {
       return Promise.resolve({ ok: true, json: async () => [FOOD_ITEM] })
     }
+    if (url.startsWith('/v1/zip-codes/')) {
+      return Promise.resolve({ ok: false, status: 404 })
+    }
     return Promise.reject(new Error('unexpected fetch url: ' + url))
   }) as unknown as typeof fetch
 }
@@ -47,6 +50,9 @@ function mockFetchWithOrderSubmission() {
     }
     if (url === '/v1/orders/guest' || url === '/v1/orders') {
       return Promise.resolve({ ok: true, json: async () => ({ id: 1 }) })
+    }
+    if (url.startsWith('/v1/zip-codes/')) {
+      return Promise.resolve({ ok: false, status: 404 })
     }
     return Promise.reject(new Error('unexpected fetch url: ' + url))
   }) as unknown as typeof fetch

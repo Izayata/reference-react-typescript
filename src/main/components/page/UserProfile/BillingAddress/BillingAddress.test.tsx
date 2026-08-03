@@ -26,6 +26,9 @@ function mockFetch() {
     if (url === '/v1/customer/billing-address') {
       return Promise.resolve({ ok: true, json: async () => ({}) })
     }
+    if (url.startsWith('/v1/zip-codes/')) {
+      return Promise.resolve({ ok: false, status: 404 })
+    }
     return Promise.reject(new Error('unexpected fetch url: ' + url))
   }) as unknown as typeof fetch
 }

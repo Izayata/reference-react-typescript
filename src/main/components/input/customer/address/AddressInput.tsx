@@ -5,6 +5,7 @@ import { StreetNumberInput } from './StreetNumberInput/StreetNumberInput'
 import { FloorDoorInput } from './FloorDoorInput/FloorDoorInput'
 import './AddressInput.css'
 import { useLocation } from 'react-router-dom'
+import { useZipCityAutofill } from './useZipCityAutofill'
 
 export interface AddressInputProps {
   formData: {
@@ -19,6 +20,7 @@ export interface AddressInputProps {
 
 export function AddressInput({ formData, onChange }: AddressInputProps) {
   const location = useLocation()
+  useZipCityAutofill(formData.zip, onChange)
 
   return (
     <div className={location.pathname === '/checkout' ? 'form-orientation checkout' : 'form-orientation'}>
