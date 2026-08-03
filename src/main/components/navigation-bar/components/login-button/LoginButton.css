@@ -3,18 +3,36 @@
   border-radius: 5px;
 }
 
-.fa-arrow-right-to-bracket:hover {
-  color: #d8ba7e !important;
-  background-color: #1f0800 !important;
+.login-button-nav-link-wrapper:hover .fa-arrow-right-to-bracket {
+  color: #d8ba7e;
+  background-color: #1f0800;
+}
+
+.login-button-nav-link-wrapper:hover .login-button-label {
+  color: #d8ba7e;
 }
 
 .login-button-nav-link-wrapper {
   border-radius: 5px;
   /* padding: .25rem; */
   /* margin: auto 0; */
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  text-decoration: none;
   transition: transform 0.3s ease, margin 0.3s ease;
   transform-origin: center;
   color: inherit;
+}
+
+.login-button-label {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .login-button-label {
+    display: inline;
+  }
 }
 
 .login-button-nav-link-wrapper.active:hover {

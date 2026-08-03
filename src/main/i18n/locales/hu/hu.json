@@ -404,6 +404,7 @@
     "openCartAriaLabel": "Kosár megnyitása",
     "profileLinkAriaLabel": "Fiók megnyitása",
     "loginLinkAriaLabel": "Bejelentkezés",
+    "login": "Bejelentkezés",
     "logoutLinkAriaLabel": "Kijelentkezés",
     "logoutFailed": "Kijelentkezés sikertelen!",
     "cart": "Kosár",

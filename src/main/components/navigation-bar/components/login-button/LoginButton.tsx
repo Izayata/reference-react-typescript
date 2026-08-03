@@ -19,6 +19,7 @@ export function LoginButton() {
         icon={faArrowRightToBracket}
         className='login-icon'
       />
+      <span className='login-button-label'>{t('nav.login')}</span>
     </NavLink>
   )
 }
