@@ -21,6 +21,7 @@ import { AccountRouteGuard } from './main/components/functional/AccountRouteGuar
 import { sleep } from './main/utils/sleep/SleepUtils'
 import { Modal } from './main/components/functional/Modal/Modal'
 import { ModalProvider, useModal } from './main/context/ModalMessageContext/ModalMessageContext'
+import { ActiveMenuCategoryProvider } from './main/context/ActiveMenuCategoryContext/ActiveMenuCategoryContext'
 import { GalleryPage } from './main/pages/GalleryPage'
 import { NotFoundPage } from './main/pages/NotFoundPage'
 import { ScrollToTop } from './main/components/functional/ScrollToTop/ScrollToTop'
@@ -117,7 +118,9 @@ function AppContent() {
 function App() {
   return (
     <ModalProvider>
-      <AppContent />
+      <ActiveMenuCategoryProvider>
+        <AppContent />
+      </ActiveMenuCategoryProvider>
     </ModalProvider>
   )
 }
