@@ -66,6 +66,19 @@ export function FoodDetails() {
                 </span>
               ))}
             </div>
+            <div className="food-details-ingredients">
+              <div className="food-details-ingredients-label">
+                {t('foodDetails.ingredientsLabel')}
+              </div>
+              <div className="food-details-ingredients-list">
+                {food.ingredientNames.length === 0 && t('foodDetails.noIngredients')}
+                {food.ingredientNames.map((ingredient, index) => (
+                  <span key={index}>
+                    {ingredient.value + ','}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
           <div className='food-details-actions'>
             <div className="food-details-price">

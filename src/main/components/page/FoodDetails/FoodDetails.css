@@ -50,6 +50,76 @@
   }
 }
 
+.food-details-ingredients {
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2ch;
+  text-align: center;
+}
+
+.food-details-ingredients-label {
+  font-size: 1.5rem;
+}
+
+.food-details-ingredients-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  width: 90%;
+  margin: 0 auto;
+  font-size: 1.2rem;
+}
+
+@media (min-width: 768px) {
+  .food-details-ingredients-label {
+    font-size: 2rem;
+  }
+
+  .food-details-ingredients-list {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .food-details-ingredients {
+    margin-top: 1ch;
+    text-align: right;
+  }
+
+  .food-details-ingredients-label {
+    font-size: 1.8rem;
+  }
+
+  .food-details-ingredients-list {
+    font-size: 1.4rem;
+    justify-content: flex-end;
+    margin-left: auto;
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 1920px) {
+  .food-details-ingredients-label {
+    font-size: 2.1rem;
+  }
+
+  .food-details-ingredients-list {
+    font-size: 1.6rem;
+  }
+}
+
+@media (min-width: 2560px) {
+  .food-details-ingredients-label {
+    font-size: 2.7rem;
+  }
+
+  .food-details-ingredients-list {
+    font-size: 2rem;
+  }
+}
+
 .food-details-card-container {
   padding: 1rem;
   background-color: #8c7851;

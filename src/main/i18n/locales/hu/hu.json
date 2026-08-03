@@ -478,7 +478,9 @@
     "notFound": "Nem található étel! Próbálja újra később!",
     "fetchFailed": "Étel adatok lekérése sikertelen! Próbálja újra később!",
     "allergensLabel": "Allergének:",
-    "noAllergens": " Nincs megjeleníthető allergén"
+    "noAllergens": " Nincs megjeleníthető allergén",
+    "ingredientsLabel": "Összetevők:",
+    "noIngredients": " Nincs megjeleníthető összetevő"
   },
   "forgottenPassword": {
     "usernameLabel": "Felhasználónév:",
