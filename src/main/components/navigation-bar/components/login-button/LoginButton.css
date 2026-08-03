@@ -3,7 +3,7 @@
   padding: .25rem;
   text-decoration: none;
   transition: transform 0.3s ease, margin 0.3s ease;
-  transform-origin: center;
+  transform-origin: right center;
   color: inherit;
 }
 
