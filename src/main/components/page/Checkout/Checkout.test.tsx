@@ -127,7 +127,8 @@ describe('Checkout', () => {
     fireEvent.click(screen.getByLabelText('A számlázási cím megegyezik a szállítási címmel'))
     fireEvent.change(screen.getByLabelText(/Irányítószám/), { target: { value: '4028' } })
     fireEvent.change(screen.getByLabelText(/Város/), { target: { value: 'Debrecen' } })
-    fireEvent.change(screen.getByLabelText(/Közterület/), { target: { value: 'Egyetem sgt' } })
+    fireEvent.change(screen.getByLabelText(/Közterület neve/), { target: { value: 'Egyetem' } })
+    fireEvent.change(screen.getByLabelText(/Közterület jellege/), { target: { value: 'sétány' } })
     fireEvent.change(screen.getByLabelText(/Házszám/), { target: { value: '1' } })
     fireEvent.click(screen.getByLabelText('Készpénz'))
 
@@ -155,7 +156,8 @@ describe('Checkout', () => {
     fireEvent.click(screen.getByLabelText('A számlázási cím megegyezik a szállítási címmel'))
     fireEvent.change(screen.getByLabelText(/Irányítószám/), { target: { value: '4028' } })
     fireEvent.change(screen.getByLabelText(/Város/), { target: { value: 'Debrecen' } })
-    fireEvent.change(screen.getByLabelText(/Közterület/), { target: { value: 'Egyetem sgt' } })
+    fireEvent.change(screen.getByLabelText(/Közterület neve/), { target: { value: 'Egyetem' } })
+    fireEvent.change(screen.getByLabelText(/Közterület jellege/), { target: { value: 'sétány' } })
     fireEvent.change(screen.getByLabelText(/Házszám/), { target: { value: '1' } })
     fireEvent.click(screen.getByLabelText('Készpénz'))
 
@@ -184,7 +186,8 @@ describe('Checkout', () => {
     fireEvent.click(screen.getByLabelText('A számlázási cím megegyezik a szállítási címmel'))
     fireEvent.change(screen.getByLabelText(/Irányítószám/), { target: { value: '4028' } })
     fireEvent.change(screen.getByLabelText(/Város/), { target: { value: 'Debrecen' } })
-    fireEvent.change(screen.getByLabelText(/Közterület/), { target: { value: 'Egyetem sgt' } })
+    fireEvent.change(screen.getByLabelText(/Közterület neve/), { target: { value: 'Egyetem' } })
+    fireEvent.change(screen.getByLabelText(/Közterület jellege/), { target: { value: 'sétány' } })
     fireEvent.change(screen.getByLabelText(/Házszám/), { target: { value: '1' } })
     fireEvent.click(screen.getByLabelText('Készpénz'))
 

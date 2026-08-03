@@ -1,4 +1,8 @@
 .logout-button-nav-link-wrapper {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
   border-radius: 5px;
   padding: .25rem;
   margin-top: auto;
@@ -6,10 +10,6 @@
   transition: font-size 0.3s ease, margin 0.3s ease;
   color: inherit;
   flex-shrink: 0;
-}
-
-.logout-button-nav-link-wrapper.active:hover {
-  background-color: transparent;
 }
 
 .logout-button-nav-link-wrapper:hover {

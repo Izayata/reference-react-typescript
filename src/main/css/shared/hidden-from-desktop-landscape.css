@@ -1,0 +1,12 @@
+.hidden-from-desktop-landscape {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+@media (min-width: 1280px) {
+  .hidden-from-desktop-landscape {
+    display: none;
+  }
+}

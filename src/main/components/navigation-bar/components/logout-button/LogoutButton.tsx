@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import { Modal } from '../../../functional/Modal/Modal'
 import { useTranslation } from 'react-i18next'
 import './LogoutButton.css'
@@ -8,9 +7,15 @@ import { handleErrorMessages } from '../../../../utils/ErrorUtils'
 
 interface LogoutButtonProps {
   onLogout: () => void
+  className?: string
+  style?: React.CSSProperties
 }
 
-export function LogoutButton({ onLogout }: LogoutButtonProps) {
+export function LogoutButton({
+  onLogout,
+  className = 'logout-button-nav-link-wrapper',
+  style
+}: LogoutButtonProps) {
   const { t } = useTranslation()
 
   const [modalMessage, setModalMessage] = useState<string | null>(null)
@@ -38,13 +43,14 @@ export function LogoutButton({ onLogout }: LogoutButtonProps) {
   return (
     <>
       {modalMessage && <Modal message={modalMessage} onClose={() => setModalMessage(null)} />}
-      <NavLink
-        to=""
-        className={'logout-button-nav-link-wrapper'}
+      <button
+        type="button"
+        className={className}
+        style={style}
         onClick={handleLogout}
       >
         {t('nav.logout')}
-      </NavLink>
+      </button>
     </>
   )
 }

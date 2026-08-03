@@ -7,3 +7,11 @@ export async function fetchAuthenticatedUserDetails() {
   if (!res.ok) throw new Error(i18n.t('errors.ERR_MSG_ACCOUNT_FETCH_FAILED'))
   return res.json()
 }
+
+export async function fetchOrderHistory() {
+  const res = await fetch('/v1/orders', {
+    credentials: 'include'
+  })
+  if (!res.ok) throw new Error(i18n.t('errors.ERR_MSG_ORDER_HISTORY_FETCH_FAILED'))
+  return res.json()
+}

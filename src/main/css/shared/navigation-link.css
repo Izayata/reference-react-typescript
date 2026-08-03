@@ -12,6 +12,13 @@
   transition: font-size 0.3s ease, margin 0.3s ease;
   cursor: pointer;
 }
+
+button.navigation-link {
+  border: none;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
 .navigation-link.shopping-bag-link {
   font-weight: bold;
   font-size: 1.5rem;

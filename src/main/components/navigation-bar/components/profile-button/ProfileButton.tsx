@@ -4,21 +4,34 @@ import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import './ProfileButton.css'
 
-export function ProfileButton() {
+interface ProfileButtonProps {
+  asText?: boolean
+  className?: string
+  style?: React.CSSProperties
+}
+
+export function ProfileButton({
+  asText = false,
+  className = 'profile-button-nav-link-wrapper',
+  style
+}: ProfileButtonProps) {
   const { t } = useTranslation()
 
   return (
     <NavLink
       to='/account'
       className={
-        ({ isActive }) => (`profile-button-nav-link-wrapper ${isActive ? 'active' : ''}`)
+        ({ isActive }) => (`${className} ${isActive ? 'active' : ''}`)
       }
-      aria-label={t('nav.profileLinkAriaLabel')}
+      aria-label={asText ? undefined : t('nav.profileLinkAriaLabel')}
+      style={style}
     >
-      <FontAwesomeIcon
-        icon={faUser}
-        className='profile-icon'
-      />
+      {asText ? t('nav.profileLink') : (
+        <FontAwesomeIcon
+          icon={faUser}
+          className='profile-icon'
+        />
+      )}
     </NavLink>
   )
 }
