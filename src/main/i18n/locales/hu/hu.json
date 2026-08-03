@@ -90,6 +90,7 @@
     "ERR_MSG_CITY_VALUE_LEADING_OR_TRAILING_SPACE": "A város nem kezdődhet vagy végződhet szóközzel!",
     "ERR_MSG_CITY_VALUE_FORMAT": "A város csak betűket, számokat, szóközt, kötőjelet, pontot vagy aposztrófot tartalmazhat!",
     "ERR_MSG_CITY_VALUE_LENGTH": "A város legalább {{CITY_VALUE_MIN_LENGTH}} karakter hosszú kell legyen, de nem lehet hosszabb, mint {{CITY_VALUE_MAX_LENGTH}} karakter!",
+    "ERR_MSG_CITY_LOOKUP_FAILED": "Hiba történt a település automatikus kitöltése során.",
     "ERR_MSG_STREET_NUMBER_VALUE_REQUIRED": "A házszám megadása kötelező, valamint nem állhat csak szóközből!",
     "ERR_MSG_STREET_NUMBER_VALUE_FORMAT": "A házszám nem tartalmazhat szóközt, valamint csak a következő formákban elfogadott: \"1\", \"1/a\", \"1/A\", \"1/2\", \"1a\" vagy \"1A\"!",
     "ERR_MSG_STREET_NUMBER_VALUE_LENGTH": "A házszám legalább {{STREET_NUMBER_VALUE_MIN_LENGTH}} karakter hosszú kell legyen, de nem lehet hosszabb, mint {{STREET_NUMBER_VALUE_MAX_LENGTH}} karakter!",
