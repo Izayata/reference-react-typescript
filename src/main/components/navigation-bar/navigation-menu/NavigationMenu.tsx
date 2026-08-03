@@ -5,11 +5,13 @@ import './NavigationMenu.css'
 interface OpenedHamburgerMenuContainerProps {
   menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
+  isAuthenticated: boolean;
+  onLogout: () => void;
 }
 
 const FOCUSABLE_SELECTOR = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
 
-export function NavigationMenu({ menuOpen, setMenuOpen }: OpenedHamburgerMenuContainerProps) {
+export function NavigationMenu({ menuOpen, setMenuOpen, isAuthenticated, onLogout }: OpenedHamburgerMenuContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -59,7 +61,7 @@ export function NavigationMenu({ menuOpen, setMenuOpen }: OpenedHamburgerMenuCon
     // Escape (handled above), not by tabbing to it, so it's intentionally not focusable.
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div className='menu-container' onClick={() => setMenuOpen(false)} ref={containerRef}>
-      <NavigationLinkMenu />
+      <NavigationLinkMenu isAuthenticated={isAuthenticated} onLogout={onLogout} />
     </div>
   )
 }

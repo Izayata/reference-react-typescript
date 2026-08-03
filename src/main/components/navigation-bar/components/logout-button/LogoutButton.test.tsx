@@ -10,6 +10,6 @@ describe('LogoutButton', () => {
       </MemoryRouter>
     )
 
-    expect(screen.getByRole('link', { name: 'Kilépés' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Kilépés' })).toBeInTheDocument()
   })
 })

@@ -8,7 +8,12 @@ function renderOpenMenu() {
   render(
     <MemoryRouter>
       <ActiveMenuCategoryProvider>
-        <NavigationMenu menuOpen={true} setMenuOpen={setMenuOpen} />
+        <NavigationMenu
+          menuOpen={true}
+          setMenuOpen={setMenuOpen}
+          isAuthenticated={false}
+          onLogout={jest.fn()}
+        />
       </ActiveMenuCategoryProvider>
     </MemoryRouter>
   )

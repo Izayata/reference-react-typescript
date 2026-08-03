@@ -5,5 +5,7 @@
 @media (min-width: 1280px) {
   .visible-from-desktop-landscape {
     display: flex;
+    align-items: center;
+    gap: .75rem;
   }
 }

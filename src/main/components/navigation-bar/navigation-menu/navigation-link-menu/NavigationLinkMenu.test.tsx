@@ -3,11 +3,11 @@ import { MemoryRouter } from 'react-router-dom'
 import { ActiveMenuCategoryProvider, ActiveMenuCategoryContext } from '../../../../context/ActiveMenuCategoryContext/ActiveMenuCategoryContext'
 import { NavigationLinkMenu } from './NavigationLinkMenu'
 
-function renderMenu() {
+function renderMenu(isAuthenticated = false) {
   render(
     <MemoryRouter>
       <ActiveMenuCategoryProvider>
-        <NavigationLinkMenu />
+        <NavigationLinkMenu isAuthenticated={isAuthenticated} onLogout={jest.fn()} />
       </ActiveMenuCategoryProvider>
     </MemoryRouter>
   )
@@ -17,7 +17,7 @@ function renderMenuWithActiveCategory(activeMenuCategory: string) {
   render(
     <MemoryRouter>
       <ActiveMenuCategoryContext.Provider value={{ activeMenuCategory, setActiveMenuCategory: jest.fn() }}>
-        <NavigationLinkMenu />
+        <NavigationLinkMenu isAuthenticated={false} onLogout={jest.fn()} />
       </ActiveMenuCategoryContext.Provider>
     </MemoryRouter>
   )
@@ -45,6 +45,26 @@ describe('NavigationLinkMenu', () => {
     renderMenu()
 
     expect(screen.queryByRole('link', { name: 'Étlap' })).not.toBeInTheDocument()
+  })
+
+  it('always renders a "Kezdőlap" link to the home page', () => {
+    renderMenu()
+
+    expect(screen.getByRole('link', { name: 'Kezdőlap' })).toHaveAttribute('href', '/')
+  })
+
+  it('does not render account/logout items when unauthenticated', () => {
+    renderMenu(false)
+
+    expect(screen.queryByRole('link', { name: 'Profilom' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Kilépés' })).not.toBeInTheDocument()
+  })
+
+  it('renders account/logout items when authenticated', () => {
+    renderMenu(true)
+
+    expect(screen.getByRole('link', { name: 'Profilom' })).toHaveAttribute('href', '/account')
+    expect(screen.getByRole('button', { name: 'Kilépés' })).toBeInTheDocument()
   })
 
   it('highlights only the currently active category', () => {

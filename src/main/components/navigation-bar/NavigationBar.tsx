@@ -8,9 +8,14 @@ import { LogoutButton } from './components/logout-button/LogoutButton'
 import './NavigationBar.css'
 import '../../css/shared/no-display.css'
 import '../../css/shared/visible-from-desktop-landscape.css'
+import '../../css/shared/hidden-from-desktop-landscape.css'
 import { ProfileButton } from './components/profile-button/ProfileButton'
+import { WelcomeGreeting } from './components/welcome-greeting/WelcomeGreeting'
 
-export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLogout: () => void}) {
+export function Nav(
+  {isAuthenticated, username, onLogout}:
+  {isAuthenticated: boolean, username: string | null, onLogout: () => void}
+) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [shoppingBagOpen, setShoppingBagOpen] = useState(false)
 
@@ -18,15 +23,30 @@ export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLo
 
   return (
     <nav className = 'nav-bar-container'>
-      <div className='nav-bar-upper-row-container'>
-        <NavLink to={'/'} className = 'restaurant-name'>
-            ImagineBar
-        </NavLink>
+      <div className={`nav-bar-upper-row-container${isAuthenticated && username ? ' has-mobile-greeting' : ''}`}>
+        <span className='visible-from-desktop-landscape'>
+          <NavLink to={'/'} className = 'restaurant-name'>
+              ImagineBar
+          </NavLink>
+        </span>
+        {isAuthenticated && username && (
+          <span className='hidden-from-desktop-landscape nav-bar-mobile-greeting'>
+            <WelcomeGreeting username={username} />
+          </span>
+        )}
         <span className='menu-button-container'>
           {isAuthenticated && (
             <>
-              <ProfileButton/>
-              <div className='menu-button-separator' />
+              {username && (
+                <span className='visible-from-desktop-landscape'>
+                  <WelcomeGreeting username={username} />
+                </span>
+              )}
+              <span className='visible-from-desktop-landscape'>
+                <div className='menu-button-separator' />
+                <ProfileButton/>
+                <div className='menu-button-separator' />
+              </span>
             </>
           )}
           <ShoppingBagContainer
@@ -39,9 +59,11 @@ export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLo
             <LoginButton/>
           )}
           {isAuthenticated && (
-            <LogoutButton
-              onLogout={onLogout}
-            />
+            <span className='visible-from-desktop-landscape'>
+              <LogoutButton
+                onLogout={onLogout}
+              />
+            </span>
           )}
           {/* HamburgerMenuButton handles it's own separator */}
           <HamburgerMenuButton
@@ -51,7 +73,12 @@ export function Nav({isAuthenticated, onLogout}: {isAuthenticated: boolean, onLo
         </span>
       </div>
       <div className='navigation-bar-separator' />
-      <NavigationMenu menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+      <NavigationMenu
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        isAuthenticated={isAuthenticated}
+        onLogout={onLogout}
+      />
     </nav>
   )
 }

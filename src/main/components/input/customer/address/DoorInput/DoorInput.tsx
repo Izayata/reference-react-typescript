@@ -1,32 +1,34 @@
 import React from 'react'
-import { FLOOR_DOOR_VALUE_ALLOWED_REGEX, FLOOR_DOOR_VALUE_MAX_LENGTH, FLOOR_DOOR_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/FloorDoorUtils'
-import { FloorDoorModel } from '../../../../../model/customer/address/FloorDoorModel'
+import { DOOR_VALUE_ALLOWED_REGEX, DOOR_VALUE_MAX_LENGTH, DOOR_VALUE_MIN_LENGTH } from '../../../../../utils/customer/address/DoorUtils'
+import { DoorModel } from '../../../../../model/customer/address/DoorModel'
 import { DisplayErrors } from '../../../../../utils/ErrorUtils'
 import { useDebouncedModelValidation } from '../../../useDebouncedModelValidation'
 import { useTranslation } from 'react-i18next'
 
 import '../../../../../css/shared/form/form-label-strong.css'
 
-interface FloorDoorInputProps {
-  name:string
+interface DoorInputProps {
+  name: string
   value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  disabled?: boolean
 }
 
-export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onChange }) => {
+export const DoorInput: React.FC<DoorInputProps> = ({ name, value, onChange, disabled }) => {
   const { t } = useTranslation()
-  const error = useDebouncedModelValidation(value, FloorDoorModel)
+  const error = useDebouncedModelValidation(value, DoorModel)
 
   return (
     <label className="form-label">
-      <strong className='form-label-strong'>{t('inputs.floorDoorLabel')}</strong>
+      <strong className='form-label-strong'>{t('inputs.doorLabel')}</strong>
       <input
-        aria-describedby="floorDoor-error"
+        aria-describedby="door-error"
         aria-invalid={!!error}
         className="form-input"
+        disabled={disabled}
         inputMode="text"
-        maxLength={FLOOR_DOOR_VALUE_MAX_LENGTH}
-        minLength={FLOOR_DOOR_VALUE_MIN_LENGTH}
+        maxLength={DOOR_VALUE_MAX_LENGTH}
+        minLength={DOOR_VALUE_MIN_LENGTH}
         name={name}
         onChange={onChange}
         onInput={e => (e.currentTarget.setCustomValidity(''))}
@@ -37,12 +39,12 @@ export const FloorDoorInput: React.FC<FloorDoorInputProps> = ({ name, value, onC
             e.currentTarget.setCustomValidity(error)
           }
         }}
-        pattern={FLOOR_DOOR_VALUE_ALLOWED_REGEX.source}
+        pattern={DOOR_VALUE_ALLOWED_REGEX.source}
         spellCheck="false"
         type="text"
         value={value}
       />
-      <span id="floorDoor-error" className="error-message" aria-live="polite">
+      <span id="door-error" className="error-message" aria-live="polite">
         <DisplayErrors error={error} />
       </span>
     </label>

@@ -37,6 +37,8 @@
 
 .footer section div p a {
   padding: .75rem;
+  color: inherit;
+  text-decoration-color: #fff;
 }
 
 .footer section div p a:hover {

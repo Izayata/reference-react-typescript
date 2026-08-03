@@ -3,7 +3,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  width: auto;
+  width: 13.5rem;
   height: 100vh;
   background-color: #8c7851;
   z-index: 1001;
@@ -18,9 +18,14 @@
   display: initial;
 }
 
+.navigation-link-container .hidden-from-desktop-landscape {
+  width: 100%;
+}
+
 @media (min-width: 1280px) {
   .navigation-link-menu {
     position: initial;
+    width: auto;
     height: auto;
     justify-content: flex-start;
     padding-left: .75rem;

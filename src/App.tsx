@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate } from 'react-router'
 import { MenuPage } from './main/pages/MenuPage'
 import { AllergenPage } from './main/pages/AllergenPage'
 import { AccountPage } from './main/pages/account'
+import { OrderHistoryPage } from './main/pages/OrderHistoryPage'
 import { Home } from './main/pages/home'
 import { ForgottenPasswordPage } from './main/pages/ForgottenPasswordPage'
 import { Nav } from './main/components/navigation-bar/NavigationBar'
@@ -23,11 +24,14 @@ import { Modal } from './main/components/functional/Modal/Modal'
 import { ModalProvider, useModal } from './main/context/ModalMessageContext/ModalMessageContext'
 import { ActiveMenuCategoryProvider } from './main/context/ActiveMenuCategoryContext/ActiveMenuCategoryContext'
 import { GalleryPage } from './main/pages/GalleryPage'
+import { TermsPage } from './main/pages/TermsPage'
 import { NotFoundPage } from './main/pages/NotFoundPage'
 import { ScrollToTop } from './main/components/functional/ScrollToTop/ScrollToTop'
+import { fetchAuthenticatedUserDetails } from './main/utils/pages/account/accountPageUtils'
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [username, setUsername] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshValue, setRefreshValue] = useState(false)
   const { modalMessage, setModalMessage } = useModal()
@@ -49,11 +53,19 @@ function AppContent() {
         })
         if (response.ok) {
           setIsAuthenticated(true)
+          try {
+            const user = await fetchAuthenticatedUserDetails()
+            setUsername(user.myUsername.value)
+          } catch (err) {
+            setUsername(null)
+          }
         } else {
           setIsAuthenticated(false)
+          setUsername(null)
         }
       } catch (err) {
         setIsAuthenticated(false)
+        setUsername(null)
       } finally {
         setLoading(false)
       }
@@ -85,7 +97,7 @@ function AppContent() {
         <Header />
       </div>
       <div className='slide-in'>
-        <Nav isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+        <Nav isAuthenticated={isAuthenticated} username={username} onLogout={handleLogout} />
       </div>
       <main className='main-container'>
         <Routes>
@@ -94,6 +106,7 @@ function AppContent() {
           <Route path='/allergens' element={<AllergenPage />}/>
           <Route path='/register' element={<RegisterPage />}/>
           <Route path='/gallery' element={<GalleryPage />}/>
+          <Route path='/terms' element={<TermsPage />}/>
           <Route path="/login" element={<LoginPage onLogin={handleLogin}/>} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/forgot-password" element={<ForgottenPasswordPage />} />
@@ -102,6 +115,14 @@ function AppContent() {
             element={
               <AccountRouteGuard isAuthenticated={isAuthenticated}>
                 <AccountPage />
+              </AccountRouteGuard>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <AccountRouteGuard isAuthenticated={isAuthenticated}>
+                <OrderHistoryPage />
               </AccountRouteGuard>
             }
           />
