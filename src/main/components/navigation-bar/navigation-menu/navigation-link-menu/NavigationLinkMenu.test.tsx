@@ -28,7 +28,7 @@ describe('NavigationLinkMenu', () => {
     renderMenu()
 
     expect(screen.getByRole('link', { name: 'Levesek' })).toHaveAttribute('href', '/menu_page?category=soups')
-    expect(screen.getByRole('link', { name: 'Egytélételek' })).toHaveAttribute('href', '/menu_page?category=main-dishes')
+    expect(screen.getByRole('link', { name: 'Egytálételek' })).toHaveAttribute('href', '/menu_page?category=main-dishes')
     expect(screen.getByRole('link', { name: 'Italok' })).toHaveAttribute('href', '/menu_page?category=drinks')
     expect(screen.getByRole('link', { name: 'Desszertek' })).toHaveAttribute('href', '/menu_page?category=desserts')
   })
@@ -55,7 +55,7 @@ describe('NavigationLinkMenu', () => {
 
     expect(screen.getByRole('link', { name: 'Levesek' })).not.toHaveClass('active')
     expect(screen.getByRole('link', { name: 'Levesek' })).not.toHaveAttribute('aria-current')
-    expect(screen.getByRole('link', { name: 'Egytélételek' })).not.toHaveClass('active')
+    expect(screen.getByRole('link', { name: 'Egytálételek' })).not.toHaveClass('active')
     expect(screen.getByRole('link', { name: 'Desszertek' })).not.toHaveClass('active')
   })
 })
