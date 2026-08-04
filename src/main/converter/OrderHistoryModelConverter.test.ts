@@ -61,5 +61,23 @@ describe('OrderHistoryModelConverter', () => {
     it('maps an empty array to an empty array', () => {
       expect(convertToOrderHistoryModels([])).toEqual([])
     })
+
+    it('skips an order with an invalid food name and still converts the valid ones', () => {
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined)
+      const INVALID_RAW_ORDER = {
+        ...VALID_RAW_ORDER,
+        id: 99,
+        orderItems: [
+          { food: { id: 1, foodName: { value: '@Invalid' } }, quantity: 1, orderItemPrice: 1000 }
+        ]
+      }
+
+      const orders = convertToOrderHistoryModels([VALID_RAW_ORDER, INVALID_RAW_ORDER, { ...VALID_RAW_ORDER, id: 2 }])
+
+      expect(orders).toHaveLength(2)
+      expect(orders.map(order => order.id)).toEqual([1, 2])
+      expect(warnSpy).toHaveBeenCalledTimes(1)
+      warnSpy.mockRestore()
+    })
   })
 })
