@@ -42,7 +42,7 @@ export function Modal({ message, onClose }: ModalProps) {
         >
           {message}
         </p>
-        <button ref={closeButtonRef} className="application-button-style" onClick={onClose}>
+        <button ref={closeButtonRef} className="application-button-style modal-ok-button" onClick={onClose}>
           OK
         </button>
       </div>

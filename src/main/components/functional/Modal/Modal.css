@@ -35,6 +35,13 @@
   color: #FF944D;
 }
 
+/* OK button text color. Chained with .application-button-style so this
+   selector's specificity beats it regardless of which shared
+   application-button-style.css happens to be loaded / load order. */
+.application-button-style.modal-ok-button {
+  color: #FF944D;
+}
+
 /* OK button styling */
 .modal-button {
   background-color: #d4af37; /* Gold color */
