@@ -112,6 +112,11 @@
     font-size: 1.25rem;
 }
 
+.banner-rotator .banner-paragraph-style {
+    margin-left: 3.5rem;
+    margin-right: 3.5rem;
+}
+
 @media (min-width: 1024px) {
     .banner-paragraph-style {
         width: 50%;
