@@ -39,5 +39,12 @@ export function convertToOrderHistoryModel(raw: OrderHistoryResponse): OrderHist
 }
 
 export function convertToOrderHistoryModels(rawList: OrderHistoryResponse[]): OrderHistoryModel[] {
-  return rawList.map(convertToOrderHistoryModel)
+  return rawList.flatMap(raw => {
+    try {
+      return [convertToOrderHistoryModel(raw)]
+    } catch (e) {
+      console.warn(`Skipping order history entry (id: ${raw.id}) due to a conversion error:`, e)
+      return []
+    }
+  })
 }

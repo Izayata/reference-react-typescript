@@ -23,7 +23,11 @@ export function OrderHistory() {
       setLoading(true)
       try {
         const raw = await fetchOrderHistory()
-        setOrders(convertToOrderHistoryModels(raw))
+        const converted = convertToOrderHistoryModels(raw)
+        if (converted.length < raw.length) {
+          toast.warn(t('orderHistory.someOrdersUnavailable'))
+        }
+        setOrders(converted)
       } catch (e: unknown) {
         setModalMessage(handleErrorMessages(e))
       } finally {

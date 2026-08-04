@@ -76,6 +76,24 @@ describe('OrderHistory', () => {
     )).toBeInTheDocument()
   })
 
+  it('still renders the valid orders when one order fails to convert', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const INVALID_RAW_ORDER = {
+      ...VALID_RAW_ORDER,
+      id: 99,
+      orderItems: [
+        { food: { id: 1, foodName: { value: '@Invalid' } }, quantity: 1, orderItemPrice: 1000 }
+      ]
+    }
+    mockFetch({ ok: true, json: async () => [VALID_RAW_ORDER, INVALID_RAW_ORDER] })
+
+    renderOrderHistory()
+
+    expect(await screen.findByText('Gulyásleves × 2', {}, { timeout: 3000 })).toBeInTheDocument()
+    expect(screen.queryByText('@Invalid × 1')).not.toBeInTheDocument()
+    warnSpy.mockRestore()
+  })
+
   it('reordering adds the order\'s items to the cart and navigates to /cart', async () => {
     mockFetch({ ok: true, json: async () => [VALID_RAW_ORDER] })
 

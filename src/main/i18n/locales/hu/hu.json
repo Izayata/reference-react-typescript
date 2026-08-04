@@ -37,7 +37,7 @@
     "ERR_MSG_PRICE_CURRENCY_INVALID_CHARACTER": "Az ár pénzneme csak betűket tartalmazhat!",
     "ERR_MSG_FOOD_NAME_VALUE_REQUIRED": "Az ételnév megadása kötelező, valamint nem állhat csak szóközből!",
     "ERR_MSG_FOOD_NAME_VALUE_LENGTH": "Az ételnév legalább {{FOOD_NAME_VALUE_MIN_LENGTH}} karakter hosszú kell legyen, de nem lehet hosszabb, mint {{FOOD_NAME_VALUE_MAX_LENGTH}} karakter!",
-    "ERR_MSG_FOOD_NAME_VALUE_INVALID_CHARACTERS": "Az ételnév kizárólag csak betűket és szóközt tartalmazhat, de nem kezdődhet vagy végződhet szóközzel!",
+    "ERR_MSG_FOOD_NAME_VALUE_INVALID_CHARACTERS": "Az ételnév csak betűket, számokat, szóközt, kötőjelet, pontot vagy aposztrófot tartalmazhat, de nem kezdődhet vagy végződhet szóközzel!",
     "ERR_MSG_INGREDIENT_NAME_VALUE_REQUIRED": "A hozzávalónév megadása kötelező, valamint nem állhat csak szóközből!",
     "ERR_MSG_INGREDIENT_NAME_VALUE_LENGTH": "A hozzávalónév legalább {{INGREDIENT_NAME_VALUE_MIN_LENGTH}} karakter hosszú kell legyen, de nem lehet hosszabb, mint {{INGREDIENT_NAME_VALUE_MAX_LENGTH}} karakter!",
     "ERR_MSG_INGREDIENT_NAME_INVALID_CHARACTERS": "A hozzávalónév csak betűket és szóközt tartalmazhat, de nem kezdődhet vagy végződhet szóközzel!",
@@ -597,7 +597,8 @@
     "dateUnknown": "Dátum ismeretlen",
     "totalLabel": "Végösszeg:",
     "reorderButton": "Rendelés újra",
-    "reorderSuccess": "A tételek a kosárhoz lettek adva!"
+    "reorderSuccess": "A tételek a kosárhoz lettek adva!",
+    "someOrdersUnavailable": "Néhány korábbi rendelés megjelenítése sikertelen volt."
   },
   "gallery": {
     "goToImageAriaLabel": "Ugrás a {{index}}. képre",

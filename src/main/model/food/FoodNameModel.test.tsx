@@ -26,6 +26,10 @@ const VALID_FOOD_NAME_MODEL = () => new FoodNameModel('Valid Food Name')
 const VALID_FOOD_NAME_MODEL_MIN_LENGTH = () => new FoodNameModel('Foo')
 const VALID_FOOD_NAME_MODEL_MAX_LENGTH = () => new FoodNameModel('A'.repeat(FOOD_NAME_VALUE_MAX_LENGTH))
 const VALID_FOOD_NAME_MODEL_HUN_LETTERS = () => new FoodNameModel('Árvíztűrő tükörfúrógép')
+const VALID_FOOD_NAME_MODEL_HYPHEN = () => new FoodNameModel('Cézár-saláta')
+const VALID_FOOD_NAME_MODEL_APOSTROPHE = () => new FoodNameModel('Chef\'s Special')
+const VALID_FOOD_NAME_MODEL_PERIOD = () => new FoodNameModel('Étel Kft. Special')
+const VALID_FOOD_NAME_MODEL_DIGIT = () => new FoodNameModel('Menü 1')
 
 describe('FoodNameModel', () => {
 
@@ -143,5 +147,21 @@ describe('FoodNameModel', () => {
 
   it('should accept valid food name with Hungarian letters and spaces', () => {
     expect(VALID_FOOD_NAME_MODEL_HUN_LETTERS).not.toThrow()
+  })
+
+  it('should accept valid food name containing a hyphen', () => {
+    expect(VALID_FOOD_NAME_MODEL_HYPHEN).not.toThrow()
+  })
+
+  it('should accept valid food name containing an apostrophe', () => {
+    expect(VALID_FOOD_NAME_MODEL_APOSTROPHE).not.toThrow()
+  })
+
+  it('should accept valid food name containing a period', () => {
+    expect(VALID_FOOD_NAME_MODEL_PERIOD).not.toThrow()
+  })
+
+  it('should accept valid food name containing a digit', () => {
+    expect(VALID_FOOD_NAME_MODEL_DIGIT).not.toThrow()
   })
 })
