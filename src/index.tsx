@@ -1,8 +1,6 @@
 import './main/i18n/i18n'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { Provider } from 'react-redux'
-import { store } from './app/store'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
@@ -18,13 +16,11 @@ const root = createRoot(container)
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <PersistSelectedStates>
-          <App />
-        </PersistSelectedStates>
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <PersistSelectedStates>
+        <App />
+      </PersistSelectedStates>
+    </BrowserRouter>
   </React.StrictMode>
 )
 

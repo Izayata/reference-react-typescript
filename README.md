@@ -2,13 +2,11 @@
 
 A Create React App (react-scripts 5) + TypeScript single-page app for a restaurant ordering site: menu browsing, food details, allergens, gallery, shopping cart, checkout, registration/login, and account/profile management.
 
-Bootstrapped from CRA's Redux+TypeScript template (`package.json`'s name is still `redux-typescript-router`, and `src/main/features/counter` is the original template's demo Redux slice, largely unused by app logic) and then heavily extended into the restaurant domain.
-
 The app talks to a separate backend (a Spring Boot service, based on its `/actuator` path and `PATCH`/`PUT` endpoints) that is **not** part of this repository. Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching. See [`API_ENDPOINTS.md`](./API_ENDPOINTS.md) for the full endpoint contract.
 
 ## For recruiters
 
-This is a reference/portfolio project built to demonstrate senior-level frontend engineering practices, not a toy tutorial app:
+This is a reference/portfolio project built to demonstrate production-grade frontend practices, not a toy tutorial app:
 
 - **Validated domain architecture** — a Model → Builder → Converter → Utils layer (`class-validator`) where every domain object validates itself in its constructor, so invalid state is structurally impossible. See [`docs/DESIGN.md`](./docs/DESIGN.md).
 - **Testing discipline** — exhaustive per-field validation tests for every model plus component-level render/interaction tests, with a coverage floor enforced in CI (`npm run test:coverage`).
@@ -28,8 +26,7 @@ This is a reference/portfolio project built to demonstrate senior-level frontend
 ## Tech stack
 
 - **React 18** + **TypeScript**, bootstrapped with **Create React App** (`react-scripts` 5)
-- **React Router v6** (`react-router-dom` 7)
-- **Redux Toolkit** (`@reduxjs/toolkit`, `react-redux`) — wired up as scaffolding; the store currently has no reducers registered, so all app state is local component state or React context
+- **React Router 7** (`react-router-dom`)
 - **class-validator** — powers the Model → Builder → Converter → Utils domain layer (see [`CLAUDE.md`](./CLAUDE.md))
 - **i18next** / **react-i18next** — single `hu` locale, one flat translation namespace
 - **Jest** + **React Testing Library** — unit and component tests
@@ -72,7 +69,6 @@ npm run lint:fix           # eslint --fix
 ```
 src/
 ├── App.tsx                  route table + auth-status bootstrap
-├── app/                       Redux store setup (store.ts) and typed hooks (hooks.ts)
 ├── main/
 │   ├── pages/                   thin, route-level page components (one per route in App.tsx)
 │   ├── components/
@@ -80,7 +76,7 @@ src/
 │   │   ├── input/                   form inputs grouped by domain (customer/, myUser/)
 │   │   ├── navigation-bar/, header/  global chrome
 │   │   └── functional/               behavioral wrappers (AccountRouteGuard, Modal, LoadingOverlay, ...)
-│   ├── features/footer/            plain footer component (not a Redux slice)
+│   ├── features/footer/            plain footer component
 │   ├── model/, builder/, converter/, myDecorators/, utils/  domain model layer, mirrored file-for-file under src/test/
 │   ├── context/                   React context providers (e.g. ModalMessageContext)
 │   ├── supports/                   cross-cutting helpers: Persistence.tsx, fetch-utilities/ (CSRF token fetch)
