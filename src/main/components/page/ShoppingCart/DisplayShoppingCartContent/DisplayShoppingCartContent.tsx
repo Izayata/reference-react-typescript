@@ -43,7 +43,7 @@ export function DisplayShoppingCartContent({
 
   const handleQuantityChange = (id: number, delta: number) => {
     setQuantities(prev => {
-      const newQty = Math.max(1, (prev[id] || 1) + delta)
+      const newQty = Math.min(Math.max(1, (prev[id] || 1) + delta), 999)
       const updated = { ...prev, [id]: newQty }
       localStorage.setItem('shopping_cart', JSON.stringify(updated))
 
