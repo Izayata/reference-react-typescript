@@ -28,7 +28,7 @@
     "react-router-dom": "^7.18.2",
     "react-scripts": "5.0.1",
     "react-toastify": "^11.0.5",
-    "sass": "^1.102.0",
+    "sass": "^1.104.1",
     "web-vitals": "^2.1.4"
   },
   "overrides": {
