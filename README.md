@@ -2,7 +2,7 @@
 
 A Create React App (react-scripts 5) + TypeScript single-page app for a restaurant ordering site: menu browsing, food details, allergens, gallery, shopping cart, checkout, registration/login, and account/profile management.
 
-The app talks to a separate backend (a Spring Boot service, based on its `/actuator` path and `PATCH`/`PUT` endpoints) that is **not** part of this repository. Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching. See [`API_ENDPOINTS.md`](./API_ENDPOINTS.md) for the full endpoint contract.
+The app talks to a separate backend (a Spring Boot service, based on its `/actuator` path and `PATCH`/`PUT` endpoints) that lives in a separate repository: [reference-spring-boot-api](https://github.com/Izayata/reference-spring-boot-api). Auth is cookie/session-based (`credentials: 'include'`) with CSRF token fetching. See [`API_ENDPOINTS.md`](./API_ENDPOINTS.md) for the full endpoint contract.
 
 ## For recruiters
 
