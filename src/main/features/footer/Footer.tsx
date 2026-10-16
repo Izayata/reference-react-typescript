@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import './Footer.css'
 import { SocialLinks } from '../../components/social-links/SocialLinks'
+import '../../css/shared/separator-hr.css'
 
 export function Footer() {
   const { t } = useTranslation()
@@ -17,13 +18,7 @@ export function Footer() {
           <p>{t('footer.companyRegistry')}</p>
         </div>
       </section>
-      <div
-        style={{
-          border: '1px solid',
-          borderRadius: '5px',
-          borderColor: '#00000077',
-        }}
-      />
+      <div className='content-separator footer-separator' />
       <section>
         <h3>{t('footer.brandTitle')}</h3>
         <div>
@@ -32,13 +27,7 @@ export function Footer() {
           <p>{t('footer.legalPlaceholder')}</p>
         </div>
       </section>
-      <div
-        style={{
-          border: '1px solid',
-          borderRadius: '5px',
-          borderColor: '#00000077',
-        }}
-      />
+      <div className='content-separator footer-separator' />
       <section>
         <h3>Credits</h3>
         <div>
@@ -46,13 +35,7 @@ export function Footer() {
           <p>© 2024 ImagineBar. All rights reserved.</p>
         </div>
       </section>
-      <div
-        style={{
-          border: '1px solid',
-          borderRadius: '5px',
-          borderColor: '#00000077',
-        }}
-      />
+      <div className='content-separator footer-separator' />
       <section>
         <h3>{t('footer.platformsTitle')}</h3>
         <div style={{display: 'flex', flexDirection: 'column'}}>

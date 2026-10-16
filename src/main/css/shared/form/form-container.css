@@ -10,7 +10,6 @@
   padding: 1rem;
   border-radius: 5px;
   font-size: 1.3rem;
-  font-family: 'Roboto, sans-serif';
   gap: 1rem;
   animation: slideInFromBottom .85s ease-out forwards;
   z-index: 799;

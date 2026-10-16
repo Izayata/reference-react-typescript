@@ -25,6 +25,7 @@ import { faMound } from '@fortawesome/free-solid-svg-icons'
 import '../../../css/shared/form/form-container.css'
 import './Allergen.css'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import '../../../css/shared/separator-hr.css'
 
 export function Allergen() {
   const { t } = useTranslation()
@@ -82,13 +83,7 @@ export function Allergen() {
               icon={iconMap[a.iconName]}
               className='allergen-icon'
             />
-            <div
-              style={{
-                width: '100%',
-                border: '1px solid',
-                borderRadius: '5px',
-                borderColor: a.id % 2 === 0 ? '#8c7851' : '#695A3D'
-              }}/>
+            <div className={a.id % 2 === 0 ? 'content-separator content-separator--light' : 'content-separator'} />
             <span className='allergen-name'>{a.name.value}</span>
           </div>
         ))}

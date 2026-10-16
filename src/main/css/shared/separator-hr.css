@@ -5,3 +5,37 @@
   border-width: 1px;
   width: 100%;
 }
+
+/* Heading + full-width section divider (see SectionHeading.tsx). The wrapper
+   stretches to the parent's full content width, so the divider spans the
+   whole section instead of hugging the heading text like an underline. */
+.section-heading {
+  align-self: stretch;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .75rem;
+}
+
+.section-divider {
+  align-self: stretch;
+  box-sizing: border-box;
+  width: 100%;
+  height: 0;
+  margin: 0;
+  border: 1px solid #000;
+  border-radius: 5px;
+}
+
+/* Separator line between content blocks (menu cards, allergen cards,
+   checkout sections, footer columns). */
+.content-separator {
+  width: 100%;
+  border: 1px solid #695A3D;
+  border-radius: 5px;
+}
+
+.content-separator--light {
+  border-color: #8c7851;
+}
