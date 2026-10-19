@@ -4,6 +4,8 @@ import { convertBillingAddressFormDataToFormData, convertShippingAddressFormData
 import { PersonalDetailsInput } from '../../input/customer/PersonalDetailsInput'
 import { EmailInput } from '../../input/myUser/EmailInput/EmailInput'
 import { MyUserModel } from '../../../model/MyUserModel'
+import '../../../css/shared/separator-hr.css'
+import { SectionHeading } from '../../section-heading/SectionHeading'
 
 interface CheckoutCustomerDetailsSectionProps {
   isAuthenticated: boolean
@@ -47,19 +49,7 @@ export function CheckoutCustomerDetailsSection({
     <section className='form-container checkout-page customer-details'>
       {isAuthenticated && !editMode && (
         <>
-          <div>
-            <h3 className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</h3>
-            <div
-              style={{
-                width: '100%',
-                border: '1px solid',
-                borderRadius: '5px',
-                borderColor: '#000',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            />
-          </div>
+          <SectionHeading className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</SectionHeading>
           <div className='personal-information-element-container'>
             <strong>{t('checkout.firstnameLabel')}</strong>
             {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.firstname?.value : t('checkout.nameNotFound')}
@@ -74,29 +64,8 @@ export function CheckoutCustomerDetailsSection({
               {myUserData?.customer?.personalDetails?.firstname?.value ? myUserData?.customer?.personalDetails?.phoneNumber?.value : t('checkout.nameNotFound')}
             </div>
           </div>
-          <div
-            style={{
-              width: '100%',
-              border: '1px solid',
-              borderRadius: '5px',
-              borderColor: '#695A3D',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          />
-          <div>
-            <h3 className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</h3>
-            <div
-              style={{
-                width: '100%',
-                border: '1px solid',
-                borderRadius: '5px',
-                borderColor: '#000',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            />
-          </div>
+          <div className='content-separator' />
+          <SectionHeading className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</SectionHeading>
           <div className='personal-information-element-container'>
             <strong>{t('checkout.zipCodeLabel')}</strong>
             {myUserData?.customer?.shippingAddress?.zipCode?.value ? myUserData?.customer?.shippingAddress?.zipCode?.value : t('checkout.zipCodeNotFound')}
@@ -139,44 +108,11 @@ export function CheckoutCustomerDetailsSection({
       )}
       {!isAuthenticated && (
         <div className='form-container' style={{ animation: 'none' }}>
-          <div>
-            <h3 className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</h3>
-            <div
-              style={{
-                width: '100%',
-                border: '1px solid',
-                borderRadius: '5px',
-                borderColor: '#000',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            />
-          </div>
+          <SectionHeading className='checkout-section-title'>{t('checkout.personalDetailsTitle')}</SectionHeading>
           <PersonalDetailsInput formData={personalDetailsForm} onChange={onPersonalDetailsChange} />
           <EmailInput value={emailForm.email} onChange={onEmailChange} />
-          <div
-            style={{
-              width: '100%',
-              border: '1px solid',
-              borderRadius: '5px',
-              borderColor: '#695A3D',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          />
-          <div>
-            <h3 className='checkout-section-title'>{t('checkout.billingAddressTitle')}</h3>
-            <div
-              style={{
-                width: '100%',
-                border: '1px solid',
-                borderRadius: '5px',
-                borderColor: '#000',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-            />
-          </div>
+          <div className='content-separator' />
+          <SectionHeading className='checkout-section-title'>{t('checkout.billingAddressTitle')}</SectionHeading>
           <AddressInput formData={convertBillingAddressFormDataToFormData(billingAddressForm)} onChange={onBillingAddressChange} />
           <label style={{ textWrap: 'pretty' }}>
             <input
@@ -188,29 +124,8 @@ export function CheckoutCustomerDetailsSection({
           </label>
           {!billingAddressSameAsShipping && (
             <>
-              <div
-                style={{
-                  width: '100%',
-                  border: '1px solid',
-                  borderRadius: '5px',
-                  borderColor: '#695A3D',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                }}
-              />
-              <div>
-                <h3 className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</h3>
-                <div
-                  style={{
-                    width: '100%',
-                    border: '1px solid',
-                    borderRadius: '5px',
-                    borderColor: '#000',
-                    marginLeft: 'auto',
-                    marginRight: 'auto',
-                  }}
-                />
-              </div>
+              <div className='content-separator' />
+              <SectionHeading className='checkout-section-title'>{t('checkout.shippingAddressTitle')}</SectionHeading>
               <AddressInput formData={convertShippingAddressFormDataToFormData(shippingAddressForm)} onChange={onShippingAddressChange} />
             </>
           )}

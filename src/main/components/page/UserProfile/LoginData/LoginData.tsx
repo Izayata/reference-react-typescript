@@ -12,6 +12,7 @@ import { PasswordChangeModel } from '../../../../model/PasswordChangeModel'
 import { NewPasswordDetailsModelBuilder } from '../../../../builder/NewPasswordDetailsModelBuilder/NewPasswordDetailsModelBuilder'
 import { PasswordModel } from '../../../../model/myUser/PasswordModel'
 import { useModal } from '../../../../context/ModalMessageContext/ModalMessageContext'
+import { SectionHeading } from '../../../section-heading/SectionHeading'
 
 export function LoginData({ user }: { user: MyUserModel }) {
   const { t } = useTranslation()
@@ -99,22 +100,7 @@ export function LoginData({ user }: { user: MyUserModel }) {
   return (
     <section className="card-container user-profile">
       {loadingOverlay && <LoadingOverlay/>}
-      <div>
-        <h3 className="user-profile-data-container-title">{t('userProfile.accountDataTitle')}</h3>
-        <div
-          style={{
-            width: 'calc(100% - (1rem * 2))',
-            border: '1px solid',
-            borderRadius: '5px',
-            borderColor: '#695A3D',
-            position: 'absolute',
-            left: '0',
-            right: '0',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        />
-      </div>
+      <SectionHeading className='user-profile-data-container-title'>{t('userProfile.accountDataTitle')}</SectionHeading>
       {!editMode && (
         <>
           <div className="user-profile-data-container-data-item-container">

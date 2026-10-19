@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ShoppingCartItemModel } from '../../../model/ShoppingCartItemModel'
+import '../../../css/shared/separator-hr.css'
+import { SectionHeading } from '../../section-heading/SectionHeading'
 
 interface CheckoutOrderSummarySectionProps {
   foods: ShoppingCartItemModel[]
@@ -30,19 +32,7 @@ export function CheckoutOrderSummarySection({
   return (
     <section className='form-container checkout-page order-summary'>
       <>
-        <div>
-          <h3 className='checkout-section-title'>{t('checkout.itemsTitle')}</h3>
-          <div
-            style={{
-              width: '100%',
-              border: '1px solid',
-              borderRadius: '5px',
-              borderColor: '#000',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          />
-        </div>
+        <SectionHeading className='checkout-section-title'>{t('checkout.itemsTitle')}</SectionHeading>
         <div>
           {foods.map(food => {
             const itemTotal = Number(food.price.amount) * Number(quantities[food.foodId])
@@ -75,16 +65,7 @@ export function CheckoutOrderSummarySection({
           </strong>
           <strong>{orderTotal} {t('menu.currencySuffix')}</strong>
         </div>
-        <div
-          style={{
-            width: '100%',
-            border: '1px solid',
-            borderRadius: '5px',
-            borderColor: '#695A3D',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-          }}
-        />
+        <div className='content-separator' />
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           {t('checkout.paymentMethodPrompt')}
           <div style={{ display: 'flex', flexDirection: 'column' }}>

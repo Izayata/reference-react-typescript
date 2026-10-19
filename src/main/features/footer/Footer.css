@@ -24,8 +24,6 @@
 .footer h3 {
   margin-top: 0;
   font-family: 'Pacifico', cursive;
-  text-decoration: underline 2px;
-  text-underline-offset: .35em;
 }
 
 .footer section div {
@@ -38,9 +36,14 @@
 .footer section div p a {
   padding: .75rem;
   color: inherit;
-  text-decoration-color: #fff;
+  text-decoration: none;
 }
 
 .footer section div p a:hover {
   margin: 0;
+}
+
+.footer .footer-separator {
+  width: auto;
+  border-color: #00000077;
 }

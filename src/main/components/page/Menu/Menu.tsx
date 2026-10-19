@@ -29,6 +29,7 @@ import './Menu.css'
 import { NavLink, useSearchParams } from 'react-router-dom'
 import { MenuItemImage } from './MenuItemImage/MenuItemImage'
 import { MENU_CATEGORIES, findMenuCategoryBySlug, menuCategoryAnchorId } from '../../../utils/pages/menu/menuPageUtils'
+import '../../../css/shared/separator-hr.css'
 
 interface MenuProps {
   url: string;
@@ -97,13 +98,7 @@ export function renderSection(sectionTitle: string, sectionId: string, menuItems
                     alt={item.foodName.value}
                   />
                 </NavLink>
-                <div
-                  style={{
-                    width: '100%',
-                    border: '1px solid',
-                    borderRadius: '5px',
-                    borderColor: '#695A3D'
-                  }}/>
+                <div className='content-separator' />
                 <div className='menu-item-name-price-container'>
                   <span className='menu-item-name'>{item.foodName.value}</span>
                   <span className='menu-item-price'>
